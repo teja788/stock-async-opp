@@ -314,6 +314,28 @@ def _rows(conn: sqlite3.Connection, sql: str, params: tuple) -> list[dict[str, A
     return [dict(r) for r in conn.execute(sql, params).fetchall()]
 
 
+def coverage(conn: sqlite3.Connection | None = None) -> dict[str, dict[str, Any]]:
+    """Stored date range + count per source, so the UI knows what it already has.
+
+    Lets 'days back' stay display-only: if the requested window starts before
+    a source's earliest stored row, the UI can offer a gap-only backfill instead
+    of re-downloading everything.
+    """
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        out: dict[str, dict[str, Any]] = {}
+        specs = [("announcements", "published_at"), ("news", "published_at"), ("deals", "date")]
+        for table, col in specs:
+            row = conn.execute(
+                f"SELECT COUNT(*) n, MIN({col}) lo, MAX({col}) hi FROM {table}").fetchone()
+            out[table] = {"count": row["n"], "earliest": row["lo"], "latest": row["hi"]}
+        return out
+    finally:
+        if own:
+            conn.close()
+
+
 # --------------------------------------------------------------------------- #
 # Watchlist (Section 17 future hook). The TABLE + these basic helpers exist now;
 # the UX (prioritising/segregating watchlisted tickers in the context pack) is

@@ -12,6 +12,10 @@ runtime/context_pack.json
 runtime/logs/*.log
 digests/*.md
 
+# Dashboard / browser test artifacts (screenshots, playwright temp)
+dash-*.png
+.playwright-mcp/
+
 # Keep the empty dirs tracked
 !data/universe/.gitkeep
 !runtime/logs/.gitkeep

@@ -96,6 +96,7 @@ def fetch_for_scrip(session: PoliteSession, scrip_code: str,
 def ingest(session: PoliteSession | None = None,
            since: datetime | None = None,
            scrip_codes: Iterable[str] | None = None,
+           until: datetime | None = None,
            progress_cb: Callable[[int, int], None] | None = None
            ) -> list[dict[str, Any]]:
     """Fetch + normalise announcements for the universe within the lookback window.
@@ -104,6 +105,9 @@ def ingest(session: PoliteSession | None = None,
         since: only keep announcements at/after this instant (catch-up). Defaults
                to now - settings.lookback_hours.
         scrip_codes: explicit subset (for testing); defaults to the full universe.
+        until: optional upper bound — keep only announcements at/before this
+               instant. Used to backfill ONLY a missing older gap [since, until]
+               without re-downloading data already stored.
         progress_cb: optional callback(done, total) for a CLI progress bar.
 
     Per-scrip failures are logged and skipped so one bad scrip never aborts the run.
@@ -119,7 +123,7 @@ def ingest(session: PoliteSession | None = None,
 
     # API date window: pad one day on the early side so timezone/edge filings aren't missed.
     frm = (since - timedelta(days=1)).strftime("%Y%m%d")
-    to = _now_ist().strftime("%Y%m%d")
+    to = (until or _now_ist()).strftime("%Y%m%d")
 
     results: list[dict[str, Any]] = []
     total = len(codes)
@@ -133,7 +137,7 @@ def ingest(session: PoliteSession | None = None,
             for row in rows:
                 norm = _normalize(row, meta)
                 pub = _parse_ist(row.get("NEWS_DT") or row.get("DT_TM"))
-                if pub is None or pub >= since:
+                if pub is None or (pub >= since and (until is None or pub <= until)):
                     results.append(norm)
         except Exception as exc:  # noqa: BLE001 - isolate per-scrip failures
             failures += 1

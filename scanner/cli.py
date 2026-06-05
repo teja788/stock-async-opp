@@ -113,14 +113,19 @@ def resolve_window(hours: int | None, days: int | None) -> tuple[datetime | None
 
 
 def _refresh_all(bse_limit: int | None = None,
-                 since_override: datetime | None = None) -> dict[str, dict]:
+                 since_override: datetime | None = None,
+                 sources: set[str] | None = None) -> dict[str, dict]:
     """Run every ingester with catch-up, store with dedupe, track runs.
 
     Returns {source: {"fetched", "new", "status"}}. Each source is isolated so
     one failure still lets the others (and the rest of a scan) proceed.
     `bse_limit` caps the number of BSE scrips polled (for a quick partial
     refresh / tests); None polls the full universe (~498 scrips, ~8 min).
+    `sources` selects which ingesters to run (subset of {"bse_announcements",
+    "news", "deals"}); None runs all. Lets the dashboard do a fast news+deals
+    update without the slow BSE poll.
     """
+    run = sources or {"bse_announcements", "news", "deals"}
     from scanner import ingest_bse, ingest_deals, ingest_news, store
     from scanner.http import PoliteSession
     from scanner.universe import load_map
@@ -159,9 +164,12 @@ def _refresh_all(bse_limit: int | None = None,
         items = ingest_deals.ingest(session=session, since=since)
         return len(items), store.upsert_deals(items)
 
-    _do("bse_announcements", _bse)
-    _do("news", _news)
-    _do("deals", _deals)
+    if "bse_announcements" in run:
+        _do("bse_announcements", _bse)
+    if "news" in run:
+        _do("news", _news)
+    if "deals" in run:
+        _do("deals", _deals)
     return results
 
 

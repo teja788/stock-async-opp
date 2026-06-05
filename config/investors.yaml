@@ -39,5 +39,6 @@ marquee_investors:
   - Sanjeev Bikhchandani
   - Kalpraj Dharamshi
   - Hitesh Ramji Javeri
+  - GQG Partners                 # notable FII; large Adani positions
   # NOTE: avoid adding generic mutual funds (SBI MF, ICICI Pru, etc.) here —
   # they appear in almost every deal and would flag everything as "marquee".

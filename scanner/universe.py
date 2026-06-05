@@ -19,7 +19,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scanner.config import load_sources, resolve_path
+from scanner.config import load_settings, load_sources, resolve_path
 from scanner.http import PoliteSession
 
 log = logging.getLogger(__name__)
@@ -130,6 +130,57 @@ def _parse_market_cap(row: dict[str, Any]) -> float | None:
     return None
 
 
+def _bse_company_record(row: dict[str, Any], cap: float | None) -> dict[str, Any]:
+    """Build a universe record for a non-index company straight from BSE data.
+
+    These names aren't in the Nifty 500 CSV, so we have no NSE symbol/sector from
+    there — we use the BSE master's own fields (scrip_id as symbol, Issuer_Name,
+    INDUSTRY) instead.
+    """
+    name = (row.get("Issuer_Name") or row.get("Scrip_Name") or "").strip()
+    symbol = (row.get("scrip_id") or "").strip() or str(row.get("SCRIP_CD") or "").strip()
+    return {
+        "symbol": symbol,
+        "bse_code": str(row.get("SCRIP_CD") or "").strip(),
+        "isin": (row.get("ISIN_NUMBER") or "").strip(),
+        "name": name,
+        "bse_name": name,
+        "sector": (row.get("INDUSTRY") or "").strip(),
+        "market_cap_cr": cap,
+        "aliases": make_aliases(name, symbol),
+    }
+
+
+def _expand_universe(bse: list[dict[str, Any]], have_isins: set[str]) -> list[dict[str, Any]]:
+    """Add liquid BSE companies above the configured market-cap floor (deduped).
+
+    Rule (config.settings.universe_expansion): keep an active equity if its market
+    cap > mcap_floor_cr AND it's in `groups` (e.g. A), OR it's in `group_caps` and
+    above that group's higher cap (e.g. Group B above ₹3,000 cr).
+    """
+    cfg = load_settings().get("universe_expansion", {}) or {}
+    if not cfg.get("enabled"):
+        return []
+    floor = float(cfg.get("mcap_floor_cr", 500))
+    groups = set(cfg.get("groups", []) or [])
+    group_caps = {k: float(v) for k, v in (cfg.get("group_caps", {}) or {}).items()}
+
+    added: list[dict[str, Any]] = []
+    for row in bse:
+        isin = (row.get("ISIN_NUMBER") or "").strip()
+        if (not isin or isin in have_isins
+                or row.get("Status") != "Active" or row.get("Segment") != "Equity"):
+            continue
+        cap = _parse_market_cap(row)
+        if not cap or cap <= floor:
+            continue
+        grp = (row.get("GROUP") or "").strip()
+        if grp in groups or (grp in group_caps and cap > group_caps[grp]):
+            added.append(_bse_company_record(row, cap))
+            have_isins.add(isin)
+    return added
+
+
 def build_map(session: PoliteSession | None = None) -> dict[str, Any]:
     """Fetch both sources, join on ISIN, write outputs, return summary stats."""
     session = session or PoliteSession()
@@ -170,6 +221,11 @@ def build_map(session: PoliteSession | None = None) -> dict[str, Any]:
             "aliases": make_aliases(c["company"], c["symbol"]),
         })
 
+    index_count = len(merged)
+    # Expand beyond the index to liquid BSE companies above the market-cap floor.
+    expansion = _expand_universe(bse, {c["isin"] for c in merged})
+    merged.extend(expansion)
+
     # Persist the merged map (JSON for code, CSV for eyeballing in Excel).
     (UNIVERSE_DIR / "nifty500_bse_map.json").write_text(
         json.dumps(merged, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -178,7 +234,9 @@ def build_map(session: PoliteSession | None = None) -> dict[str, Any]:
     stats = {
         "nifty_count": len(nifty),
         "bse_master_count": len(bse),
-        "matched": len(merged),
+        "index_matched": index_count,
+        "expansion_added": len(expansion),
+        "universe_size": len(merged),
         "unmatched": len(unmatched),
         "unmatched_samples": [u["company"] for u in unmatched[:10]],
         "out_dir": str(UNIVERSE_DIR),

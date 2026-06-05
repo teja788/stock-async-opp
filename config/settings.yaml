@@ -1,5 +1,15 @@
 # stock-async-opp — global settings (edit me freely)
 universe: nifty500
+# Expand the scan universe beyond the index to liquid BSE companies above a
+# market-cap floor (deduped against the index by ISIN). Set enabled: false to
+# scan only the Nifty 500. Current setting ≈ 980 companies (~16 min full BSE scan).
+universe_expansion:
+  enabled: true
+  mcap_floor_cr: 500           # base ₹-crore floor
+  groups: [A]                  # BSE groups included at the floor (A = most liquid)
+  group_caps:                  # extra groups included only above a higher ₹cr cap
+    B: 3000                    # Group B companies above ₹3,000 cr
+
 lookback_hours: 24                 # DEFAULT rolling window. Override per-run with
                                   # CLI flags --hours N / --days N on
                                   # scan / refresh / ask / digest (they combine).

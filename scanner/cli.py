@@ -420,8 +420,10 @@ def setup_universe() -> None:
     table.add_column("Value", justify="right")
     table.add_row("Nifty 500 rows fetched", str(stats["nifty_count"]))
     table.add_row("BSE master securities", str(stats["bse_master_count"]))
-    table.add_row("Matched (ISIN join)", f"[bold green]{stats['matched']}[/bold green]")
-    table.add_row("Unmatched", str(stats["unmatched"]))
+    table.add_row("Index matched (ISIN join)", str(stats["index_matched"]))
+    table.add_row("Expansion added (>floor)", f"+{stats['expansion_added']}")
+    table.add_row("Total universe", f"[bold green]{stats['universe_size']}[/bold green]")
+    table.add_row("Index unmatched", str(stats["unmatched"]))
     console.print(table)
     if stats["unmatched"]:
         console.print(f"[yellow]Unmatched samples:[/yellow] {', '.join(stats['unmatched_samples'])}")

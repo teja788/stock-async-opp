@@ -16,6 +16,8 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from typing import Any, Callable, Iterable
 from zoneinfo import ZoneInfo
@@ -93,10 +95,23 @@ def fetch_for_scrip(session: PoliteSession, scrip_code: str,
     return data.get("Table", []) if isinstance(data, dict) else []
 
 
+def _fetch_one(session: PoliteSession, code: str, meta: dict[str, Any],
+               frm: str, to: str, since: datetime, until: datetime | None
+               ) -> list[dict[str, Any]]:
+    """Fetch + normalise + window-filter a single scrip's announcements."""
+    out: list[dict[str, Any]] = []
+    for row in fetch_for_scrip(session, code, frm, to):
+        pub = _parse_ist(row.get("NEWS_DT") or row.get("DT_TM"))
+        if pub is None or (pub >= since and (until is None or pub <= until)):
+            out.append(_normalize(row, meta))
+    return out
+
+
 def ingest(session: PoliteSession | None = None,
            since: datetime | None = None,
            scrip_codes: Iterable[str] | None = None,
            until: datetime | None = None,
+           workers: int = 1,
            progress_cb: Callable[[int, int], None] | None = None
            ) -> list[dict[str, Any]]:
     """Fetch + normalise announcements for the universe within the lookback window.
@@ -108,11 +123,15 @@ def ingest(session: PoliteSession | None = None,
         until: optional upper bound — keep only announcements at/before this
                instant. Used to backfill ONLY a missing older gap [since, until]
                without re-downloading data already stored.
+        workers: parallel fetch threads. 1 = sequential, maximally polite
+               (~1 req/sec; ~16 min for the full ~980-name universe). >1 gives
+               each worker its OWN throttled PoliteSession, so N workers ≈ N
+               req/sec aggregate (6 ≈ ~3 min). Higher is faster but more
+               aggressive toward BSE — keep it modest.
         progress_cb: optional callback(done, total) for a CLI progress bar.
 
     Per-scrip failures are logged and skipped so one bad scrip never aborts the run.
     """
-    session = session or PoliteSession()
     settings = load_settings()
     lookback = int(settings.get("lookback_hours", 24))
     since = since or (_now_ist() - timedelta(hours=lookback))
@@ -128,24 +147,54 @@ def ingest(session: PoliteSession | None = None,
     results: list[dict[str, Any]] = []
     total = len(codes)
     failures = 0
-    for i, code in enumerate(codes, 1):
-        meta = meta_by_code.get(code)
-        if not meta:
-            continue
-        try:
-            rows = fetch_for_scrip(session, code, frm, to)
-            for row in rows:
-                norm = _normalize(row, meta)
-                pub = _parse_ist(row.get("NEWS_DT") or row.get("DT_TM"))
-                if pub is None or (pub >= since and (until is None or pub <= until)):
-                    results.append(norm)
-        except Exception as exc:  # noqa: BLE001 - isolate per-scrip failures
-            failures += 1
-            log.warning("BSE fetch failed for scrip %s (%s): %s",
-                        code, meta.get("symbol"), exc)
-        if progress_cb:
-            progress_cb(i, total)
 
-    log.info("BSE ingest done: %d announcements from %d scrips (%d failures), since %s",
-             len(results), total, failures, since.isoformat())
+    if workers and workers > 1 and total > 1:
+        # Parallel: one throttled PoliteSession PER worker thread, so each stays
+        # individually polite and the aggregate rate is ~`workers` req/sec.
+        _local = threading.local()
+
+        def _session() -> PoliteSession:
+            s = getattr(_local, "s", None)
+            if s is None:
+                s = _local.s = PoliteSession()
+            return s
+
+        def _work(code: str) -> list[dict[str, Any]] | None:
+            meta = meta_by_code.get(code)
+            if not meta:
+                return []
+            try:
+                return _fetch_one(_session(), code, meta, frm, to, since, until)
+            except Exception as exc:  # noqa: BLE001 - isolate per-scrip failures
+                log.warning("BSE fetch failed for scrip %s: %s", code, exc)
+                return None
+
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            done = 0
+            for fut in as_completed([pool.submit(_work, c) for c in codes]):
+                r = fut.result()
+                if r is None:
+                    failures += 1
+                else:
+                    results.extend(r)
+                done += 1
+                if progress_cb:
+                    progress_cb(done, total)
+    else:
+        session = session or PoliteSession()
+        for i, code in enumerate(codes, 1):
+            meta = meta_by_code.get(code)
+            if not meta:
+                continue
+            try:
+                results.extend(_fetch_one(session, code, meta, frm, to, since, until))
+            except Exception as exc:  # noqa: BLE001 - isolate per-scrip failures
+                failures += 1
+                log.warning("BSE fetch failed for scrip %s (%s): %s",
+                            code, meta.get("symbol"), exc)
+            if progress_cb:
+                progress_cb(i, total)
+
+    log.info("BSE ingest done: %d announcements from %d scrips (%d failures, %d workers), since %s",
+             len(results), total, failures, workers, since.isoformat())
     return results

@@ -14,8 +14,12 @@ lookback_hours: 24                 # DEFAULT rolling window. Override per-run wi
                                   # CLI flags --hours N / --days N on
                                   # scan / refresh / ask / digest (they combine).
 market_cap_floor_cr: null          # optional ₹-crore floor to cut microcap noise (null = off)
-request_delay_sec: 1.0             # polite delay between HTTP calls (~1 req/sec)
+request_delay_sec: 1.0             # polite delay between HTTP calls (~1 req/sec, per session)
 max_retries: 3
+bse_fetch_workers: 6               # parallel threads for the BSE filings pull.
+                                  # 1 = fully polite/sequential (~16 min for ~980 names);
+                                  # 6 ≈ ~3 min (each worker still throttled). Higher =
+                                  # faster but more aggressive toward BSE.
 timezone: Asia/Kolkata             # all stored/displayed times are IST
 
 output:

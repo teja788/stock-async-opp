@@ -152,7 +152,8 @@ def _refresh_all(bse_limit: int | None = None,
         codes = None
         if bse_limit:
             codes = [str(c["bse_code"]) for c in universe if c.get("bse_code")][:bse_limit]
-        items = ingest_bse.ingest(session=session, since=since, scrip_codes=codes)
+        workers = int(load_settings().get("bse_fetch_workers", 1))
+        items = ingest_bse.ingest(session=session, since=since, scrip_codes=codes, workers=workers)
         return len(items), store.upsert_announcements(items)
 
     def _news():

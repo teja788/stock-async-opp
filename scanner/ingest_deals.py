@@ -71,11 +71,20 @@ def _now_ist() -> datetime:
 
 
 def _parse_dt(value: str | None) -> datetime | None:
-    """Parse BSE dates tolerantly (ISO 'T' form AND DD/MM/YYYY) as IST."""
+    """Parse BSE dates tolerantly as IST.
+
+    BSE mixes formats across endpoints: bulk/block deals use DD/MM/YYYY
+    (day-first), while insider/SAST + some deal feeds use ISO YYYY-MM-DD
+    (month-first). dayfirst MUST match the format: applying dayfirst=True to an
+    ISO date swaps month/day whenever both are <=12 (e.g. 2026-06-05 -> May 6).
+    Slashes => DD/MM/YYYY (day-first); dashes/ISO => month-first.
+    """
     if not value:
         return None
+    s = str(value).strip()
+    dayfirst = "/" in s
     try:
-        dt = dtparser.parse(str(value), dayfirst=True)
+        dt = dtparser.parse(s, dayfirst=dayfirst)
     except (ValueError, TypeError, OverflowError):
         return None
     return dt.replace(tzinfo=IST) if dt.tzinfo is None else dt.astimezone(IST)

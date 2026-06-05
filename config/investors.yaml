@@ -8,6 +8,7 @@ rule: flag_any_disclosed_purchase   # any disclosed % counts as significant for 
 # disclosed bulk/block PURCHASE regardless of name.
 
 marquee_investors:
+  # Classic HNI investors (long public track records)
   - Rekha Jhunjhunwala
   - RARE Enterprises
   - Radhakishan Damani
@@ -23,3 +24,20 @@ marquee_investors:
   - Akash Bhanshali
   - Anil Kumar Goel
   - Ramesh Damani
+  # Boutique funds / PMS / well-known public-markets investors (added 2026-06-05)
+  - Kedaara Capital
+  - Ashish Dhawan
+  - Porinju Veliyath
+  - Equity Intelligence          # Porinju's fund
+  - Mohnish Pabrai
+  - Pabrai
+  - Marcellus
+  - ValueQuest
+  - Aequitas
+  - Nalanda
+  - Malabar Investments
+  - Sanjeev Bikhchandani
+  - Kalpraj Dharamshi
+  - Hitesh Ramji Javeri
+  # NOTE: avoid adding generic mutual funds (SBI MF, ICICI Pru, etc.) here —
+  # they appear in almost every deal and would flag everything as "marquee".

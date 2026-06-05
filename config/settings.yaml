@@ -1,6 +1,8 @@
 # stock-async-opp — global settings (edit me freely)
 universe: nifty500
-lookback_hours: 24                 # rolling window for "last 24 hours"
+lookback_hours: 24                 # DEFAULT rolling window. Override per-run with
+                                  # CLI flags --hours N / --days N on
+                                  # scan / refresh / ask / digest (they combine).
 market_cap_floor_cr: null          # optional ₹-crore floor to cut microcap noise (null = off)
 request_delay_sec: 1.0             # polite delay between HTTP calls (~1 req/sec)
 max_retries: 3

@@ -47,9 +47,13 @@ def _short(text: str, n: int = MAX_NOTE) -> str:
     return text if len(text) <= n else text[: n - 1].rstrip() + "…"
 
 
-def build_context_pack(summary: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Assemble + write the context pack. Returns paths and headline stats."""
-    summary = summary or run_prefilter()
+def build_context_pack(summary: dict[str, Any] | None = None,
+                       since: datetime | None = None) -> dict[str, Any]:
+    """Assemble + write the context pack. Returns paths and headline stats.
+
+    `since` overrides the prefilter window (else settings.lookback_hours).
+    """
+    summary = summary or run_prefilter(since=since)
     cand = summary["candidates"]
     idx = _isin_index()
     settings = load_settings()

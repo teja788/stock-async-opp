@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import typer
@@ -84,7 +84,36 @@ def version() -> None:
     console.print(Panel(table, title="stock-async-opp", border_style="cyan"))
 
 
-def _refresh_all(bse_limit: int | None = None) -> dict[str, dict]:
+# Reusable typer options so every time-windowed command exposes the same flags.
+_HOURS_OPT = typer.Option(None, "--hours", "-H", help="Look back this many hours (overrides settings lookback).")
+_DAYS_OPT = typer.Option(None, "--days", "-D", help="Look back this many days. Combines with --hours.")
+_LARGE_WINDOW_HOURS = 30 * 24  # beyond this, warn that a BSE pull will be slow
+
+
+def resolve_window(hours: int | None, days: int | None) -> tuple[datetime | None, str | None]:
+    """Turn --hours/--days into an explicit `since` instant (IST) + a label.
+
+    Returns (None, None) when neither flag is given, so callers keep their
+    default behaviour (catch-up cursor / settings.lookback_hours). Combines both
+    flags when present (e.g. --days 2 --hours 12 -> 60h).
+    """
+    if hours is None and days is None:
+        return None, None
+    total = (days or 0) * 24 + (hours or 0)
+    if total <= 0:
+        raise typer.BadParameter("Window must be positive (use --hours and/or --days > 0).")
+    since = datetime.now(_IST) - timedelta(hours=total)
+    if days and hours:
+        label = f"{days}d{hours}h"
+    elif days:
+        label = f"{days}d"
+    else:
+        label = f"{hours}h"
+    return since, label
+
+
+def _refresh_all(bse_limit: int | None = None,
+                 since_override: datetime | None = None) -> dict[str, dict]:
     """Run every ingester with catch-up, store with dedupe, track runs.
 
     Returns {source: {"fetched", "new", "status"}}. Each source is isolated so
@@ -113,7 +142,8 @@ def _refresh_all(bse_limit: int | None = None) -> dict[str, dict]:
             log.warning("refresh source %s failed: %s", source, exc)
 
     def _bse():
-        since = store.get_last_success("bse_announcements")
+        # An explicit window overrides the catch-up cursor for a deliberate wider pull.
+        since = since_override or store.get_last_success("bse_announcements")
         codes = None
         if bse_limit:
             codes = [str(c["bse_code"]) for c in universe if c.get("bse_code")][:bse_limit]
@@ -125,7 +155,7 @@ def _refresh_all(bse_limit: int | None = None) -> dict[str, dict]:
         return len(items), store.upsert_news(items)
 
     def _deals():
-        since = store.get_last_success("deals")
+        since = since_override or store.get_last_success("deals")
         items = ingest_deals.ingest(session=session, since=since)
         return len(items), store.upsert_deals(items)
 
@@ -149,31 +179,43 @@ def _render_refresh(results: dict[str, dict]) -> None:
 
 
 @app.command()
-def refresh() -> None:
-    """Run all ingesters (catch-up since last run) and update SQLite."""
-    console.print("[dim]Refreshing all sources (BSE announcements may take ~8 min for the full universe)...[/dim]")
-    results = _refresh_all()
-    _render_refresh(results)
+def refresh(hours: int = _HOURS_OPT, days: int = _DAYS_OPT) -> None:
+    """Run all ingesters (catch-up since last run) and update SQLite.
+
+    With --hours/--days, fetch that far back instead of from the last-run cursor
+    (a deliberate wider backfill).
+    """
+    since, label = resolve_window(hours, days)
+    window_note = f" (window: last {label})" if label else ""
+    console.print(f"[dim]Refreshing all sources{window_note} (BSE full pull can take ~8 min)...[/dim]")
+    if since and (datetime.now(_IST) - since) > timedelta(hours=_LARGE_WINDOW_HOURS):
+        console.print("[yellow]Large window: the BSE pull re-polls ~498 scrips and may take a while.[/yellow]")
+    _render_refresh(_refresh_all(since_override=since))
 
 
 @app.command()
 def scan(skip_refresh: bool = typer.Option(False, "--skip-refresh",
-         help="Use already-stored data; don't fetch first (faster).")) -> None:
+         help="Use already-stored data; don't fetch first (faster)."),
+         hours: int = _HOURS_OPT, days: int = _DAYS_OPT) -> None:
     """Catch-up refresh, then pre-filter, then write the context pack.
 
     Intended use: run this, then tell the agent "read the context pack and give
-    me today's asymmetric signals."
+    me today's asymmetric signals." Use --hours/--days to widen the window (the
+    pack covers that span, and a non-skipped refresh fetches that far back).
     """
     from scanner.context_pack import build_context_pack
 
+    since, label = resolve_window(hours, days)
+    window_note = f" [cyan](window: last {label})[/cyan]" if label else ""
+
     if not skip_refresh:
-        console.print("[dim]Catch-up refresh (BSE full pull can take ~8 min)...[/dim]")
-        _render_refresh(_refresh_all())
+        console.print(f"[dim]Catch-up refresh{window_note} (BSE full pull can take ~8 min)...[/dim]")
+        _render_refresh(_refresh_all(since_override=since))
     else:
-        console.print("[dim]--skip-refresh: using stored data.[/dim]")
+        console.print(f"[dim]--skip-refresh: using stored data{window_note}.[/dim]")
 
     with console.status("[cyan]Pre-filtering + assembling context pack..."):
-        stats = build_context_pack()
+        stats = build_context_pack(since=since)
 
     table = Table(title="Context pack assembled", border_style="green")
     table.add_column("Item"); table.add_column("Count", justify="right")
@@ -269,11 +311,21 @@ def _resolve_companies(question: str, universe: list[dict]) -> list[dict]:
 @app.command()
 def ask(question: str = typer.Argument(..., help="A question about a company / tag / date."),
         fetch: bool = typer.Option(False, "--fetch",
-            help="Do a fresh targeted BSE pull for the resolved company first.")) -> None:
-    """Print stored data relevant to a follow-up question (for the agent to reason over)."""
-    from scanner import store
+            help="Do a fresh targeted BSE pull for the resolved company first."),
+        hours: int = _HOURS_OPT, days: int = _DAYS_OPT) -> None:
+    """Print stored data relevant to a follow-up question (for the agent to reason over).
+
+    --hours/--days restrict the results (and the --fetch pull-back) to that window;
+    without them, recent stored data is shown.
+    """
+    from scanner import ingest_bse, store
+    from scanner.http import PoliteSession
+    from scanner.ingest_bse import _now_ist
     from scanner.prefilter import tag_catalysts
     from scanner.universe import load_map
+
+    since, label = resolve_window(hours, days)
+    since_iso = since.isoformat() if since else None
 
     store.init_db()
     universe = load_map()
@@ -281,34 +333,32 @@ def ask(question: str = typer.Argument(..., help="A question about a company / t
     tags = tag_catalysts(question)
 
     if fetch and companies:
-        from datetime import timedelta
-        from scanner import ingest_bse
-        from scanner.http import PoliteSession
-        from scanner.ingest_bse import _now_ist
+        # Window controls how far back the fresh pull goes; default 7 days.
+        fetch_since = since or (_now_ist() - timedelta(days=7))
         codes = [str(c["bse_code"]) for c in companies if c.get("bse_code")]
         with console.status(f"[cyan]Fresh BSE pull for {', '.join(c['symbol'] for c in companies)}..."):
-            items = ingest_bse.ingest(session=PoliteSession(),
-                                      since=_now_ist() - timedelta(days=7), scrip_codes=codes)
+            items = ingest_bse.ingest(session=PoliteSession(), since=fetch_since, scrip_codes=codes)
             store.upsert_announcements(items)
         console.print(f"[dim]Fetched {len(items)} recent filings for the resolved company(ies).[/dim]")
 
     console.print(Panel.fit(
         f"[bold]Question:[/bold] {question}\n"
         f"Resolved companies: {', '.join(c['symbol'] for c in companies) or '—'}\n"
-        f"Detected catalyst tags: {', '.join(tags) or '—'}",
+        f"Detected catalyst tags: {', '.join(tags) or '—'}\n"
+        f"Window: {('last ' + label) if label else 'recent (default)'}",
         title="ask", border_style="cyan"))
 
     isins = [c["isin"] for c in companies]
     if isins:
-        anns = store.announcements_for_isins(isins, limit=40)
-        news = store.news_for_isins(isins, limit=40)
-        deals = store.deals_for_isins(isins, limit=40)
+        anns = store.announcements_for_isins(isins, limit=40, since_iso=since_iso)
+        news = store.news_for_isins(isins, limit=40, since_iso=since_iso)
+        deals = store.deals_for_isins(isins, limit=40, since_iso=since_iso)
         _print_ask_results(anns, news, deals, universe)
         if not (anns or news or deals):
-            console.print("[dim]No stored data for this company. Re-run with [bold]--fetch[/bold] for a fresh targeted pull.[/dim]")
+            console.print("[dim]No stored data for this company in-window. Re-run with [bold]--fetch[/bold] or widen --days.[/dim]")
     elif tags:
         for t in tags:
-            anns = store.announcements_by_tag(t, limit=30)
+            anns = store.announcements_by_tag(t, limit=30, since_iso=since_iso)
             console.print(f"\n[bold]Filings tagged[/bold] '{t}': {len(anns)}")
             _print_ann_block(anns)
     else:
@@ -317,12 +367,13 @@ def ask(question: str = typer.Argument(..., help="A question about a company / t
 
 
 @app.command()
-def digest() -> None:
+def digest(hours: int = _HOURS_OPT, days: int = _DAYS_OPT) -> None:
     """Generate and save a dated markdown digest to digests/.
 
     In agent mode (default) the digest is the deterministic *candidate set* with
     sources — the ranked interpretation is produced live by the agent. If
     scoring.mode is 'llm_api' (future hook), the LLM scorer would rank it here.
+    Use --hours/--days for a custom span (e.g. --days 7 for a weekly digest).
     """
     from pathlib import Path
     from scanner.context_pack import build_context_pack
@@ -330,7 +381,8 @@ def digest() -> None:
     from scanner.scoring import llm_scorer
 
     settings = load_settings()
-    stats = build_context_pack()
+    since, _label = resolve_window(hours, days)
+    stats = build_context_pack(since=since)
     md = Path(stats["md_path"]).read_text(encoding="utf-8")
 
     note = ("_Deterministic candidate set (sourced leads). In agent mode the ranking is "

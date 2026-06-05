@@ -377,37 +377,48 @@ def _placeholders(n: int) -> str:
     return ",".join("?" for _ in range(n))
 
 
-def announcements_for_isins(isins: list[str], limit: int = 50,
+def announcements_for_isins(isins: list[str], limit: int = 50, since_iso: str | None = None,
                             conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
     if not isins:
         return []
     own = conn is None
     conn = conn or get_conn()
     try:
+        where = f"isin IN ({_placeholders(len(isins))})"
+        params: list[Any] = list(isins)
+        if since_iso:
+            where += " AND published_at >= ?"
+            params.append(since_iso)
+        params.append(limit)
         return _rows(conn,
-            f"SELECT * FROM announcements WHERE isin IN ({_placeholders(len(isins))}) "
-            f"ORDER BY published_at DESC LIMIT ?", (*isins, limit))
+            f"SELECT * FROM announcements WHERE {where} ORDER BY published_at DESC LIMIT ?",
+            tuple(params))
     finally:
         if own:
             conn.close()
 
 
-def deals_for_isins(isins: list[str], limit: int = 50,
+def deals_for_isins(isins: list[str], limit: int = 50, since_iso: str | None = None,
                     conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
     if not isins:
         return []
     own = conn is None
     conn = conn or get_conn()
     try:
+        where = f"isin IN ({_placeholders(len(isins))})"
+        params: list[Any] = list(isins)
+        if since_iso:
+            where += " AND date >= ?"
+            params.append(since_iso)
+        params.append(limit)
         return _rows(conn,
-            f"SELECT * FROM deals WHERE isin IN ({_placeholders(len(isins))}) "
-            f"ORDER BY date DESC LIMIT ?", (*isins, limit))
+            f"SELECT * FROM deals WHERE {where} ORDER BY date DESC LIMIT ?", tuple(params))
     finally:
         if own:
             conn.close()
 
 
-def news_for_isins(isins: list[str], limit: int = 50,
+def news_for_isins(isins: list[str], limit: int = 50, since_iso: str | None = None,
                    conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
     """News rows whose company_isins json array contains any of the given isins."""
     if not isins:
@@ -416,23 +427,33 @@ def news_for_isins(isins: list[str], limit: int = 50,
     conn = conn or get_conn()
     try:
         clause = " OR ".join("company_isins LIKE ?" for _ in isins)
-        params = [f'%"{i}"%' for i in isins] + [limit]
+        where = f"({clause})"
+        params: list[Any] = [f'%"{i}"%' for i in isins]
+        if since_iso:
+            where += " AND published_at >= ?"
+            params.append(since_iso)
+        params.append(limit)
         return _rows(conn,
-            f"SELECT * FROM news WHERE {clause} ORDER BY published_at DESC LIMIT ?",
-            tuple(params))
+            f"SELECT * FROM news WHERE {where} ORDER BY published_at DESC LIMIT ?", tuple(params))
     finally:
         if own:
             conn.close()
 
 
-def announcements_by_tag(tag: str, limit: int = 50,
+def announcements_by_tag(tag: str, limit: int = 50, since_iso: str | None = None,
                          conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
     own = conn is None
     conn = conn or get_conn()
     try:
+        where = "candidate_tags LIKE ?"
+        params: list[Any] = [f'%"{tag}"%']
+        if since_iso:
+            where += " AND published_at >= ?"
+            params.append(since_iso)
+        params.append(limit)
         return _rows(conn,
-            "SELECT * FROM announcements WHERE candidate_tags LIKE ? "
-            "ORDER BY published_at DESC LIMIT ?", (f'%"{tag}"%', limit))
+            f"SELECT * FROM announcements WHERE {where} ORDER BY published_at DESC LIMIT ?",
+            tuple(params))
     finally:
         if own:
             conn.close()

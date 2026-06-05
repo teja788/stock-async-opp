@@ -45,6 +45,11 @@ run.bat version      REM sanity check: prints version + active config
 | `digest` | Save a dated markdown digest | Milestone 10 |
 | `schedule` | Print/install the Windows Task Scheduler job | Milestone 11 |
 
+**Flexible time window:** `scan`, `refresh`, `ask`, and `digest` accept `--hours N`
+and `--days N` (they combine, e.g. `--days 2 --hours 12` = 60h) to override the
+default `lookback_hours` in `settings.yaml` per run — e.g. `run.bat scan --days 7`
+for a weekly view, `run.bat ask "GPIL" --days 30`, `run.bat digest --days 7`.
+
 ## Configuration (edit freely)
 
 - `config/settings.yaml` — lookback window, rate limits, paths, scoring mode

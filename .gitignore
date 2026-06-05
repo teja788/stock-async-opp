@@ -20,3 +20,6 @@ dash-*.png
 !data/universe/.gitkeep
 !runtime/logs/.gitkeep
 !digests/.gitkeep
+
+# Back up the research log (signal results archive) to the repo
+!digests/research_log.md

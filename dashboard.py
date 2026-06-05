@@ -148,6 +148,11 @@ with tab_sig:
                 try:
                     ranked = llm_scorer.score(md, provider=provider, model=model, api_key=api_key)
                     st.session_state["ranked"] = ranked
+                    from scanner import research_log
+                    status = research_log.save(
+                        ranked, title=f"Dashboard AI rank ({provider}, {total_h}h)",
+                        key=f"{since.date()}|{total_h}h|{provider}|ai-rank")
+                    st.caption(f"📝 Research log: {status} → digests/research_log.md")
                 except Exception as exc:  # noqa: BLE001
                     st.error(f"AI ranking failed: {exc}")
         if st.session_state.get("ranked"):

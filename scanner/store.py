@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS deals (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     date            TEXT,
     deal_type       TEXT,          -- bulk | block | insider | sast
+    exchange        TEXT,          -- BSE | NSE
     company         TEXT,
     bse_code        TEXT,
     isin            TEXT,
@@ -134,6 +135,12 @@ def init_db(conn: sqlite3.Connection | None = None) -> None:
     conn = conn or get_conn()
     try:
         conn.executescript(_SCHEMA)
+        # Lightweight migration: add `exchange` to deals tables created before it
+        # existed. SQLite has no "ADD COLUMN IF NOT EXISTS", so we try/ignore.
+        try:
+            conn.execute("ALTER TABLE deals ADD COLUMN exchange TEXT")
+        except sqlite3.OperationalError:
+            pass  # column already exists
         conn.commit()
     finally:
         if own:
@@ -223,7 +230,7 @@ def upsert_deals(items: list[dict[str, Any]], conn: sqlite3.Connection | None = 
     own = conn is None
     conn = conn or get_conn()
     try:
-        cols = ["date", "deal_type", "company", "bse_code", "isin", "symbol",
+        cols = ["date", "deal_type", "exchange", "company", "bse_code", "isin", "symbol",
                 "in_universe", "client_name", "side", "qty", "price",
                 "person_category", "pct_pre", "pct_post", "is_marquee",
                 "matched_investor", "is_promoter_buy", "url", "ingested_at",

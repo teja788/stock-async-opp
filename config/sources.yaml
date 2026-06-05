@@ -76,3 +76,9 @@ bse:
 # NSE / NiftyIndices source for the Nifty 500 constituent list (verified in Milestone 2).
 nse:
   nifty500_csv: https://niftyindices.com/IndexConstituent/ind_nifty500list.csv
+  # Bulk/block deals snapshot (verified live 2026-06-05). Returns current/recent
+  # BULK_DEALS_DATA + BLOCK_DEALS_DATA. The historical date-range endpoint is
+  # bot-blocked (503), so this snapshot is current-day(s) only — fine for a daily run.
+  largedeals: https://www.nseindia.com/api/snapshot-capital-market-largedeal
+  deals_referer: https://www.nseindia.com/report-detail/display-bulk-and-block-deals
+  root: https://www.nseindia.com/

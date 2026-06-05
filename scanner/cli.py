@@ -263,7 +263,7 @@ def _print_ask_results(anns: list[dict], news: list[dict], deals: list[dict], un
     for d in deals:
         flag = "MARQUEE" if d.get("is_marquee") else ("PROMOTER" if d.get("is_promoter_buy") else "")
         who = d.get("matched_investor") or d.get("client_name") or "?"
-        console.print(f"  [yellow][DEAL][/yellow] {d.get('symbol','?')} {d.get('deal_type','')} [{flag}] — "
+        console.print(f"  [yellow][DEAL][/yellow] {d.get('symbol','?')} {d.get('exchange','')} {d.get('deal_type','')} [{flag}] — "
                       f"{who} {d.get('side','')} {d.get('qty')} ({(d.get('date') or '')[:10]})")
         if d.get("url"):
             console.print(f"    [dim]{d['url']}[/dim]")

@@ -188,7 +188,8 @@ def _render_md(summary, anns, deals, tagged_news, market_news, idx) -> str:
         pct = ""
         if d.get("pct_pre") is not None and d.get("pct_post") is not None:
             pct = f" (stake {d['pct_pre']}%→{d['pct_post']}%)"
-        out.append(f"[INVESTOR] {_co_label(d, idx)} — {d.get('deal_type','')} [{flag}]")
+        exch = d.get("exchange", "")
+        out.append(f"[INVESTOR] {_co_label(d, idx)} — {exch} {d.get('deal_type','')} [{flag}]")
         out.append(f"  {who} {d.get('side','')} {qtystr}{pricestr}{pct}  ({_ist_short(d.get('date'))})")
         if d.get("url"):
             out.append(f"  Source: {d['url']}")
@@ -237,7 +238,8 @@ def _render_json(summary, anns, deals, tagged_news, idx) -> dict[str, Any]:
             "source": a.get("pdf_url"),
         } for a in anns],
         "investor_deals": [{
-            "symbol": d.get("symbol"), "company": d.get("company"), "deal_type": d.get("deal_type"),
+            "symbol": d.get("symbol"), "company": d.get("company"),
+            "exchange": d.get("exchange"), "deal_type": d.get("deal_type"),
             "investor": d.get("matched_investor") or d.get("client_name"),
             "is_marquee": bool(d.get("is_marquee")), "is_promoter_buy": bool(d.get("is_promoter_buy")),
             "side": d.get("side"), "qty": d.get("qty"), "price": d.get("price"),

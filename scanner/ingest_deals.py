@@ -165,6 +165,59 @@ def fetch_insider_sast(session: PoliteSession, since: datetime) -> list[dict[str
     return _table(resp.json())
 
 
+def fetch_nse_largedeals(session: PoliteSession) -> tuple[list[dict], list[dict]]:
+    """Fetch NSE's current bulk + block deals snapshot. Returns (bulk, block).
+
+    The snapshot covers the latest trading day(s) only (NSE's historical
+    date-range endpoint is bot-blocked), so run it daily.
+    """
+    src = load_sources().get("nse", {})
+    url = src.get("largedeals")
+    if not url:
+        return [], []
+    resp = session.nse_get(url, timeout=30)
+    data = resp.json()
+    if not isinstance(data, dict):
+        return [], []
+    return (data.get("BULK_DEALS_DATA") or [], data.get("BLOCK_DEALS_DATA") or [])
+
+
+def _normalize_nse_deal(row: dict[str, Any], deal_type: str,
+                        sym_to_meta: dict[str, dict], matcher: InvestorMatcher,
+                        src: dict[str, Any]) -> dict[str, Any]:
+    """Map an NSE largedeal row (resolved by NSE symbol) to our deal shape."""
+    symbol = (row.get("symbol") or "").strip()
+    meta = sym_to_meta.get(symbol, {})
+    client = (row.get("clientName") or "").strip()
+    side = _side(row.get("buySell"))
+    dt = _parse_dt(row.get("date"))  # "05-Jun-2026" -> month-named, parses fine
+    matched = matcher.match(client)
+    return {
+        "deal_type": deal_type,
+        "exchange": "NSE",
+        "date": dt.isoformat() if dt else None,
+        "bse_code": meta.get("bse_code"),
+        "isin": meta.get("isin"),
+        "company": meta.get("name") or row.get("name") or "",
+        "symbol": symbol,
+        "in_universe": bool(meta),
+        "client_name": client,
+        "side": side,
+        "qty": _float(row.get("qty")),
+        "price": _float(row.get("watp")),
+        "person_category": None,
+        "pct_pre": None,
+        "pct_post": None,
+        "is_marquee": matched is not None,
+        "matched_investor": matched,
+        "is_promoter_buy": False,
+        "url": src.get("deals_referer", "https://www.nseindia.com/"),
+        "dedupe_hash": _dedupe_hash("NSE", deal_type, symbol, client, side,
+                                    row.get("qty"), row.get("date")),
+        "source": "NSE",
+    }
+
+
 # --------------------------------------------------------------------------- #
 # Normalisation
 # --------------------------------------------------------------------------- #
@@ -180,6 +233,7 @@ def _normalize_deal(row: dict[str, Any], deal_type: str,
     page = src.get("bulk_deals_page" if deal_type == "bulk" else "block_deals_page", "")
     return {
         "deal_type": deal_type,
+        "exchange": "BSE",
         "date": dt.isoformat() if dt else None,
         "bse_code": bse_code,
         "isin": meta.get("isin"),
@@ -218,6 +272,7 @@ def _normalize_insider(row: dict[str, Any], code_to_meta: dict[str, dict],
     deal_type = "sast" if raw_txn in ("acquisition", "disposal") else "insider"
     return {
         "deal_type": deal_type,
+        "exchange": "BSE",
         "date": dt.isoformat() if dt else None,
         "bse_code": bse_code,
         "isin": meta.get("isin"),
@@ -258,9 +313,13 @@ def ingest(session: PoliteSession | None = None,
     lookback = int(settings.get("lookback_hours", 24))
     since = since or (_now_ist() - timedelta(hours=lookback))
 
-    src = load_sources().get("bse", {})
+    sources = load_sources()
+    src = sources.get("bse", {})
+    nse_src = sources.get("nse", {})
     matcher = InvestorMatcher(load_investors())
-    code_to_meta = {str(c["bse_code"]): c for c in load_map() if c.get("bse_code")}
+    universe = load_map()
+    code_to_meta = {str(c["bse_code"]): c for c in universe if c.get("bse_code")}
+    sym_to_meta = {c["symbol"]: c for c in universe if c.get("symbol")}
 
     out: list[dict[str, Any]] = []
 
@@ -280,6 +339,17 @@ def ingest(session: PoliteSession | None = None,
         log.info("Insider/SAST -> %d raw rows", len(rows))
     except Exception as exc:  # noqa: BLE001
         log.warning("Insider/SAST fetch failed: %s", exc)
+
+    # NSE bulk/block (snapshot feed; resolved by NSE symbol). Isolated like the rest.
+    try:
+        nse_bulk, nse_block = fetch_nse_largedeals(session)
+        for r in nse_bulk:
+            out.append(_normalize_nse_deal(r, "bulk", sym_to_meta, matcher, nse_src))
+        for r in nse_block:
+            out.append(_normalize_nse_deal(r, "block", sym_to_meta, matcher, nse_src))
+        log.info("NSE deals -> %d bulk + %d block raw rows", len(nse_bulk), len(nse_block))
+    except Exception as exc:  # noqa: BLE001
+        log.warning("NSE deals fetch failed: %s", exc)
 
     # Keep only relevant deals (and only within the lookback window).
     kept: list[dict[str, Any]] = []

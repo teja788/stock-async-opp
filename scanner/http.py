@@ -47,6 +47,7 @@ class PoliteSession:
         self.session.headers.update(_DEFAULT_HEADERS)
         self._last_request_ts = 0.0
         self._bse_primed = False
+        self._nse_primed = False
 
     # -- internal: enforce ~1 req/sec across ALL calls on this session ---------
     def _throttle(self) -> None:
@@ -104,5 +105,34 @@ class PoliteSession:
             "Accept": "application/json, text/plain, */*",
             "Referer": src.get("referer", "https://www.bseindia.com/"),
             "Origin": src.get("origin", "https://www.bseindia.com"),
+        }
+        return self.get(url, params=params, headers=headers, timeout=timeout)
+
+    # -- NSE session warming --------------------------------------------------
+    def prime_nse(self) -> None:
+        """Seed cookies by visiting nseindia.com once.
+
+        NSE's root often returns 403 to non-browser clients, but the visit still
+        seeds the session enough for the (less-protected) snapshot APIs to answer.
+        We do a single direct GET (no retry) and swallow any failure.
+        """
+        if self._nse_primed:
+            return
+        src = load_sources().get("nse", {})
+        root = src.get("root", "https://www.nseindia.com/")
+        try:
+            self._throttle()
+            self.session.get(root, timeout=20)
+        except Exception as exc:  # noqa: BLE001 - 403/timeout here is expected
+            log.info("NSE prime returned %s (expected; continuing)", exc)
+        self._nse_primed = True
+
+    def nse_get(self, url: str, *, params: dict | None = None, timeout: int = 30) -> requests.Response:
+        """GET an NSE API endpoint with the required Referer + primed session."""
+        self.prime_nse()
+        src = load_sources().get("nse", {})
+        headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Referer": src.get("deals_referer", "https://www.nseindia.com/"),
         }
         return self.get(url, params=params, headers=headers, timeout=timeout)

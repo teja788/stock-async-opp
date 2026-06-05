@@ -48,7 +48,40 @@ For each candidate, judge:
 5. **Plausible forward impact** — could this meaningfully change future
    revenue / earnings / re-rating? Reason briefly about the *mechanism*.
 
-### Output format (highest conviction first)
+### The bar — be a tough filter, flag FEW high-quality leads
+
+**"Asymmetric" = a signal that creates a GREAT FUTURE OPPORTUNITY for the stock:**
+a genuine, under-appreciated catalyst that could *materially* change the company's
+future revenue / earnings / cash flow or trigger a re-rating, with limited or known
+downside. You are a skeptical gatekeeper, not a list-maker. A signal is flagged as a
+lead ONLY if it clears **every** gate below:
+
+1. **Real forward catalyst with a stated mechanism** — you can say *how* this
+   changes future revenue/earnings/cash flow or drives a re-rating. Not a
+   disclosure/compliance/process event.
+2. **Material to size** — needle-moving relative to the company's current business
+   and market cap (a new vertical, a large order/capacity/approval), not incremental.
+3. **Under-appreciated** — likely not yet widely noticed or priced in. Skip obvious,
+   well-covered mega-events even if large.
+4. **Substantiated** — a hard filing with real substance, or strongly corroborated.
+   Never flag a thin headline, an unquantifiable item, or a single-source rumour.
+5. **Asymmetric payoff** — meaningful upside *if it plays out* — the reason this is a
+   *great* opportunity, not merely "news".
+
+If a candidate fails ANY gate, do **not** flag it — move it to a terse "Watch" line
+or omit it. **Prefer few leads. Most days, "Nothing notable today." is the correct
+answer** — say it plainly rather than manufacturing conviction.
+
+**Almost never a "great future opportunity" — drop or down-rank to Watch:**
+credit-rating affirmations/reaffirmations or rating intimations with undisclosed
+direction; procedural M&A milestones already known/priced (observation letters,
+open-offer process updates, scheme record-dates); routine government/promoter
+disclosures (e.g. a PSU's government-promoter SAST); ESOP/ESPS allotments, NCD
+interest certificates, AGM/EGM logistics, trading-window notices, analyst-meet
+intimations, newspaper publications; and anything whose materiality can't be
+established from the data (at most a "Watch" + "dig the filing to size it").
+
+### Output format (only the leads that clear the bar, highest conviction first)
 
 Use this exact Markdown structure for each lead:
 

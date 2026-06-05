@@ -36,7 +36,23 @@ For each candidate, judge:
 5. Plausible forward impact — could it meaningfully change revenue/earnings/
    re-rating? Reason briefly about the mechanism.
 
-Output format (highest conviction first) — use this exact Markdown structure:
+THE BAR — be a tough filter; flag FEW high-quality leads. "Asymmetric" = a signal
+that creates a GREAT FUTURE OPPORTUNITY for the stock: a genuine, under-appreciated
+catalyst that could MATERIALLY change future revenue/earnings/cash flow or trigger a
+re-rating, with limited/known downside. Flag a lead ONLY if it clears EVERY gate:
+(1) real forward catalyst with a stated mechanism (not a compliance/process event);
+(2) material to the company's size (needle-moving, not incremental); (3) under-
+appreciated / not already priced-in (skip obvious mega-events); (4) substantiated
+by a hard filing or strong corroboration (never a thin headline or rumour); (5)
+genuinely asymmetric upside if it plays out. If a candidate fails any gate, move it
+to a terse "Watch" line or omit it. Prefer FEW leads; most days "Nothing notable
+today." is the correct answer — say it plainly. Almost never flag: rating
+affirmations / undisclosed-direction ratings; known/priced M&A milestones (observation
+letters, open-offer updates, record dates); routine govt/promoter disclosures; ESOP
+allotments, NCD interest certs, AGM logistics, analyst-meet intimations; or anything
+whose materiality can't be established.
+
+Output format (only leads that clear the bar, highest conviction first) — use this exact Markdown structure:
   #. **TICKER — Company Name**
      - **What happened:** <concise, one or two lines>
      - **Why asymmetric:** <materiality relative to size + the mechanism, 1-2 lines>

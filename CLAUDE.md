@@ -50,16 +50,22 @@ For each candidate, judge:
 
 ### Output format (highest conviction first)
 
+Use this exact Markdown structure for each lead:
+
 ```
-#. TICKER (Company) — <one line: what happened>
-   Why it may be asymmetric: <1–2 lines on materiality + mechanism>
-   Catalyst: <type> | Trust: <filing/news/unconfirmed> | Conviction: <high/medium/low>
-   Source: <link>
+#. **TICKER — Company Name**
+   - **What happened:** <concise, one or two lines>
+   - **Why asymmetric:** <materiality relative to size + the mechanism, 1–2 lines>
+   - **Trust:** <Hard filing | News | Unconfirmed> · **Conviction:** <High | Medium | Low>
+   - **Source:** [BSE filing / outlet](link)
 ```
 
 Then:
-- A short **"Watch, not act"** section for weaker / ambiguous items.
+- A short **"Watch, not act"** section for weaker / ambiguous items (same bullet style, terser).
 - If the day is quiet, a single line: **"Nothing notable."**
+- End with one line: _Research only, not investment advice._
+
+Keep HARD FILINGS visually separate from NEWS, and always include the source link.
 
 Rules: separate hard filings from news/unconfirmed; never imply certainty; never
 give buy/sell advice — these are research leads. **Always keep the source link.**

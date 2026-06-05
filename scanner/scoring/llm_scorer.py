@@ -36,15 +36,17 @@ For each candidate, judge:
 5. Plausible forward impact — could it meaningfully change revenue/earnings/
    re-rating? Reason briefly about the mechanism.
 
-Output format (highest conviction first), as Markdown:
-  **#. TICKER (Company) — <one line: what happened>**
-  Why it may be asymmetric: <1-2 lines on materiality + mechanism>
-  Catalyst: <type> | Trust: <filing/news/unconfirmed> | Conviction: <high/med/low>
-  Source: <link>
+Output format (highest conviction first) — use this exact Markdown structure:
+  #. **TICKER — Company Name**
+     - **What happened:** <concise, one or two lines>
+     - **Why asymmetric:** <materiality relative to size + the mechanism, 1-2 lines>
+     - **Trust:** <Hard filing | News | Unconfirmed> · **Conviction:** <High | Medium | Low>
+     - **Source:** [BSE filing / outlet](link)
 
-Then a short "Watch, not act" section for weaker/ambiguous items, and a single
-line "Nothing notable." if the day is quiet. Keep HARD FILINGS separate from
-NEWS. Never imply certainty; never give buy/sell advice; ALWAYS keep source links.
+Then a short "Watch, not act" section (same bullet style, terser) for weaker/
+ambiguous items, and a single line "Nothing notable." if the day is quiet. Keep
+HARD FILINGS separate from NEWS. End with: _Research only, not investment advice._
+Never imply certainty; never give buy/sell advice; ALWAYS keep source links.
 """
 
 CHAT_SYSTEM = """You are a research assistant for an Indian-equities catalyst scanner.
@@ -104,15 +106,23 @@ def _claude_complete(system: str, user: str, model: str, api_key: str | None) ->
 
 
 def _openai_complete(system: str, user: str, model: str, api_key: str | None) -> str:
-    """OpenAI path (gpt-5.5 by default). Uses chat.completions for broad compat."""
+    """OpenAI path (gpt-5.5 by default).
+
+    Prefers the modern Responses API (best for the gpt-5 family), and falls back
+    to chat.completions only if the installed SDK predates Responses. Real API
+    errors (bad model, auth) propagate so the dashboard can surface them.
+    """
     from openai import OpenAI
 
     client = OpenAI(api_key=api_key) if api_key else OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    if hasattr(client, "responses"):
+        resp = client.responses.create(model=model, instructions=system, input=user)
+        text = getattr(resp, "output_text", None)
+        if text is not None:
+            return text.strip()
     resp = client.chat.completions.create(
         model=model,
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": user},
-        ],
+        messages=[{"role": "system", "content": system},
+                  {"role": "user", "content": user}],
     )
     return (resp.choices[0].message.content or "").strip()

@@ -307,6 +307,36 @@ def _rows(conn: sqlite3.Connection, sql: str, params: tuple) -> list[dict[str, A
     return [dict(r) for r in conn.execute(sql, params).fetchall()]
 
 
+# --------------------------------------------------------------------------- #
+# Watchlist (Section 17 future hook). The TABLE + these basic helpers exist now;
+# the UX (prioritising/segregating watchlisted tickers in the context pack) is
+# wired later -- see the TODO in context_pack.py.
+# --------------------------------------------------------------------------- #
+def add_to_watchlist(isin: str, symbol: str = "", note: str = "",
+                     conn: sqlite3.Connection | None = None) -> None:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        conn.execute(
+            "INSERT INTO watchlist (isin, symbol, added_at, note) VALUES (?,?,?,?) "
+            "ON CONFLICT(isin) DO UPDATE SET symbol=excluded.symbol, note=excluded.note",
+            (isin, symbol, _now_iso(), note))
+        conn.commit()
+    finally:
+        if own:
+            conn.close()
+
+
+def get_watchlist(conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn, "SELECT * FROM watchlist ORDER BY added_at DESC", ())
+    finally:
+        if own:
+            conn.close()
+
+
 def get_recent_announcements(since_iso: str, conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
     own = conn is None
     conn = conn or get_conn()
@@ -338,6 +368,71 @@ def get_recent_deals(since_iso: str, conn: sqlite3.Connection | None = None) -> 
         return _rows(conn,
             "SELECT * FROM deals WHERE date >= ? ORDER BY date DESC",
             (since_iso,))
+    finally:
+        if own:
+            conn.close()
+
+
+def _placeholders(n: int) -> str:
+    return ",".join("?" for _ in range(n))
+
+
+def announcements_for_isins(isins: list[str], limit: int = 50,
+                            conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    if not isins:
+        return []
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn,
+            f"SELECT * FROM announcements WHERE isin IN ({_placeholders(len(isins))}) "
+            f"ORDER BY published_at DESC LIMIT ?", (*isins, limit))
+    finally:
+        if own:
+            conn.close()
+
+
+def deals_for_isins(isins: list[str], limit: int = 50,
+                    conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    if not isins:
+        return []
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn,
+            f"SELECT * FROM deals WHERE isin IN ({_placeholders(len(isins))}) "
+            f"ORDER BY date DESC LIMIT ?", (*isins, limit))
+    finally:
+        if own:
+            conn.close()
+
+
+def news_for_isins(isins: list[str], limit: int = 50,
+                   conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    """News rows whose company_isins json array contains any of the given isins."""
+    if not isins:
+        return []
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        clause = " OR ".join("company_isins LIKE ?" for _ in isins)
+        params = [f'%"{i}"%' for i in isins] + [limit]
+        return _rows(conn,
+            f"SELECT * FROM news WHERE {clause} ORDER BY published_at DESC LIMIT ?",
+            tuple(params))
+    finally:
+        if own:
+            conn.close()
+
+
+def announcements_by_tag(tag: str, limit: int = 50,
+                         conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn,
+            "SELECT * FROM announcements WHERE candidate_tags LIKE ? "
+            "ORDER BY published_at DESC LIMIT ?", (f'%"{tag}"%', limit))
     finally:
         if own:
             conn.close()

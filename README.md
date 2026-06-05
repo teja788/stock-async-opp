@@ -54,4 +54,11 @@ run.bat version      REM sanity check: prints version + active config
 
 ## Status
 
-Built milestone-by-milestone (see the build spec). Currently: **Milestone 1 — scaffold**.
+**All 12 milestones complete** — usable end-to-end against live data.
+Deterministic ingest → SQLite (dedupe + catch-up) → prefilter → context pack;
+the agent ranks live per `CLAUDE.md`. Future hooks (LLM scorer, Zerodha Kite,
+watchlist UX, notifications) are present as clearly-marked, off-by-default stubs.
+
+Typical loop: `setup.bat` once → `run.bat scan` → ask the agent to read the
+context pack and rank today's asymmetric signals → `run.bat ask "<company>" --fetch`
+to dig deeper.

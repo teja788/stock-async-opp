@@ -54,6 +54,11 @@ def build_context_pack(summary: dict[str, Any] | None = None) -> dict[str, Any]:
     idx = _isin_index()
     settings = load_settings()
 
+    # TODO(future hook, Section 17): prioritise/segregate watchlisted tickers.
+    # The watchlist table + store.get_watchlist() exist; when wiring the UX, pull
+    # store.get_watchlist() here and float those companies into a dedicated
+    # "WATCHLIST" section (or boost their sort order) in the pack below.
+
     anns = cand["announcements"]
     news = cand["news"]
     deals = cand["deals"]

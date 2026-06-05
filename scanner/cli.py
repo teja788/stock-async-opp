@@ -16,6 +16,9 @@ Commands (Section 13 of the build spec):
 from __future__ import annotations
 
 import logging
+import sys
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import typer
 from rich.console import Console
@@ -24,6 +27,8 @@ from rich.table import Table
 
 from scanner import __app_name__, __version__
 from scanner.config import load_settings, resolve_path
+
+_IST = ZoneInfo("Asia/Kolkata")
 
 app = typer.Typer(
     name=__app_name__,
@@ -36,7 +41,14 @@ console = Console()
 
 @app.callback()
 def _main() -> None:
-    """Configure file logging once, before any command runs."""
+    """Configure UTF-8 console + file logging once, before any command runs."""
+    # Windows consoles default to a legacy codepage (cp1252); force UTF-8 so
+    # rupee signs, em-dashes and curly quotes render instead of mojibake.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     log_dir = resolve_path("runtime/logs")
     log_dir.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
@@ -174,16 +186,165 @@ def scan(skip_refresh: bool = typer.Option(False, "--skip-refresh",
     console.print("[dim]Next: ask the agent to read the context pack and rank today's asymmetric signals.[/dim]")
 
 
+def _short(text: str, n: int = 100) -> str:
+    text = (text or "").strip().replace("\n", " ")
+    return text if len(text) <= n else text[: n - 1] + "…"
+
+
+def _print_ann_block(anns: list[dict]) -> None:
+    if not anns:
+        console.print("  [dim]none[/dim]")
+        return
+    for a in anns:
+        tags = a.get("candidate_tags")
+        import json as _json
+        try:
+            taglist = _json.loads(tags) if isinstance(tags, str) else (tags or [])
+        except _json.JSONDecodeError:
+            taglist = []
+        tagstr = f" [magenta]{', '.join(taglist)}[/magenta]" if taglist else ""
+        when = (a.get("published_at") or "")[:16]
+        console.print(f"  [green][FILING][/green] {a.get('symbol','?')} — {when} | {a.get('category','')}{tagstr}")
+        console.print(f"    {_short(a.get('headline',''))}")
+        if a.get("pdf_url"):
+            console.print(f"    [dim]{a['pdf_url']}[/dim]")
+
+
+def _print_ask_results(anns: list[dict], news: list[dict], deals: list[dict], universe: list[dict]) -> None:
+    idx = {c["isin"]: c for c in universe}
+    console.print(f"\n[bold]Hard filings ({len(anns)}):[/bold]")
+    _print_ann_block(anns)
+
+    console.print(f"\n[bold]Deals ({len(deals)}):[/bold]")
+    if not deals:
+        console.print("  [dim]none[/dim]")
+    for d in deals:
+        flag = "MARQUEE" if d.get("is_marquee") else ("PROMOTER" if d.get("is_promoter_buy") else "")
+        who = d.get("matched_investor") or d.get("client_name") or "?"
+        console.print(f"  [yellow][DEAL][/yellow] {d.get('symbol','?')} {d.get('deal_type','')} [{flag}] — "
+                      f"{who} {d.get('side','')} {d.get('qty')} ({(d.get('date') or '')[:10]})")
+        if d.get("url"):
+            console.print(f"    [dim]{d['url']}[/dim]")
+
+    console.print(f"\n[bold]News ({len(news)}):[/bold]")
+    if not news:
+        console.print("  [dim]none[/dim]")
+    import json as _json
+    for n in news:
+        raw = n.get("company_isins")
+        try:
+            isins = _json.loads(raw) if isinstance(raw, str) and raw not in ("", "[]") else []
+        except _json.JSONDecodeError:
+            isins = []
+        syms = ", ".join(idx.get(i, {}).get("symbol", "?") for i in isins) or "?"
+        console.print(f"  [blue][NEWS][/blue] {syms} — {(n.get('published_at') or '')[:16]} | {n.get('source','')}")
+        console.print(f"    {_short(n.get('headline',''))}")
+        if n.get("url"):
+            console.print(f"    [dim]{n['url']}[/dim]")
+
+
+def _resolve_companies(question: str, universe: list[dict]) -> list[dict]:
+    """Lenient company resolver for a user's explicit question (recall-first).
+
+    A user naming a company wants a match, so this is more permissive than the
+    news Tagger: case-insensitive whole-word match on ticker or any alias>=4.
+    """
+    import re
+    q = question.lower()
+    hits, seen = [], set()
+    for c in universe:
+        if c["isin"] in seen:
+            continue
+        candidates = [(c.get("symbol") or "").lower()] + [a for a in c.get("aliases", [])]
+        for cand in candidates:
+            if len(cand) < 4 and cand != (c.get("symbol") or "").lower():
+                continue
+            if cand and re.search(rf"(?<![a-z0-9]){re.escape(cand)}(?![a-z0-9])", q):
+                hits.append(c)
+                seen.add(c["isin"])
+                break
+    return hits
+
+
 @app.command()
-def ask(question: str = typer.Argument(..., help="A question about a company / tag / date.")) -> None:
-    """Print stored data relevant to a follow-up question."""
-    _todo("ask", "Milestone 10")
+def ask(question: str = typer.Argument(..., help="A question about a company / tag / date."),
+        fetch: bool = typer.Option(False, "--fetch",
+            help="Do a fresh targeted BSE pull for the resolved company first.")) -> None:
+    """Print stored data relevant to a follow-up question (for the agent to reason over)."""
+    from scanner import store
+    from scanner.prefilter import tag_catalysts
+    from scanner.universe import load_map
+
+    store.init_db()
+    universe = load_map()
+    companies = _resolve_companies(question, universe)
+    tags = tag_catalysts(question)
+
+    if fetch and companies:
+        from datetime import timedelta
+        from scanner import ingest_bse
+        from scanner.http import PoliteSession
+        from scanner.ingest_bse import _now_ist
+        codes = [str(c["bse_code"]) for c in companies if c.get("bse_code")]
+        with console.status(f"[cyan]Fresh BSE pull for {', '.join(c['symbol'] for c in companies)}..."):
+            items = ingest_bse.ingest(session=PoliteSession(),
+                                      since=_now_ist() - timedelta(days=7), scrip_codes=codes)
+            store.upsert_announcements(items)
+        console.print(f"[dim]Fetched {len(items)} recent filings for the resolved company(ies).[/dim]")
+
+    console.print(Panel.fit(
+        f"[bold]Question:[/bold] {question}\n"
+        f"Resolved companies: {', '.join(c['symbol'] for c in companies) or '—'}\n"
+        f"Detected catalyst tags: {', '.join(tags) or '—'}",
+        title="ask", border_style="cyan"))
+
+    isins = [c["isin"] for c in companies]
+    if isins:
+        anns = store.announcements_for_isins(isins, limit=40)
+        news = store.news_for_isins(isins, limit=40)
+        deals = store.deals_for_isins(isins, limit=40)
+        _print_ask_results(anns, news, deals, universe)
+        if not (anns or news or deals):
+            console.print("[dim]No stored data for this company. Re-run with [bold]--fetch[/bold] for a fresh targeted pull.[/dim]")
+    elif tags:
+        for t in tags:
+            anns = store.announcements_by_tag(t, limit=30)
+            console.print(f"\n[bold]Filings tagged[/bold] '{t}': {len(anns)}")
+            _print_ann_block(anns)
+    else:
+        console.print("[yellow]No company or catalyst tag recognised in the question.[/yellow]")
+        console.print("[dim]Tip: name a company (e.g. 'GPIL', 'Tata Motors') and add --fetch for a fresh pull.[/dim]")
 
 
 @app.command()
 def digest() -> None:
-    """Generate and save a dated markdown digest to digests/."""
-    _todo("digest", "Milestone 10")
+    """Generate and save a dated markdown digest to digests/.
+
+    In agent mode (default) the digest is the deterministic *candidate set* with
+    sources — the ranked interpretation is produced live by the agent. If
+    scoring.mode is 'llm_api' (future hook), the LLM scorer would rank it here.
+    """
+    from pathlib import Path
+    from scanner.context_pack import build_context_pack
+    from scanner.config import resolve_path
+    from scanner.scoring import llm_scorer
+
+    settings = load_settings()
+    stats = build_context_pack()
+    md = Path(stats["md_path"]).read_text(encoding="utf-8")
+
+    note = ("_Deterministic candidate set (sourced leads). In agent mode the ranking is "
+            "produced live by the agent reading this pack._")
+    if llm_scorer.is_enabled(settings):
+        note = "[note] scoring.mode=llm_api is set but the LLM scorer is a future stub; saved candidate set instead."
+        console.print(f"[yellow]{note}[/yellow]")
+
+    today = datetime.now(_IST).strftime("%Y-%m-%d")
+    digest_dir = resolve_path(settings.get("output", {}).get("digest_dir", "digests"))
+    digest_dir.mkdir(parents=True, exist_ok=True)
+    path = digest_dir / f"{today}.md"
+    path.write_text(f"# Daily Digest — {today}\n\n{note}\n\n---\n\n{md}", encoding="utf-8")
+    console.print(f"[green]Digest saved:[/green] {path}")
 
 
 @app.command(name="setup-universe")
@@ -208,9 +369,52 @@ def setup_universe() -> None:
 
 
 @app.command()
-def schedule() -> None:
-    """Print/install the Windows Task Scheduler command."""
-    _todo("schedule", "Milestone 11")
+def schedule(install: bool = typer.Option(False, "--install", help="Actually create the scheduled tasks."),
+             remove: bool = typer.Option(False, "--remove", help="Delete the scheduled tasks.")) -> None:
+    """Print (or install) the Windows Task Scheduler jobs for background refresh.
+
+    Two jobs: a 45-minute recurring refresh while the laptop is on, plus an
+    evening catch-up at 20:00 local (≈8pm IST) after the day's filings.
+    """
+    import subprocess
+
+    root = resolve_path(".")
+    bat = root / "scheduled_refresh.bat"
+    name_45 = "stock-async-opp-refresh-45m"
+    name_eve = "stock-async-opp-evening-catchup"
+
+    # schtasks arg lists (avoids shell-quoting pitfalls when we --install).
+    create_45 = ["schtasks", "/Create", "/TN", name_45, "/TR", str(bat),
+                 "/SC", "MINUTE", "/MO", "45", "/F"]
+    create_eve = ["schtasks", "/Create", "/TN", name_eve, "/TR", str(bat),
+                  "/SC", "DAILY", "/ST", "20:00", "/F"]
+
+    if remove:
+        for name in (name_45, name_eve):
+            r = subprocess.run(["schtasks", "/Delete", "/TN", name, "/F"],
+                               capture_output=True, text=True)
+            console.print(f"[{'green' if r.returncode == 0 else 'yellow'}]{(r.stdout or r.stderr).strip()}[/]")
+        return
+
+    if install:
+        for cmd in (create_45, create_eve):
+            r = subprocess.run(cmd, capture_output=True, text=True)
+            ok = r.returncode == 0
+            console.print(f"[{'green' if ok else 'red'}]{(r.stdout or r.stderr).strip()}[/]")
+        console.print("[dim]Installed. Remove with: run.bat schedule --remove[/dim]")
+    else:
+        console.print(Panel(
+            "Run these in an [bold]Administrator[/bold] Command Prompt (or use [bold]--install[/bold]):\n\n"
+            f"[cyan]schtasks /Create /TN {name_45} /TR \"{bat}\" /SC MINUTE /MO 45 /F[/cyan]\n\n"
+            f"[cyan]schtasks /Create /TN {name_eve} /TR \"{bat}\" /SC DAILY /ST 20:00 /F[/cyan]\n\n"
+            "Remove later with [cyan]run.bat schedule --remove[/cyan].",
+            title="Windows Task Scheduler", border_style="cyan"))
+
+    console.print(
+        "\n[bold yellow]Laptop-only caveat:[/bold yellow] coverage = \"whenever the laptop is on and the task ran.\"\n"
+        "Because [bold]scan[/bold] always does a catch-up pull first, opening it at any random time still\n"
+        "gets everything since the last successful run — you never miss filings just because the\n"
+        "laptop slept. The evening 20:00 job ensures a daily catch-up after market filings close.")
 
 
 if __name__ == "__main__":

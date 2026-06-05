@@ -1,0 +1,25 @@
+# Marquee long-horizon Indian investors to FLAG (not endorse) when their name appears
+# in the client-name field of publicly-disclosed bulk/block deals or insider/SAST filings.
+# Matching is case-insensitive substring against the disclosed client name. Edit freely.
+
+rule: flag_any_disclosed_purchase   # any disclosed % counts as significant for now
+
+# Also flag (handled in code, not listed here): promoter buying, and any single
+# disclosed bulk/block PURCHASE regardless of name.
+
+marquee_investors:
+  - Rekha Jhunjhunwala
+  - RARE Enterprises
+  - Radhakishan Damani
+  - Bright Star Investments
+  - Mukul Agrawal
+  - Ashish Kacholia
+  - Vijay Kedia
+  - Sunil Singhania
+  - Abakkus
+  - Nemish Shah
+  - Dolly Khanna
+  - Madhusudan Kela
+  - Akash Bhanshali
+  - Anil Kumar Goel
+  - Ramesh Damani

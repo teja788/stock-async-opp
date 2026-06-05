@@ -1,0 +1,10 @@
+# stock-async-opp dependencies (lean by design). sqlite3 is stdlib.
+requests>=2.31
+feedparser>=6.0
+beautifulsoup4>=4.12
+lxml>=5.0
+PyYAML>=6.0
+python-dateutil>=2.8
+tzdata>=2024.1          # Windows has no IANA tz DB; zoneinfo needs this for Asia/Kolkata
+rich>=13.0
+typer>=0.12

@@ -1,0 +1,24 @@
+# Routine / administrative BSE filing types to DROP or heavily DOWN-RANK.
+# Matching is case-insensitive substring against the announcement category/headline.
+# Rule of thumb: when unsure whether something is routine, KEEP it and let the
+# reasoning layer decide. False negatives (dropping a real catalyst) are worse than
+# a little noise.
+
+drop_or_downrank:
+  - Trading Window
+  - Closure of Trading Window
+  - Newspaper Publication
+  - Newspaper Advertisement
+  - Compliance Certificate
+  - Loss of Share Certificate
+  - Duplicate Share Certificate
+  - Sub-division
+  - Split record date
+  - Postal Ballot
+  - AGM
+  - EGM
+  - Reg. 74(5)
+  - RTA certificate
+  - Analyst Call Schedule        # keep the transcript/outcome, drop the *schedule*
+  - Investor Call Schedule
+  - Conference Call Intimation

@@ -1,0 +1,14 @@
+# stock-async-opp — global settings (edit me freely)
+universe: nifty500
+lookback_hours: 24                 # rolling window for "last 24 hours"
+market_cap_floor_cr: null          # optional ₹-crore floor to cut microcap noise (null = off)
+request_delay_sec: 1.0             # polite delay between HTTP calls (~1 req/sec)
+max_retries: 3
+timezone: Asia/Kolkata             # all stored/displayed times are IST
+
+output:
+  digest_dir: digests
+  context_pack: runtime/context_pack.md
+
+scoring:
+  mode: agent                      # "agent" (live, default) | "llm_api" (future, see scoring/llm_scorer.py)

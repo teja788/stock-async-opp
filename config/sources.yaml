@@ -1,0 +1,78 @@
+# News RSS feeds + exchange endpoints.
+# IMPORTANT: each feed URL is VERIFIED LIVE during Milestone 4 (fetched + confirmed valid XML).
+# Any feed that does not resolve will be commented out with a note so you can fix it.
+# Until Milestone 4 runs, treat these as CANDIDATES, not confirmed-working.
+
+news_feeds:
+  # name:  human label used in output
+  # url:   RSS/Atom feed URL
+  # trust: relative trust tag (reputed_news for all mainstream outlets)
+  #
+  # All feeds below were live-verified on 2026-06-05 (fetched, parsed, fresh
+  # entries with parseable dates). Dead feeds are commented out with the reason.
+
+  - name: Economic Times (Markets)
+    url: https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms
+    trust: reputed_news
+  - name: Economic Times (Stocks)
+    url: https://economictimes.indiatimes.com/markets/stocks/rssfeeds/2146842.cms
+    trust: reputed_news
+  - name: LiveMint (Markets)
+    url: https://www.livemint.com/rss/markets
+    trust: reputed_news
+  - name: The Hindu BusinessLine (Markets)
+    url: https://www.thehindubusinessline.com/markets/feeder/default.rss
+    trust: reputed_news
+  - name: Business Today (Markets)
+    url: https://www.businesstoday.in/rssfeeds/?id=225346
+    trust: reputed_news
+  - name: NDTV Profit
+    url: https://feeds.feedburner.com/ndtvprofit-latest
+    trust: reputed_news
+
+  # --- DEAD / UNUSABLE (verified 2026-06-05) — fix the URL or remove ---
+  # Moneycontrol: every RSS feed (marketreports/latestnews/business) serves
+  #   STALE cached content (dates stuck at Apr 2024) from the edge. Structurally
+  #   valid but not fresh, so it's useless for a 24h scanner. Re-enable if MC
+  #   fixes their feed cache.
+  # - name: Moneycontrol
+  #   url: https://www.moneycontrol.com/rss/latestnews.xml
+  #   trust: reputed_news
+  #
+  # Business Standard: host-wide HTTP 403 Akamai bot-block on all RSS paths.
+  #   Needs browser-fingerprint emulation / proxy; no plain-HTTP feed works.
+  # - name: Business Standard (Markets)
+  #   url: https://www.business-standard.com/rss/markets-106.rss
+  #   trust: reputed_news
+  #
+  # Reuters India: HTTP 401 DataDome bot-wall; Reuters' official public RSS
+  #   feeds were deprecated/retired (feeds.reuters.com no longer resolves).
+  # - name: Reuters India
+  #   url: https://www.reuters.com/world/india/rss
+  #   trust: reputed_news
+
+# BSE public endpoints. Params are VERIFIED LIVE during Milestone 3 (headers/cookies may be needed).
+bse:
+  # Corporate announcements API (returns JSON). Confirmed param shape during Milestone 3.
+  announcements_api: https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w
+  # Securities ("List of Scrips") master — used for ISIN -> scrip_code mapping in Milestone 2.
+  scrip_master: https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w
+
+  # Deals + insider/SAST endpoints (verified live 2026-06-05 via the real site XHR).
+  # NOTE the differing date formats per endpoint (see ingest_deals.py).
+  bulk_block_deals: https://api.bseindia.com/BseIndiaAPI/api/BulkDealData_ng/w   # DealType=1 bulk, =2 block; FDate/TDate = DD/MM/YYYY
+  block_deals_live: https://api.bseindia.com/BseIndiaAPI/api/BlockDeal_Beta/w    # fallback: latest trading day only, ignores params
+  insider_sast: https://api.bseindia.com/BseIndiaAPI/api/getCorp_Regulation_ng/w # fromDT/ToDate = YYYYMMDD; Isdefault=0 with range
+
+  # Source/citation pages for deals (per-dataset landing pages).
+  bulk_deals_page: https://www.bseindia.com/markets/equity/EQReports/bulk_deals.aspx
+  block_deals_page: https://www.bseindia.com/markets/equity/EQReports/block_deals.aspx
+  insider_page: https://www.bseindia.com/corporates/Insider_Trading_new.aspx
+
+  # Referer/Origin headers BSE expects (set in scanner/http.py).
+  referer: https://www.bseindia.com/
+  origin: https://www.bseindia.com
+
+# NSE / NiftyIndices source for the Nifty 500 constituent list (verified in Milestone 2).
+nse:
+  nifty500_csv: https://niftyindices.com/IndexConstituent/ind_nifty500list.csv

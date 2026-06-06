@@ -108,11 +108,43 @@ CREATE TABLE IF NOT EXISTS watchlist (
     note     TEXT
 );
 
+-- Cached PDF body text for filings (extracted on demand for candidate filings).
+-- Keyed by the announcement's dedupe_hash so extraction is done once and reused.
+CREATE TABLE IF NOT EXISTS filing_text (
+    ref_hash    TEXT PRIMARY KEY,   -- announcements.dedupe_hash
+    url         TEXT,
+    text        TEXT,
+    n_chars     INTEGER,
+    method      TEXT,               -- pymupdf | empty | error:<reason>
+    created_at  TEXT
+);
+
+-- Credit-rating actions scraped from CRA media pages (ICRA/CRISIL/CARE).
+CREATE TABLE IF NOT EXISTS ratings (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    agency      TEXT,               -- ICRA | CRISIL | CARE
+    company     TEXT,
+    isin        TEXT,
+    bse_code    TEXT,
+    symbol      TEXT,
+    in_universe INTEGER,
+    action      TEXT,               -- upgrade | downgrade | reaffirm | assign | outlook | unknown
+    direction   TEXT,
+    instrument  TEXT,
+    rating      TEXT,
+    date        TEXT,
+    url         TEXT,
+    summary     TEXT,
+    ingested_at TEXT,
+    dedupe_hash TEXT UNIQUE
+);
+
 CREATE INDEX IF NOT EXISTS idx_ann_isin   ON announcements(isin);
 CREATE INDEX IF NOT EXISTS idx_ann_pub    ON announcements(published_at);
 CREATE INDEX IF NOT EXISTS idx_news_pub   ON news(published_at);
 CREATE INDEX IF NOT EXISTS idx_deals_isin ON deals(isin);
 CREATE INDEX IF NOT EXISTS idx_deals_date ON deals(date);
+CREATE INDEX IF NOT EXISTS idx_ratings_dt ON ratings(date);
 """
 
 
@@ -495,6 +527,90 @@ def set_announcement_tags(ann_id: int, tags: list[str], conn: sqlite3.Connection
         conn.execute("UPDATE announcements SET candidate_tags=? WHERE id=?",
                      (json.dumps(tags), ann_id))
         conn.commit()
+    finally:
+        if own:
+            conn.close()
+
+
+# --------------------------------------------------------------------------- #
+# Filing PDF text cache (#8). Extracted on demand for candidate filings, keyed
+# by the announcement's dedupe_hash so each PDF is parsed at most once.
+# --------------------------------------------------------------------------- #
+def get_filing_text(ref_hash: str, conn: sqlite3.Connection | None = None) -> dict[str, Any] | None:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        row = conn.execute("SELECT * FROM filing_text WHERE ref_hash=?", (ref_hash,)).fetchone()
+        return dict(row) if row else None
+    finally:
+        if own:
+            conn.close()
+
+
+def save_filing_text(ref_hash: str, url: str, text: str, method: str,
+                     conn: sqlite3.Connection | None = None) -> None:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        conn.execute(
+            "INSERT INTO filing_text (ref_hash, url, text, n_chars, method, created_at) "
+            "VALUES (?,?,?,?,?,?) ON CONFLICT(ref_hash) DO UPDATE SET "
+            "url=excluded.url, text=excluded.text, n_chars=excluded.n_chars, "
+            "method=excluded.method, created_at=excluded.created_at",
+            (ref_hash, url, text, len(text or ""), method, _now_iso()))
+        conn.commit()
+    finally:
+        if own:
+            conn.close()
+
+
+# --------------------------------------------------------------------------- #
+# Credit-rating actions (CRA scraping).
+# --------------------------------------------------------------------------- #
+def upsert_ratings(items: list[dict[str, Any]], conn: sqlite3.Connection | None = None) -> int:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        cols = ["agency", "company", "isin", "bse_code", "symbol", "in_universe",
+                "action", "direction", "instrument", "rating", "date", "url",
+                "summary", "ingested_at", "dedupe_hash"]
+        prepared = []
+        for it in items:
+            r = dict(it)
+            r["in_universe"] = int(bool(r.get("in_universe")))
+            prepared.append(r)
+        return _insert_ignore(conn, "ratings", cols, prepared)
+    finally:
+        if own:
+            conn.close()
+
+
+def get_recent_ratings(since_iso: str, conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn,
+            "SELECT * FROM ratings WHERE date >= ? ORDER BY date DESC", (since_iso,))
+    finally:
+        if own:
+            conn.close()
+
+
+def ratings_for_isins(isins: list[str], limit: int = 50, since_iso: str | None = None,
+                      conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    if not isins:
+        return []
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        where = f"isin IN ({_placeholders(len(isins))})"
+        params: list[Any] = list(isins)
+        if since_iso:
+            where += " AND date >= ?"
+            params.append(since_iso)
+        params.append(limit)
+        return _rows(conn,
+            f"SELECT * FROM ratings WHERE {where} ORDER BY date DESC LIMIT ?", tuple(params))
     finally:
         if own:
             conn.close()

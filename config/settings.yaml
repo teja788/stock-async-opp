@@ -28,3 +28,7 @@ output:
 
 scoring:
   mode: agent                      # "agent" (live, default) | "llm_api" (future, see scoring/llm_scorer.py)
+
+# Optional enrichment layer (degrades gracefully if its deps are absent).
+pdf_extract:
+  enabled: true                    # pull PDF body text for catalyst-tagged filings; uses pymupdf if present, else pypdf.

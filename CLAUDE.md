@@ -31,9 +31,9 @@ reads `runtime/context_pack.md` and applies the rubric below.
 ## Reasoning rubric (apply when the user asks for a scan)
 
 Read `runtime/context_pack.md` and produce a **ranked list of asymmetric
-opportunities**. The pack already separates HARD FILINGS (high trust) from
-INVESTOR DEALS (disclosed) and NEWS (lower trust) — preserve that separation and
-never blur it.
+opportunities**. The pack separates HARD FILINGS (high trust) from INVESTOR DEALS
+(disclosed), RATING ACTIONS (CRA upgrades/downgrades), and NEWS (lower trust) —
+preserve that separation and never blur it.
 
 For each candidate, judge:
 
@@ -114,9 +114,11 @@ the data, say so and offer to fetch it — never fabricate.
 ## Architecture (one-liner per layer)
 
 Deterministic Python does plumbing only: `ingest_bse` / `ingest_news` /
-`ingest_deals` → `store` (SQLite, dedupe, catch-up) → `prefilter` (drop noise, tag
-catalysts) → `context_pack` (the small packet you read). The agent does all the
-judgement. The `scoring/llm_scorer.py` hook is OFF by default (no API key needed).
+`ingest_deals` / `ingest_ratings` (ICRA/CARE/CRISIL) → `store` (SQLite, dedupe,
+catch-up) → `prefilter` (drop noise, tag catalysts) → `context_pack` (the small
+packet you read), enriched by `pdf_extract` (filing PDF body). The agent does all
+the judgement. The `scoring/llm_scorer.py` hook is OFF by default (no API key
+needed); the optional PDF dep degrades gracefully if absent.
 
 ## Hard constraints
 

@@ -73,6 +73,17 @@ bse:
   referer: https://www.bseindia.com/
   origin: https://www.bseindia.com
 
+# Credit-rating-agency feeds (verified live 2026-06-06; plain requests + Chrome UA,
+# no bot-wall). None expose ISIN/ticker -> matched to the universe by company name.
+ratings:
+  # ICRA: server-rendered HTML, ~10 newest rationales. Parse div.row.cpr_info.rationales_flex.
+  icra_rationales: https://www.icra.in/Rating/AllRatingRationales
+  # CARE (CareEdge): JSON XHR. companyName=% + fdate/tdate bound recency; PR PDFs carry direction.
+  care_rrcompany: https://www.careratings.com/rrcompany
+  care_pdf_base: https://www.careratings.com/upload/CompanyFiles/PR/
+  # CRISIL: MONTHLY 'rating-actions' newsletter (4-8 wk lag -> backfill, not same-day).
+  crisil_newsletter: https://www.crisilratings.com/en/home/our-business/ratings/newsletters/{year}/{month}/rating-actions.html
+
 # NSE / NiftyIndices source for the Nifty 500 constituent list (verified in Milestone 2).
 nse:
   nifty500_csv: https://niftyindices.com/IndexConstituent/ind_nifty500list.csv

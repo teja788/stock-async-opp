@@ -29,6 +29,7 @@ from scanner import __app_name__, __version__
 from scanner.config import load_settings, resolve_path
 
 _IST = ZoneInfo("Asia/Kolkata")
+log = logging.getLogger(__name__)
 
 app = typer.Typer(
     name=__app_name__,
@@ -125,8 +126,8 @@ def _refresh_all(bse_limit: int | None = None,
     "news", "deals"}); None runs all. Lets the dashboard do a fast news+deals
     update without the slow BSE poll.
     """
-    run = sources or {"bse_announcements", "news", "deals"}
-    from scanner import ingest_bse, ingest_deals, ingest_news, store
+    run = sources or {"bse_announcements", "news", "deals", "ratings"}
+    from scanner import ingest_bse, ingest_deals, ingest_news, ingest_ratings, store
     from scanner.http import PoliteSession
     from scanner.universe import load_map
 
@@ -165,12 +166,19 @@ def _refresh_all(bse_limit: int | None = None,
         items = ingest_deals.ingest(session=session, since=since)
         return len(items), store.upsert_deals(items)
 
+    def _ratings():
+        since = since_override or store.get_last_success("ratings")
+        items = ingest_ratings.ingest(session=session, since=since)
+        return len(items), store.upsert_ratings(items)
+
     if "bse_announcements" in run:
         _do("bse_announcements", _bse)
     if "news" in run:
         _do("news", _news)
     if "deals" in run:
         _do("deals", _deals)
+    if "ratings" in run:
+        _do("ratings", _ratings)
     return results
 
 
@@ -230,6 +238,7 @@ def scan(skip_refresh: bool = typer.Option(False, "--skip-refresh",
     table.add_column("Item"); table.add_column("Count", justify="right")
     table.add_row("Hard filings", f"{stats['filings']} ({stats['filings_tagged']} catalyst-tagged)")
     table.add_row("Investor deals (flagged)", str(stats["investor_deals"]))
+    table.add_row("Rating actions", str(stats.get("rating_actions", 0)))
     table.add_row("Company news", str(stats["company_news"]))
     table.add_row("Market-wide news", str(stats["market_news"]))
     console.print(table)

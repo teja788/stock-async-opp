@@ -7,6 +7,7 @@ reasoning agent reads: runtime/context_pack.md (human/agent-readable) plus a
 Hard separation of trust is structural here:
   - HARD FILINGS  -> straight from BSE (high trust)
   - INVESTOR DEALS-> disclosed bulk/block/insider (marquee/promoter flagged)
+  - RATING ACTIONS-> credit-rating agencies (universe-matched)
   - NEWS          -> reputed outlets (lower trust)
 Every item keeps its source link.
 """
@@ -18,8 +19,9 @@ from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo
 
+from scanner import pdf_extract, store
 from scanner.config import load_settings, resolve_path
-from scanner.prefilter import run_prefilter
+from scanner.prefilter import run_prefilter, tag_catalysts
 from scanner.universe import load_map
 
 log = logging.getLogger(__name__)
@@ -48,10 +50,12 @@ def _short(text: str, n: int = MAX_NOTE) -> str:
 
 
 def build_context_pack(summary: dict[str, Any] | None = None,
-                       since: datetime | None = None) -> dict[str, Any]:
+                       since: datetime | None = None,
+                       enrich_pdf: bool = True) -> dict[str, Any]:
     """Assemble + write the context pack. Returns paths and headline stats.
 
     `since` overrides the prefilter window (else settings.lookback_hours).
+    `enrich_pdf` pulls PDF body text for catalyst-tagged filings (cached, bounded).
     """
     summary = summary or run_prefilter(since=since)
     cand = summary["candidates"]
@@ -72,13 +76,26 @@ def build_context_pack(summary: dict[str, Any] | None = None,
     anns_sorted.sort(key=lambda a: a.get("published_at") or "", reverse=True)
     anns_sorted.sort(key=lambda a: 0 if a.get("candidate_tags") else 1)
 
-    flagged_deals = [d for d in deals if d.get("is_marquee") or d.get("is_promoter_buy")]
-    news = _dedupe_news_by_url(news)
-    tagged_news = [n for n in news if _news_isins(n)]
-    market_news = [n for n in news if not _news_isins(n)]
+    conn = store.get_conn()
+    try:
+        # Pull PDF body text for catalyst-tagged filings, then re-tag on the
+        # richer text (catches catalysts only visible inside the attachment).
+        if enrich_pdf and pdf_extract.is_enabled():
+            tagged_anns = [a for a in anns_sorted if a.get("candidate_tags")]
+            if pdf_extract.enrich_filings(tagged_anns, conn=conn):
+                _retag_enriched(tagged_anns)
 
-    md = _render_md(summary, anns_sorted, flagged_deals, tagged_news, market_news, idx)
-    pack_json = _render_json(summary, anns_sorted, flagged_deals, tagged_news, idx)
+        flagged_deals = [d for d in deals if d.get("is_marquee") or d.get("is_promoter_buy")]
+        news = _dedupe_news_by_url(news)
+        tagged_news = [n for n in news if _news_isins(n)]
+        market_news = [n for n in news if not _news_isins(n)]
+
+        ratings = store.get_recent_ratings(summary["window_since"], conn=conn)
+    finally:
+        conn.close()
+
+    md = _render_md(summary, anns_sorted, flagged_deals, tagged_news, market_news, ratings, idx)
+    pack_json = _render_json(summary, anns_sorted, flagged_deals, tagged_news, ratings, idx)
 
     md_path = resolve_path(settings.get("output", {}).get("context_pack", "runtime/context_pack.md"))
     json_path = md_path.with_suffix(".json")
@@ -92,11 +109,24 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         "filings": len(anns_sorted),
         "filings_tagged": sum(1 for a in anns_sorted if a.get("candidate_tags")),
         "investor_deals": len(flagged_deals),
+        "rating_actions": len(ratings),
         "company_news": len(tagged_news),
         "market_news": len(market_news),
     }
     log.info("Context pack written: %s", stats)
     return stats
+
+
+def _retag_enriched(anns: list[dict[str, Any]]) -> None:
+    """Re-run catalyst tagging including the freshly-extracted PDF body text."""
+    for a in anns:
+        pdf = a.get("pdf_text")
+        if not pdf:
+            continue
+        tags = tag_catalysts(a.get("category", ""), a.get("headline", ""),
+                             a.get("body_text", ""), pdf)
+        merged = list(dict.fromkeys((a.get("candidate_tags") or []) + tags))
+        a["candidate_tags"] = merged
 
 
 def _dedupe_news_by_url(news: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -144,16 +174,17 @@ def _co_label(rec: dict[str, Any], idx: dict[str, dict]) -> str:
     return f"{symbol} ({company}{tail}{_mcap_str(rec.get('isin'), idx)})"
 
 
-def _render_md(summary, anns, deals, tagged_news, market_news, idx) -> str:
+def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> str:
     out: list[str] = []
     now = datetime.now(IST).strftime("%Y-%m-%d %H:%M IST")
     out.append(f"# Context Pack — {now}")
     out.append(f"Window since: {_ist_short(summary['window_since'])}  |  Universe: Nifty 500")
     out.append(
         f"Counts: filings {len(anns)} (tagged {sum(1 for a in anns if a.get('candidate_tags'))}), "
-        f"investor deals {len(deals)}, company news {len(tagged_news)}, market news {len(market_news)}")
+        f"investor deals {len(deals)}, rating actions {len(ratings)}, "
+        f"company news {len(tagged_news)}, market news {len(market_news)}")
     out.append("")
-    out.append("> Trust order: HARD FILING > INVESTOR DEAL (disclosed) > NEWS. "
+    out.append("> Trust order: HARD FILING > INVESTOR DEAL (disclosed) > RATING ACTION > NEWS. "
                "Research leads only — not advice.")
     out.append("")
 
@@ -167,7 +198,7 @@ def _render_md(summary, anns, deals, tagged_news, market_news, idx) -> str:
         out.append(f"[HARD FILING] {_co_label(a, idx)} — {_ist_short(a.get('published_at'))}")
         out.append(f"  Category: {a.get('category','')}{tagstr}")
         out.append(f"  Headline: {_short(a.get('headline',''))}")
-        note = _short(a.get("body_text", ""))
+        note = _short(a.get("pdf_text") or a.get("body_text", ""))
         if note:
             out.append(f"  Note: {note}")
         if a.get("pdf_url"):
@@ -195,6 +226,19 @@ def _render_md(summary, anns, deals, tagged_news, market_news, idx) -> str:
             out.append(f"  Source: {d['url']}")
         out.append("")
 
+    # --- RATING ACTIONS (CRA upgrades/downgrades/outlook for universe names) ---
+    if ratings:
+        out.append("## RATING ACTIONS (credit-rating agencies — universe-matched)")
+        for r in ratings:
+            out.append(f"[RATING] {r.get('symbol') or r.get('company','?')} — {r.get('agency','')} "
+                       f"{(r.get('action') or '').upper()} ({r.get('direction','')})  "
+                       f"({(r.get('date') or '')[:10]})")
+            if r.get("summary"):
+                out.append(f"  {_short(r.get('summary',''), 180)}")
+            if r.get("url"):
+                out.append(f"  Source: {r['url']}")
+            out.append("")
+
     # --- COMPANY NEWS ---
     out.append("## NEWS (lower trust — reputed outlets, company-tagged)")
     if not tagged_news:
@@ -220,13 +264,14 @@ def _render_md(summary, anns, deals, tagged_news, market_news, idx) -> str:
     return "\n".join(out)
 
 
-def _render_json(summary, anns, deals, tagged_news, idx) -> dict[str, Any]:
+def _render_json(summary, anns, deals, tagged_news, ratings, idx) -> dict[str, Any]:
     return {
         "generated_at": datetime.now(IST).isoformat(),
         "window_since": summary["window_since"],
         "stats": {
             "filings": len(anns),
             "investor_deals": len(deals),
+            "rating_actions": len(ratings),
             "company_news": len(tagged_news),
         },
         "hard_filings": [{
@@ -234,7 +279,7 @@ def _render_json(summary, anns, deals, tagged_news, idx) -> dict[str, Any]:
             "isin": a.get("isin"), "market_cap_cr": idx.get(a.get("isin") or "", {}).get("market_cap_cr"),
             "published_at": a.get("published_at"),
             "category": a.get("category"), "candidate_tags": a.get("candidate_tags") or [],
-            "headline": a.get("headline"), "note": _short(a.get("body_text", "")),
+            "headline": a.get("headline"), "note": _short(a.get("pdf_text") or a.get("body_text", "")),
             "source": a.get("pdf_url"),
         } for a in anns],
         "investor_deals": [{
@@ -246,6 +291,11 @@ def _render_json(summary, anns, deals, tagged_news, idx) -> dict[str, Any]:
             "pct_pre": d.get("pct_pre"), "pct_post": d.get("pct_post"),
             "date": d.get("date"), "source": d.get("url"),
         } for d in deals],
+        "rating_actions": [{
+            "symbol": r.get("symbol"), "company": r.get("company"), "isin": r.get("isin"),
+            "agency": r.get("agency"), "action": r.get("action"), "direction": r.get("direction"),
+            "date": r.get("date"), "summary": r.get("summary"), "source": r.get("url"),
+        } for r in ratings],
         "company_news": [{
             "symbols": [idx.get(i, {}).get("symbol", "?") for i in _news_isins(n)],
             "source": n.get("source"), "trust": n.get("trust"),

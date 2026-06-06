@@ -41,7 +41,9 @@ def _universe():
 def _build_pack(since_iso: str, version: int):
     """Assemble the pack for a window. Cached by (window, data-version) so we don't
     rebuild on every widget interaction; `version` bumps when data changes."""
-    stats = build_context_pack(since=datetime.fromisoformat(since_iso))
+    # enrich_pdf=False keeps dashboard loads snappy (no inline PDF fetches); the
+    # CLI `scan` does PDF enrichment, and extracted text is cached + reused here.
+    stats = build_context_pack(since=datetime.fromisoformat(since_iso), enrich_pdf=False)
     pack = json.loads(open(stats["json_path"], encoding="utf-8").read())
     md = open(stats["md_path"], encoding="utf-8").read()
     return stats, pack, md
@@ -96,10 +98,11 @@ with st.sidebar:
 
     c1, c2 = st.columns(2)
     if c1.button("Update news+deals", help="Incremental — only new data since last fetch (~30s)"):
-        with st.spinner("Fetching news + deals (catch-up)..."):
-            res = _refresh_all(sources={"news", "deals"})
+        with st.spinner("Fetching news + deals + ratings (catch-up)..."):
+            res = _refresh_all(sources={"news", "deals", "ratings"})
         _bump()
-        st.success(f"news {res.get('news',{}).get('new',0)} new · deals {res.get('deals',{}).get('new',0)} new")
+        st.success(f"news {res.get('news',{}).get('new',0)} new · deals {res.get('deals',{}).get('new',0)} new "
+                   f"· ratings {res.get('ratings',{}).get('new',0)} new")
     if c2.button("+ BSE filings", help="Incremental BSE filings poll (~8 min)"):
         with st.spinner("Polling BSE filings (slow, ~8 min)..."):
             res = _refresh_all()

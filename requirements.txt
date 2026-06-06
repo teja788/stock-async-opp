@@ -9,8 +9,12 @@ tzdata>=2024.1          # Windows has no IANA tz DB; zoneinfo needs this for Asi
 rich>=13.0
 typer>=0.12
 streamlit>=1.40            # web dashboard (dashboard.py)
+pypdf>=4.0                 # filing PDF body-text extraction; pure-python, light
 
 # Optional — only needed for the dashboard's AI rank/chat panels (lazy-imported,
 # never required by the core Python layer). Install to enable Claude/OpenAI.
 anthropic>=0.40
 openai>=1.50
+
+# Optional — better filing-PDF text extraction than pypdf (self-contained wheel).
+# pymupdf>=1.24

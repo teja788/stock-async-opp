@@ -70,6 +70,12 @@ class PoliteSession:
                 resp.raise_for_status()
                 return resp
             except Exception as exc:  # noqa: BLE001 - we deliberately retry any fetch error
+                # Hard client errors (404/403/...) can't be fixed by retrying —
+                # fail fast. Transient codes above never carry .response, and 429
+                # is excluded explicitly, so both still take the retry path.
+                status = getattr(getattr(exc, "response", None), "status_code", None)
+                if status is not None and 400 <= status < 500 and status != 429:
+                    raise
                 last_exc = exc
                 backoff = self.delay * (2 ** (attempt - 1))
                 log.warning("GET %s failed (attempt %d/%d): %s — backing off %.1fs",

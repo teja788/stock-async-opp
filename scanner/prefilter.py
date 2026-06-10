@@ -31,7 +31,8 @@ IST = ZoneInfo("Asia/Kolkata")
 CATALYST_RULES: dict[str, list[str]] = {
     "capacity_capex": [
         "capacity expansion", "capacity addition", "new plant", "new facility",
-        "capex", "commission", "greenfield", "brownfield", "mtpa", "expansion plan",
+        "capex", "commission", "commissioned", "commissioning", "greenfield",
+        "brownfield", "mtpa", "expansion plan",
         "debottleneck", "scale up", "ramp-up", "ramp up", "new line", "incremental capacity",
     ],
     "order_win": [

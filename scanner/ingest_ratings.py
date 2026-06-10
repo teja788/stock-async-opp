@@ -170,7 +170,10 @@ def fetch_crisil(session: PoliteSession, src: dict[str, Any]) -> list[dict[str, 
     actions = ["upgrade", "downgrade", "outlook"]   # tables[0..2]
     out: list[dict[str, Any]] = []
     now = datetime.now(IST)
-    months = [(now.year, now.month), ((now - timedelta(days=31)).year, (now - timedelta(days=31)).month)]
+    # Last day of the prior month — `now - 31 days` skips a month on the 1st
+    # (e.g. Jul 1 - 31d = May 31, missing June's newsletter entirely).
+    prev = now.replace(day=1) - timedelta(days=1)
+    months = [(now.year, now.month), (prev.year, prev.month)]
     for year, mon in months:
         url = tmpl.format(year=year, month=_CRISIL_MONTHS[mon - 1])
         try:

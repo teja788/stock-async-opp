@@ -83,7 +83,7 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         if enrich_pdf and pdf_extract.is_enabled():
             tagged_anns = [a for a in anns_sorted if a.get("candidate_tags")]
             if pdf_extract.enrich_filings(tagged_anns, conn=conn):
-                _retag_enriched(tagged_anns)
+                _retag_enriched(tagged_anns, conn=conn)
 
         flagged_deals = [d for d in deals if d.get("is_marquee") or d.get("is_promoter_buy")]
         news = _dedupe_news_by_url(news)
@@ -117,8 +117,12 @@ def build_context_pack(summary: dict[str, Any] | None = None,
     return stats
 
 
-def _retag_enriched(anns: list[dict[str, Any]]) -> None:
-    """Re-run catalyst tagging including the freshly-extracted PDF body text."""
+def _retag_enriched(anns: list[dict[str, Any]], conn=None) -> None:
+    """Re-run catalyst tagging including the freshly-extracted PDF body text.
+
+    Persists any newly-found tags back to the store so follow-up queries
+    (`ask`, announcements_by_tag) see the same tags as the pack.
+    """
     for a in anns:
         pdf = a.get("pdf_text")
         if not pdf:
@@ -126,6 +130,8 @@ def _retag_enriched(anns: list[dict[str, Any]]) -> None:
         tags = tag_catalysts(a.get("category", ""), a.get("headline", ""),
                              a.get("body_text", ""), pdf)
         merged = list(dict.fromkeys((a.get("candidate_tags") or []) + tags))
+        if merged != (a.get("candidate_tags") or []) and a.get("id") is not None:
+            store.set_announcement_tags(a["id"], merged, conn=conn)
         a["candidate_tags"] = merged
 
 

@@ -86,7 +86,9 @@ with st.sidebar:
     if total_h == 0:
         total_h = int(load_settings().get("lookback_hours", 24))
         st.caption(f"Using settings default: {total_h}h")
-    since = _now() - timedelta(hours=total_h)
+    # Minute precision keeps the _build_pack cache key stable across reruns —
+    # a to-the-microsecond timestamp would defeat the cache on every interaction.
+    since = (_now() - timedelta(hours=total_h)).replace(second=0, microsecond=0)
     st.caption("Window only **displays** stored data — no downloading.")
 
     st.divider()
@@ -116,7 +118,9 @@ with st.sidebar:
             from scanner.http import PoliteSession
             gap_until = datetime.fromisoformat(a["earliest"])
             with st.spinner(f"Backfilling filings {since.date()} → {gap_until.date()} (~8 min)..."):
-                items = ingest_bse.ingest(session=PoliteSession(), since=since, until=gap_until)
+                workers = int(load_settings().get("bse_fetch_workers", 1))
+                items = ingest_bse.ingest(session=PoliteSession(), since=since,
+                                          until=gap_until, workers=workers)
                 n = store.upsert_announcements(items)
             _bump()
             st.success(f"Backfilled {n} older filings.")

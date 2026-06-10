@@ -39,7 +39,9 @@ def save(content: str, title: str = "Signals", key: str | None = None) -> str:
     existing = LOG_PATH.read_text(encoding="utf-8") if LOG_PATH.exists() else ""
 
     h = _hash(content)
-    if f"hash:{h}" in existing or (key and f"key:{key}" in existing):
+    # Match the full "key:<key> -->" marker, not a prefix — otherwise saving
+    # key "…|5d" would be skipped as a dup of an existing "…|5d|tough" entry.
+    if f"hash:{h}" in existing or (key and f" key:{key} -->" in existing):
         return "duplicate (skipped)"
 
     stamp = datetime.now(IST).strftime("%Y-%m-%d %H:%M IST")

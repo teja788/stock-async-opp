@@ -124,3 +124,21 @@ Research only, not investment advice.
 _Coverage note: the pack caps filings at 120 (most-recent-tagged first); this analysis queried the full 30-day store directly for materiality candidates. CARE notch parsing was limited to PR headers._
 
 _Research only, not investment advice._
+
+
+---
+
+## 2026-07-03 03:53 IST — 30-day scan — addendum (full PDF enrichment)
+<!-- hash:8e5f5e3d39fd8579 key:2026-07-03|30d|agent|addendum -->
+
+**Addendum after full PDF enrichment (108/108 catalyst filings parsed):**
+
+4. **AMBER — Amber Enterprises India** (₹26,127 cr, F&O)
+   - **What happened:** Capex/JV filing (Jun 18) referencing ~₹12,186 cr ≈ 47% of market cap.
+   - **Why asymmetric:** A capital-project number half the company's size with the stock DOWN 5.8% since — the market has not priced it at all. F&O-listed (covered), which tempers the under-the-radar score; the mechanism (electronics-manufacturing capacity) needs verification in the filing.
+   - **Trust:** Hard filing · **Conviction:** Medium
+   - **Source:** BSE filing 2026-06-18 (see pack snapshot)
+
+**Checked and rejected:** INA (₹347 cr = corporate GUARANTEE, not an order — fails the catalyst gate); BASF India (NCLT scheme-meeting presentation — procedural); VIKRAMSOLR flagged as a RISK, not a lead — CIRP application ADMITTED by the tribunal (Jun 19, px −8.2%): insolvency overhang, monitor if held.
+
+_Research only, not investment advice._

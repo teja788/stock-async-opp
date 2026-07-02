@@ -22,6 +22,7 @@ Run via `run.bat <command>` (Windows) or `.venv\Scripts\python.exe -m scanner.cl
 | `digest` | Save a dated ranked digest to `digests/`. |
 | `watch add\|remove\|list "<co>"` | Manage the watchlist (★ + top section in every pack). |
 | `review` | Score past research-log leads against subsequent price moves (calibration loop). |
+| `publish` | Save pack snapshots + rebuild the static dashboard in `docs/` (GitHub Pages). Commit + push to update the hosted page. |
 | `schedule` | Print/install the Windows Task Scheduler job. |
 
 **The core loop:** the user runs `scan` (Python assembles the context pack), then

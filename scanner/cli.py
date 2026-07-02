@@ -288,6 +288,12 @@ def scan(skip_refresh: bool = typer.Option(False, "--skip-refresh",
     table.add_row("Market-wide news", str(stats["market_news"]))
     console.print(table)
     console.print(f"\n[bold]Context pack:[/bold] {stats['md_path']}")
+
+    # Always SAVE the output: snapshot the pack into tracked docs/data/packs/.
+    from scanner import publish as _publish
+    snap = _publish.snapshot_pack()
+    if snap:
+        console.print(f"[dim]Pack snapshot saved: docs/data/packs/{snap}.md (run 'publish' to rebuild the site).[/dim]")
     console.print("[dim]Next: ask the agent to read the context pack and rank today's asymmetric signals.[/dim]")
 
 
@@ -504,9 +510,6 @@ def watch(action: str = typer.Argument("list", help="add | remove | list"),
             raise typer.Exit(1)
 
 
-_LEAD_RE = None  # compiled lazily in review()
-
-
 @app.command()
 def review(min_age_days: int = typer.Option(7, "--min-age", help="Only score leads at least this old."),
            limit: int = typer.Option(50, help="Max leads to show.")) -> None:
@@ -517,70 +520,61 @@ def review(min_age_days: int = typer.Option(7, "--min-age", help="Only score lea
     latest stored close (bhavcopy history, ~90d backfill). Research only — this
     calibrates the flagging bar, it is not a performance record.
     """
-    import re as _re
-    from scanner import store
-    from scanner.config import resolve_path
+    from scanner import leads as leads_mod, store
     from scanner.universe import load_map
 
-    log_path = resolve_path("digests/research_log.md")
-    if not log_path.exists():
-        console.print("[yellow]No research log yet (digests/research_log.md).[/yellow]")
+    store.init_db()
+    scored = leads_mod.score_leads(load_map(), min_age_days=min_age_days)
+    if not scored:
+        console.print("[yellow]No leads found in the research log (or none old enough).[/yellow]")
         raise typer.Exit()
 
-    entry_re = _re.compile(r"^## (\d{4}-\d{2}-\d{2}) \d{2}:\d{2} IST — (.+)$")
-    lead_re = _re.compile(r"^\s*\d+\.\s+\*\*([A-Z0-9&._\-]+)\s*[—–-]")
-    store.init_db()
-    universe = load_map()
-    sym_to_isin = {c["symbol"].upper(): c["isin"] for c in universe if c.get("symbol")}
-
-    leads: list[tuple[str, str]] = []   # (date, ticker)
-    seen = set()
-    current_date = None
-    for line in log_path.read_text(encoding="utf-8").splitlines():
-        m = entry_re.match(line)
-        if m:
-            current_date = m.group(1)
-            continue
-        m = lead_re.match(line)
-        if m and current_date and (current_date, m.group(1)) not in seen:
-            seen.add((current_date, m.group(1)))
-            leads.append((current_date, m.group(1)))
-
-    cutoff = (datetime.now(_IST) - timedelta(days=min_age_days)).strftime("%Y-%m-%d")
-    today = datetime.now(_IST).strftime("%Y-%m-%d")
-    table = Table(title=f"Lead review — {len(leads)} leads found in the log", border_style="cyan")
+    table = Table(title=f"Lead review — {len(scored)} leads", border_style="cyan")
     for col in ("Logged", "Ticker", "Then", "Now", "Move", "Age(d)"):
         table.add_column(col, justify="right" if col in ("Then", "Now", "Move", "Age(d)") else "left")
-
-    shown = scored = 0
-    moves: list[float] = []
-    for date, ticker in leads:
-        if date > cutoff or shown >= limit:
-            continue
-        shown += 1
-        age = (datetime.strptime(today, "%Y-%m-%d") - datetime.strptime(date, "%Y-%m-%d")).days
-        isin = sym_to_isin.get(ticker.upper())
-        then = store.price_on(isin, date) if isin else None
-        now_px = store.price_on(isin, today) if isin else None
-        if then and now_px and then["close"]:
-            pct = (now_px["close"] - then["close"]) / then["close"] * 100
-            moves.append(pct)
-            scored += 1
-            colour = "green" if pct > 0 else "red"
-            table.add_row(date, ticker, f"{then['close']:,.1f}", f"{now_px['close']:,.1f}",
-                          f"[{colour}]{pct:+.1f}%[/{colour}]", str(age))
+    for s in scored[:limit]:
+        if s["pct_move"] is not None:
+            colour = "green" if s["pct_move"] > 0 else "red"
+            table.add_row(s["date"], s["ticker"], f"{s['then_close']:,.1f}",
+                          f"{s['now_close']:,.1f}",
+                          f"[{colour}]{s['pct_move']:+.1f}%[/{colour}]", str(s["age_days"]))
         else:
-            table.add_row(date, ticker, "—", "—", "[dim]no price data[/dim]", str(age))
+            table.add_row(s["date"], s["ticker"], "—", "—",
+                          "[dim]no price data[/dim]", str(s["age_days"]))
     console.print(table)
-    if moves:
-        winners = sum(1 for m in moves if m > 0)
-        console.print(f"Scored {scored}: hit-rate {winners}/{scored} positive · "
-                      f"median move {sorted(moves)[len(moves)//2]:+.1f}% · "
-                      f"avg {sum(moves)/len(moves):+.1f}%")
+    summary = leads_mod.summarize(scored)
+    if summary:
+        console.print(f"Scored {summary['scored']}/{summary['total']}: "
+                      f"hit-rate {summary['positive']}/{summary['scored']} positive · "
+                      f"median {summary['median']:+.1f}% · avg {summary['average']:+.1f}%")
     else:
         console.print("[dim]No leads scoreable yet — price history accumulates from the "
                       "bhavcopy backfill (~90 days); older leads stay unscored.[/dim]")
     console.print("[dim]Research calibration only — not a performance record, not advice.[/dim]")
+
+
+@app.command()
+def publish() -> None:
+    """Save outputs + rebuild the static dashboard in docs/ (GitHub Pages).
+
+    Snapshots the current context pack into docs/data/packs/ (tracked in git),
+    then regenerates the site: index, latest/archived packs, research log,
+    lead review, digests. Commit + push to update the hosted page.
+    """
+    from scanner.publish import build_site
+
+    with console.status("[cyan]Building static site into docs/..."):
+        stats = build_site()
+    table = Table(title="Dashboard built", border_style="green")
+    table.add_column("Item"); table.add_column("Value", justify="right")
+    table.add_row("HTML pages", str(stats["pages"]))
+    table.add_row("Saved pack snapshots", str(stats["packs_saved"]))
+    table.add_row("Research-log entries", str(stats["log_entries"]))
+    table.add_row("Digests", str(stats["digests"]))
+    console.print(table)
+    console.print(f"[bold]Site:[/bold] {stats['docs_dir']}/index.html")
+    console.print("[dim]Publish: git add docs && git commit && git push — then GitHub → Settings → "
+                  "Pages → deploy branch master, folder /docs.[/dim]")
 
 
 @app.command(name="setup-universe")

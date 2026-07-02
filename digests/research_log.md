@@ -85,3 +85,42 @@ AXISCADES CARE downgrade (risk); Kotak/Central Bank reaffirmations. Skipped know
 Adani cement schemes, RBL open offer, Wipro buyback, Vedanta demerger.
 
 Research only, not investment advice.
+
+
+---
+
+## 2026-07-03 03:34 IST — 30-day scan — asymmetric signals
+<!-- hash:e705b73c6453a180 key:2026-07-03|30d|agent -->
+
+**Window:** 2026-06-03 → 2026-07-03 · 7,653 filings scanned (958 catalyst-tagged), 20 flagged deals, 56 rating actions · universe 1,741 (incl. smallcap expansion)
+
+1. **CNL — Creative Newtech Ltd** (₹1,110 cr, non-F&O)
+   - **What happened:** Order-win filing (Jun 6) with extracted value ~₹3,195 cr ≈ 288% of market cap.
+   - **Why asymmetric:** An order multiple times the company's size; even at thin distribution margins the revenue step-change is transformative. Px +16.7% on 7.2x volume since — noticed, but arguably not sized. VERIFY the order value and margin profile in the filing before anything else.
+   - **Trust:** Hard filing · **Conviction:** Medium
+   - **Source:** https://www.bseindia.com/xml-data/corpfiling/AttachLive/a9a66c76-63b0-4ff4-8005-369bf461c1c5.pdf
+
+2. **CAPACITE — Capacit'e Infraprojects** (₹2,169 cr, non-F&O)
+   - **What happened:** LOI of ~₹589 cr from Ten X Realty East (Raymond Realty subsidiary), Jun 3 — ≈27% of mcap.
+   - **Why asymmetric:** Needle-moving order-book accretion for a mid-size contractor from a named counterparty. Px +15% (vol 1.9x) — partially priced; LOI ≠ signed contract.
+   - **Trust:** Hard filing · **Conviction:** Medium
+   - **Source:** https://www.bseindia.com/xml-data/corpfiling/AttachLive/91b6cf14-4dc2-46f7-a64c-f0a4bb0c3dd0.pdf
+
+3. **SPANDANA — Spandana Sphoorty Financial** (₹2,023 cr)
+   - **What happened:** CARE rating UPGRADE (Jul 2) + catalyst-tagged filing in-window (confluence).
+   - **Why asymmetric:** For a post-stress MFI, an upgrade cycle lowers cost of funds and reopens growth — classic re-rating mechanism at smallcap size. Notch size not parseable from the PR header — dig the rationale PDF.
+   - **Trust:** Hard filing (CRA) · **Conviction:** Medium
+   - **Source:** https://www.careratings.com/rrcompany (Spandana PR, 2026-07-02)
+
+**Watch, not act:**
+- **HFCL** — ₹2,666 cr order (~9% of mcap, Jun 17), but well-covered; px +8.4%.
+- **GENUSPOWER** — Madhusudan Kela block BUY (NSE, Jun 30); investor signal only, story already known.
+- **MSPL (MSP Steel)** — 6 promoter-entity insider BUYs on one day (Jun 16); size the stake change first.
+- **NITINSPIN** — CARE upgrade + tagged filing confluence (₹3,133 cr); textile cycle dependent.
+- **CONFIPET** — promoter SAST buys (+0.63pp) + tagged filing confluence (₹2,563 cr).
+- **NOL** — Hitesh Ramji Javeri bulk BUYs two consecutive days (Jun 29-30); out-of-universe microcap.
+- **LLOYDSENGG** — ₹1,073 cr preferential issue (~9% of mcap); capital raise, mechanism unclear.
+
+_Coverage note: the pack caps filings at 120 (most-recent-tagged first); this analysis queried the full 30-day store directly for materiality candidates. CARE notch parsing was limited to PR headers._
+
+_Research only, not investment advice._

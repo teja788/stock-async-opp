@@ -1,0 +1,5401 @@
+{
+  "generated_at": "2026-07-03T03:31:03.615138+05:30",
+  "window_since": "2026-06-03T03:23:13.367003+05:30",
+  "stats": {
+    "filings": 7653,
+    "investor_deals": 20,
+    "rating_actions": 56,
+    "company_news": 238
+  },
+  "confluence": [
+    {
+      "isin": "INE646L01027",
+      "symbol": "INDIGO",
+      "company": "InterGlobe Aviation Ltd.",
+      "market_cap_cr": 210622.01,
+      "signals": [
+        "news",
+        "rating outlook",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE528G01035",
+      "symbol": "YESBANK",
+      "company": "Yes Bank Ltd.",
+      "market_cap_cr": 76111.3,
+      "signals": [
+        "news",
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE481G01011",
+      "symbol": "ULTRACEMCO",
+      "company": "UltraTech Cement Ltd.",
+      "market_cap_cr": 339908.0,
+      "signals": [
+        "news",
+        "rating outlook",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE382Z01011",
+      "symbol": "GRSE",
+      "company": "Garden Reach Shipbuilders & Engineers Ltd.",
+      "market_cap_cr": 31749.23,
+      "signals": [
+        "news",
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE860A01027",
+      "symbol": "HCLTECH",
+      "company": "HCL Technologies Ltd.",
+      "market_cap_cr": 292397.41,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE095A01012",
+      "symbol": "INDUSINDBK",
+      "company": "IndusInd Bank Ltd.",
+      "market_cap_cr": 73507.28,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE115Q01022",
+      "symbol": "IKS",
+      "company": "Inventurus Knowledge Solutions Ltd.",
+      "market_cap_cr": 31559.17,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE457A01014",
+      "symbol": "MAHABANK",
+      "company": "Bank of Maharashtra",
+      "market_cap_cr": 70023.92,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE029A01011",
+      "symbol": "BPCL",
+      "company": "Bharat Petroleum Corporation Ltd.",
+      "market_cap_cr": 134687.78,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE192R01011",
+      "symbol": "DMART",
+      "company": "Avenue Supermarts Ltd.",
+      "market_cap_cr": 273157.35,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE548A01028",
+      "symbol": "HFCL",
+      "company": "HFCL Ltd.",
+      "market_cap_cr": 31346.74,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE607A01022",
+      "symbol": "PRIMO",
+      "company": "Primo Chemicals Limited",
+      "market_cap_cr": 601.5,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE735W01017",
+      "symbol": "UTKARSHBNK",
+      "company": "UTKARSH SMALL FINANCE BANK LIMITED",
+      "market_cap_cr": 2695.98,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE028A01039",
+      "symbol": "BANKBARODA",
+      "company": "Bank of Baroda",
+      "market_cap_cr": 134532.99,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE423A01024",
+      "symbol": "ADANIENT",
+      "company": "Adani Enterprises Ltd.",
+      "market_cap_cr": 413453.63,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE669C01036",
+      "symbol": "TECHM",
+      "company": "Tech Mahindra Ltd.",
+      "market_cap_cr": 139276.04,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE216P01012",
+      "symbol": "AAVAS",
+      "company": "Aavas Financiers Ltd.",
+      "market_cap_cr": 11938.36,
+      "signals": [
+        "rating outlook",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE901L01018",
+      "symbol": "APLLTD",
+      "company": "ALEMBIC PHARMACEUTICALS LIMITED",
+      "market_cap_cr": 16023.83,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE262H01021",
+      "symbol": "PERSISTENT",
+      "company": "Persistent Systems Ltd.",
+      "market_cap_cr": 72259.75,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE963C01033",
+      "symbol": "FAZE3Q",
+      "company": "Faze Three Ltd.",
+      "market_cap_cr": 1518.36,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE326A01037",
+      "symbol": "LUPIN",
+      "company": "Lupin Ltd.",
+      "market_cap_cr": 109676.37,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE964H01014",
+      "symbol": "SEPC",
+      "company": "SEPC LIMITED",
+      "market_cap_cr": 1076.54,
+      "signals": [
+        "rating downgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE953L01027",
+      "symbol": "JSFB",
+      "company": "JANA SMALL FINANCE BANK LIMITED",
+      "market_cap_cr": 5031.62,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE683C01011",
+      "symbol": "MAITHANALL",
+      "company": "Maithan Alloys Limited",
+      "market_cap_cr": 2966.03,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE688A01022",
+      "symbol": "TCI",
+      "company": "Transport Corporation of India Ltd",
+      "market_cap_cr": 7188.59,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE836B01017",
+      "symbol": "SATIN",
+      "company": "SATIN CREDITCARE NETWORK LIMITED",
+      "market_cap_cr": 2866.72,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE217B01036",
+      "symbol": "KAJARIACER",
+      "company": "Kajaria Ceramics Ltd.",
+      "market_cap_cr": 19156.47,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE18JU01028",
+      "symbol": "EBGNG",
+      "company": "GNG Electronics Limited",
+      "market_cap_cr": 7696.92,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE101A01026",
+      "symbol": "M&M",
+      "company": "Mahindra & Mahindra Ltd.",
+      "market_cap_cr": 394602.79,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE0RWQ01014",
+      "symbol": "TOLINS",
+      "company": "Tolins Tyres Limited",
+      "market_cap_cr": 433.21,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE02RE01045",
+      "symbol": "FIRSTCRY",
+      "company": "Brainbees Solutions Ltd.",
+      "market_cap_cr": 11807.03,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE439E01022",
+      "symbol": "SKIPPER",
+      "company": "Skipper Limited",
+      "market_cap_cr": 6391.54,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE075A01022",
+      "symbol": "WIPRO",
+      "company": "Wipro Ltd.",
+      "market_cap_cr": 182814.28,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE917I01010",
+      "symbol": "BAJAJ-AUTO",
+      "company": "Bajaj Auto Ltd.",
+      "market_cap_cr": 275566.7,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE237A01036",
+      "symbol": "KOTAKBANK",
+      "company": "Kotak Mahindra Bank Ltd.",
+      "market_cap_cr": 397462.5,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE080I01025",
+      "symbol": "LLOYDSENT",
+      "company": "LLOYDS ENTERPRISES LIMITED",
+      "market_cap_cr": 11069.92,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE530B01024",
+      "symbol": "IIFL",
+      "company": "IIFL Finance Ltd.",
+      "market_cap_cr": 22042.47,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE019A01038",
+      "symbol": "JSWSTEEL",
+      "company": "JSW Steel Ltd.",
+      "market_cap_cr": 299237.97,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE227C01017",
+      "symbol": "MMFL",
+      "company": "M.M.Forgings Ltd.",
+      "market_cap_cr": 2341.66,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE0DNW01011",
+      "symbol": "FAIRCHEMOR",
+      "company": "Fairchem Organics Limited",
+      "market_cap_cr": 944.88,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE376G01013",
+      "symbol": "BIOCON",
+      "company": "Biocon Ltd.",
+      "market_cap_cr": 67899.83,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE285J01028",
+      "symbol": "SIS",
+      "company": "SIS LIMITED",
+      "market_cap_cr": 6010.93,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE348L01012",
+      "symbol": "MASFIN",
+      "company": "MAS Financial Services Limited",
+      "market_cap_cr": 5786.55,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE085001019",
+      "symbol": "WEWORK",
+      "company": "WeWork India Management Limited",
+      "market_cap_cr": 10277.85,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE545U01014",
+      "symbol": "BANDHANBNK",
+      "company": "Bandhan Bank Ltd.",
+      "market_cap_cr": 33043.21,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE242A01010",
+      "symbol": "IOC",
+      "company": "Indian Oil Corporation Ltd.",
+      "market_cap_cr": 200097.95,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE093I01010",
+      "symbol": "OBEROIRLTY",
+      "company": "Oberoi Realty Ltd.",
+      "market_cap_cr": 67815.45,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE931S01010",
+      "symbol": "ADANIENSOL",
+      "company": "Adani Energy Solutions Ltd.",
+      "market_cap_cr": 186979.64,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE320J01015",
+      "symbol": "RITES",
+      "company": "RITES Ltd.",
+      "market_cap_cr": 10811.18,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE155C01010",
+      "symbol": "ALBERTDAVD",
+      "company": "Albert David Ltd.",
+      "market_cap_cr": 404.1,
+      "signals": [
+        "rating outlook",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE220Z01013",
+      "symbol": "SHINDL",
+      "company": "Sharat Industries Ltd.",
+      "market_cap_cr": 575.86,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE733E01010",
+      "symbol": "NTPC",
+      "company": "NTPC Ltd.",
+      "market_cap_cr": 347480.03,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE213A01029",
+      "symbol": "ONGC",
+      "company": "Oil & Natural Gas Corporation Ltd.",
+      "market_cap_cr": 296831.69,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE494B01023",
+      "symbol": "TVSMOTOR",
+      "company": "TVS Motor Company Ltd.",
+      "market_cap_cr": 172335.48,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE628A01036",
+      "symbol": "UPL",
+      "company": "UPL Ltd.",
+      "market_cap_cr": 49683.58,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE976G01028",
+      "symbol": "RBLBANK",
+      "company": "RBL Bank Ltd.",
+      "market_cap_cr": 22005.01,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE155A01022",
+      "symbol": "TMPV",
+      "company": "Tata Motors Passenger Vehicles Ltd.",
+      "market_cap_cr": 127417.37,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE090A01021",
+      "symbol": "ICICIBANK",
+      "company": "ICICI Bank Ltd.",
+      "market_cap_cr": 1004234.47,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE734I01027",
+      "symbol": "FINKURVE",
+      "company": "Finkurve Financial Services Limited",
+      "market_cap_cr": 920.33,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE397D01024",
+      "symbol": "BHARTIARTL",
+      "company": "Bharti Airtel Ltd.",
+      "market_cap_cr": 1143129.68,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE081A01020",
+      "symbol": "TATASTEEL",
+      "company": "Tata Steel Ltd.",
+      "market_cap_cr": 233627.63,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE1CDF01017",
+      "symbol": "VAML",
+      "company": "Vedanta Aluminium Metal Limited",
+      "market_cap_cr": 180562.17,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE465A01025",
+      "symbol": "BHARATFORG",
+      "company": "Bharat Forge Ltd.",
+      "market_cap_cr": 102698.22,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE758E01017",
+      "symbol": "JIOFIN",
+      "company": "Jio Financial Services Ltd.",
+      "market_cap_cr": 158277.3,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE021A01026",
+      "symbol": "ASIANPAINT",
+      "company": "Asian Paints Ltd.",
+      "market_cap_cr": 263069.59,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE205A01025",
+      "symbol": "VEDL",
+      "company": "Vedanta Ltd.",
+      "market_cap_cr": 107985.37,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE0ECP01024",
+      "symbol": "HMAAGRO",
+      "company": "HMA Agro Industries Limited",
+      "market_cap_cr": 1124.23,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE238A01034",
+      "symbol": "AXISBANK",
+      "company": "Axis Bank Ltd.",
+      "market_cap_cr": 424214.77,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE555B01013",
+      "symbol": "AXISCADES",
+      "company": "AXISCADES TECHNOLOGIES LIMITED",
+      "market_cap_cr": 7157.33,
+      "signals": [
+        "rating outlook",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE009A01021",
+      "symbol": "INFY",
+      "company": "Infosys Ltd.",
+      "market_cap_cr": 422393.96,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE995S01015",
+      "symbol": "NIVABUPA",
+      "company": "Niva Bupa Health Insurance Company Ltd.",
+      "market_cap_cr": 15911.04,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE047A01021",
+      "symbol": "GRASIM",
+      "company": "Grasim Industries Ltd.",
+      "market_cap_cr": 215559.6,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE229H01012",
+      "symbol": "NITINSPIN",
+      "company": "Nitin Spinners Ltd.",
+      "market_cap_cr": 3132.86,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE044A01036",
+      "symbol": "SUNPHARMA",
+      "company": "Sun Pharmaceutical Industries Ltd.",
+      "market_cap_cr": 449036.96,
+      "signals": [
+        "rating outlook",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE947N01017",
+      "symbol": "AEQUS",
+      "company": "Aequs Limited",
+      "market_cap_cr": 15435.37,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE531F01023",
+      "symbol": "NUVAMA",
+      "company": "Nuvama Wealth Management Ltd.",
+      "market_cap_cr": 33211.12,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE296H01011",
+      "symbol": "EMKAY",
+      "company": "Emkay Global Financial Services Ltd",
+      "market_cap_cr": 724.37,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE038A01020",
+      "symbol": "HINDALCO",
+      "company": "Hindalco Industries Ltd.",
+      "market_cap_cr": 213284.27,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE483A01010",
+      "symbol": "CENTRALBK",
+      "company": "Central Bank of India",
+      "market_cap_cr": 29462.31,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE522D01027",
+      "symbol": "MANAPPURAM",
+      "company": "Manappuram Finance Ltd.",
+      "market_cap_cr": 30288.89,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE299N01021",
+      "symbol": "WAAREERTL",
+      "company": "WAAREE RENEWABLE TECHNOLOGIES LIMITED",
+      "market_cap_cr": 10748.14,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE551D01018",
+      "symbol": "PAKKA",
+      "company": "PAKKA LIMITED",
+      "market_cap_cr": 361.97,
+      "signals": [
+        "rating other",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE839M01018",
+      "symbol": "SCHNEIDER",
+      "company": "Schneider Electric Infrastructure Ltd.",
+      "market_cap_cr": 34748.99,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE572J01011",
+      "symbol": "SPANDANA",
+      "company": "Spandana Sphoorty Financial Limited",
+      "market_cap_cr": 2023.28,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE340A01012",
+      "symbol": "BIRLACORPN",
+      "company": "Birla Corporation Ltd.",
+      "market_cap_cr": 7554.22,
+      "signals": [
+        "rating outlook",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE732I01021",
+      "symbol": "ANGELONE",
+      "company": "Angel One Ltd.",
+      "market_cap_cr": 31615.59,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE850M01015",
+      "symbol": "NORTHARC",
+      "company": "Northern Arc Capital Ltd.",
+      "market_cap_cr": 5014.02,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE242C01024",
+      "symbol": "ANANTRAJ",
+      "company": "Anant Raj Ltd.",
+      "market_cap_cr": 19334.39,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE148I01020",
+      "symbol": "SAMMAANCAP",
+      "company": "Sammaan Capital Ltd.",
+      "market_cap_cr": 20205.05,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE442H01029",
+      "symbol": "ASHOKA",
+      "company": "Ashoka Buildcon Limited",
+      "market_cap_cr": 3716.78,
+      "signals": [
+        "rating downgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE0LEZ01016",
+      "symbol": "ATHERENERG",
+      "company": "Ather Energy Ltd.",
+      "market_cap_cr": 43802.22,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE0VDM01015",
+      "symbol": "MEESHO",
+      "company": "Meesho Ltd.",
+      "market_cap_cr": 88071.51,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE257A01026",
+      "symbol": "BHEL",
+      "company": "Bharat Heavy Electricals Ltd.",
+      "market_cap_cr": 140013.77,
+      "signals": [
+        "rating upgrade",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE668A01016",
+      "symbol": "TMB",
+      "company": "Tamilnad Mercantile Bank Limited",
+      "market_cap_cr": 11808.27,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE704P01025",
+      "symbol": "COCHINSHIP",
+      "company": "Cochin Shipyard Ltd.",
+      "market_cap_cr": 39967.23,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE059A01026",
+      "symbol": "CIPLA",
+      "company": "Cipla Ltd.",
+      "market_cap_cr": 117642.47,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE467B01029",
+      "symbol": "TCS",
+      "company": "Tata Consultancy Services Ltd.",
+      "market_cap_cr": 747876.78,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE321T01012",
+      "symbol": "DOMS",
+      "company": "DOMS Industries Ltd.",
+      "market_cap_cr": 14189.54,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE819V01029",
+      "symbol": "CPPLUS",
+      "company": "Aditya Infotech Ltd.",
+      "market_cap_cr": 41034.95,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE420C01059",
+      "symbol": "PAISALO",
+      "company": "PAISALO DIGITAL LIMITED",
+      "market_cap_cr": 6542.19,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE464A01036",
+      "symbol": "BBL",
+      "company": "Bharat Bijlee Ltd.",
+      "market_cap_cr": 3169.73,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE750C01026",
+      "symbol": "MARKSANS",
+      "company": "Marksans Pharma Ltd.",
+      "market_cap_cr": 12101.74,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE807F01027",
+      "symbol": "VIYASH",
+      "company": "VIYASH SCIENTIFIC LIMITED",
+      "market_cap_cr": 12772.05,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE256A01028",
+      "symbol": "ZEEL",
+      "company": "Zee Entertainment Enterprises Ltd.",
+      "market_cap_cr": 10291.97,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE944F01028",
+      "symbol": "RADICO",
+      "company": "Radico Khaitan Ltd",
+      "market_cap_cr": 53180.12,
+      "signals": [
+        "news",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INE552D01024",
+      "symbol": "CONFIPET",
+      "company": "Confidence Petroleum India Limited",
+      "market_cap_cr": 2562.58,
+      "signals": [
+        "investor deal",
+        "tagged filing"
+      ]
+    },
+    {
+      "isin": "INF346A01034",
+      "symbol": "SENSEXIETF",
+      "company": "ICICI Prudential Mutual Fund",
+      "market_cap_cr": 497.46,
+      "signals": [
+        "news",
+        "rating other"
+      ]
+    },
+    {
+      "isin": "INE489L01022",
+      "symbol": "IIFLCAPS",
+      "company": "IIFL CAPITAL SERVICES LIMITED",
+      "market_cap_cr": 10559.38,
+      "signals": [
+        "news",
+        "rating outlook"
+      ]
+    },
+    {
+      "isin": "INE343H01029",
+      "symbol": "SOLARINDS",
+      "company": "Solar Industries India Ltd.",
+      "market_cap_cr": 168695.18,
+      "signals": [
+        "news",
+        "rating outlook"
+      ]
+    }
+  ],
+  "insider_accumulation": [
+    {
+      "symbol": "CONFIPET",
+      "company": "Confidence Petroleum India Limited",
+      "isin": "INE552D01024",
+      "n_buys": 2,
+      "cum_pct": 0.629999999999999,
+      "first_buy": "2026-07-02T00:00:00+05:30",
+      "last_buy": "2026-07-02T00:00:00+05:30",
+      "crossed_5pct": false
+    },
+    {
+      "symbol": "JMFINANCIL",
+      "company": "JM Financial Ltd.",
+      "isin": "INE780C01023",
+      "n_buys": 12,
+      "cum_pct": 0.06,
+      "first_buy": "2026-06-25T00:00:00+05:30",
+      "last_buy": "2026-06-25T00:00:00+05:30",
+      "crossed_5pct": false
+    },
+    {
+      "symbol": "SIYSIL",
+      "company": "Siyaram Silk Mills Ltd.",
+      "isin": "INE076B01028",
+      "n_buys": 2,
+      "cum_pct": 0.04000000000000001,
+      "first_buy": "2026-07-02T00:00:00+05:30",
+      "last_buy": "2026-07-02T00:00:00+05:30",
+      "crossed_5pct": false
+    }
+  ],
+  "hard_filings": [
+    {
+      "symbol": "HCLTECH",
+      "company": "HCL Technologies Ltd.",
+      "bse_code": "532281",
+      "isin": "INE860A01027",
+      "market_cap_cr": 292397.41,
+      "in_fno": true,
+      "published_at": "2026-07-02T23:44:50.673000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Updates - 'Hclsoftware Completes Acquisition Of Jaspersoft, From Cloud Software Group'",
+      "note": "HCL Technologies Ltd.   Technology Hub, Special Economic Zone   Plot No. 3A, Sector 126, NOIDA– 201304, UP, India   t: +91 120 4306000   Corporate Identity Number: L74140DL1991PLC046369  Registered Office:    806 Siddha…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 4.116339742970326,
+        "vol_ratio": 1.7829162824914384
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8121f723-e451-4e5f-a451-d3722978acf4.pdf"
+    },
+    {
+      "symbol": "AGARWALEYE",
+      "company": "Dr. Agarwal's Health Care Limited",
+      "bse_code": "544350",
+      "isin": "INE943P01029",
+      "market_cap_cr": 15099.49,
+      "in_fno": false,
+      "published_at": "2026-07-02T23:02:30.420000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Voting Results And The Consolidated Scrutinizer''s Report On The Hon''ble NCLT Convened Meeting Of The Unsecured Creditors Of Dr. Agarwal''s Health Care Limited Held On July 02, 2026.",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001  National Stock Exchange of India Limited  Exchange Plaza, Plot No C/1, G Block,  Bandra-Kurla Complex, Bandra (E),  Mumbai – 400 051    Scrip Cod…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5238704177323177,
+        "vol_ratio": 1.3312361174582594
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/80090efb-daf1-4480-b13c-1f49a9a9f251.pdf"
+    },
+    {
+      "symbol": "DRAGARWQ",
+      "company": "Dr.Agarwals Eye Hospital Ltd.",
+      "bse_code": "526783",
+      "isin": "INE934C01018",
+      "market_cap_cr": 2467.62,
+      "in_fno": false,
+      "published_at": "2026-07-02T22:59:27.813000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Voting Results Of The Hon''ble NCLT Convened Meeting Of The Unsecured Creditors",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001    Scrip Code – 526783  July 02, 2026    Dear Sir / Madam,    Sub: Consolidated Scrutinizer’s Report in relation to the Scheme of amalgamation  be…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5594076637726055,
+        "vol_ratio": 0.376940133037694
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a6dfcb3f-2c17-4a67-90cb-2e8d869647fd.pdf"
+    },
+    {
+      "symbol": "AGARWALEYE",
+      "company": "Dr. Agarwal's Health Care Limited",
+      "bse_code": "544350",
+      "isin": "INE943P01029",
+      "market_cap_cr": 15099.49,
+      "in_fno": false,
+      "published_at": "2026-07-02T22:58:18.373000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Summary Of The Proceedings Of The Hon''ble NCLT Convened Meeting Of The Unsecured Creditors Of Dr. Agarwal''s Health Care Limited Held On July 02, 2026",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001  National Stock Exchange of India Limited  Exchange Plaza, Plot No C/1, G Block,  Bandra-Kurla Complex, Bandra (E),  Mumbai – 400 051    Scrip Cod…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5238704177323177,
+        "vol_ratio": 1.3312361174582594
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0af82757-fde7-4102-b9bc-944e3f820261.pdf"
+    },
+    {
+      "symbol": "DRAGARWQ",
+      "company": "Dr.Agarwals Eye Hospital Ltd.",
+      "bse_code": "526783",
+      "isin": "INE934C01018",
+      "market_cap_cr": 2467.62,
+      "in_fno": false,
+      "published_at": "2026-07-02T22:56:30.093000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Summary Of The Proceedings Of The Honble NCLT Convened Meeting Of The Unsecured Creditors Of Dr. Agarwal''''s Eye Hospital Limited Held On July 02, 2026",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001    Scrip Code – 526783  July 02, 2026    Dear Sir / Madam,    Sub: Proceedings of the Hon'ble National Company Law Tribunal (“NCLT”) Convened  Mee…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5594076637726055,
+        "vol_ratio": 0.376940133037694
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/66b10618-74b3-4a49-b90f-39b6e4754a8e.pdf"
+    },
+    {
+      "symbol": "DRAGARWQ",
+      "company": "Dr.Agarwals Eye Hospital Ltd.",
+      "bse_code": "526783",
+      "isin": "INE934C01018",
+      "market_cap_cr": 2467.62,
+      "in_fno": false,
+      "published_at": "2026-07-02T22:52:26.760000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Voting Results Of The Hon''ble NCLT Convened Meeting Of The Secured Creditors",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001    Scrip Code – 526783  July 02, 2026    Dear Sir / Madam,    Sub: Consolidated Scrutinizer’s Report in relation to the Scheme of amalgamation  be…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5594076637726055,
+        "vol_ratio": 0.376940133037694
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/646721d5-2fd2-4c85-bc1d-9828705b4114.pdf"
+    },
+    {
+      "symbol": "AGARWALEYE",
+      "company": "Dr. Agarwal's Health Care Limited",
+      "bse_code": "544350",
+      "isin": "INE943P01029",
+      "market_cap_cr": 15099.49,
+      "in_fno": false,
+      "published_at": "2026-07-02T22:52:01.803000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Voting Results And The Consolidated Scrutinizer''s Report On The NCLT Convened Meeting Of The Equity Shareholders Of Dr. Agarwal''s Health Care Limited Held On July 02, 2026.",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001  National Stock Exchange of India Limited  Exchange Plaza, Plot No C/1, G Block,  Bandra-Kurla Complex, Bandra (E),  Mumbai – 400 051    Scrip Cod…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5238704177323177,
+        "vol_ratio": 1.3312361174582594
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8f8e3676-1b69-4c10-8cfc-cf1b217314ca.pdf"
+    },
+    {
+      "symbol": "DRAGARWQ",
+      "company": "Dr.Agarwals Eye Hospital Ltd.",
+      "bse_code": "526783",
+      "isin": "INE934C01018",
+      "market_cap_cr": 2467.62,
+      "in_fno": false,
+      "published_at": "2026-07-02T22:46:36.630000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Summary Of The Proceedings Of The Honble NCLT Convened Meeting Of The Secured Creditors Of Dr. Agarwal''s Eye Hospital Limited Held On July 02, 2026",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001    Scrip Code – 526783  July 02, 2026    Dear Sir / Madam,    Sub: Proceedings of the Hon'ble National Company Law Tribunal (“NCLT”) Convened  Mee…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5594076637726055,
+        "vol_ratio": 0.376940133037694
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5e412011-effe-402c-a816-ed0c4cce9f6c.pdf"
+    },
+    {
+      "symbol": "AGARWALEYE",
+      "company": "Dr. Agarwal's Health Care Limited",
+      "bse_code": "544350",
+      "isin": "INE943P01029",
+      "market_cap_cr": 15099.49,
+      "in_fno": false,
+      "published_at": "2026-07-02T22:46:22.653000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Summary Of The Proceedings Of The Hon''ble NCLT Convened Meeting Of The Secured Creditors Of Dr. Agarwal''s Health Care Limited Held On July 02, 2026",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001  National Stock Exchange of India Limited  Exchange Plaza, Plot No C/1, G Block,  Bandra-Kurla Complex, Bandra (E),  Mumbai – 400 051    Scrip Cod…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5238704177323177,
+        "vol_ratio": 1.3312361174582594
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0c15736f-27a5-4709-8100-2d8825fad192.pdf"
+    },
+    {
+      "symbol": "DRAGARWQ",
+      "company": "Dr.Agarwals Eye Hospital Ltd.",
+      "bse_code": "526783",
+      "isin": "INE934C01018",
+      "market_cap_cr": 2467.62,
+      "in_fno": false,
+      "published_at": "2026-07-02T21:46:25.177000+05:30",
+      "category": "AGM/EGM",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Shareholder Meeting / Postal Ballot-Scrutinizer\"s Report",
+      "note": "BSE Limited  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai - 400 001    Scrip Code – 526783  July 02, 2026    Dear Sir / Madam,     Sub: Voting Results and the Consolidated Scrutinizer’s Report in relation to the Sc…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5594076637726055,
+        "vol_ratio": 0.376940133037694
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/48c284d8-4cf6-4803-b426-4c7bfdd5c9c6.pdf"
+    },
+    {
+      "symbol": "INDUSINDBK",
+      "company": "IndusInd Bank Ltd.",
+      "bse_code": "532187",
+      "isin": "INE095A01012",
+      "market_cap_cr": 73507.28,
+      "in_fno": true,
+      "published_at": "2026-07-02T21:18:15.093000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma",
+        "overhang_resolution",
+        "rating_action",
+        "capital_action"
+      ],
+      "headline": "Intimation Under Regulations 29(3) Of The SEBI (Substantial Acquisition Of Shares And Takeovers) Regulation, 2011",
+      "note": "Solitaire Corporate Park Office:  IndusInd Bank Limited, Building No.7, Ground floor, Solitaire Corporate  Park, Andheri –Ghatkopar Link Road, Chakala Andheri (E), Mumbai – 400 093, India, Tel: (022) 66412442    Registe…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.24438187324019212,
+        "vol_ratio": 0.09532886571956115
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/620be042-f886-4f6f-b7f8-eb1f76f9b661.pdf"
+    },
+    {
+      "symbol": "IKS",
+      "company": "Inventurus Knowledge Solutions Ltd.",
+      "bse_code": "544309",
+      "isin": "INE115Q01022",
+      "market_cap_cr": 31559.17,
+      "in_fno": false,
+      "published_at": "2026-07-02T21:04:10.343000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "July 2, 2026    To,  Listing Department  National Stock Exchange of India Limited  Exchange Plaza,   Bandra-Kurla Complex, Bandra (East),   Mumbai - 400 051     Symbol: IKS     Department of Corporate Services  BSE Limi…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.1123046603936038,
+        "vol_ratio": 4.31697446488474
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/44e1f769-7764-41ee-b4ca-5ebcd7e22c6d.pdf"
+    },
+    {
+      "symbol": "CGCL",
+      "company": "Capri Global Capital Ltd.",
+      "bse_code": "531595",
+      "isin": "INE180C01042",
+      "market_cap_cr": 21932.3,
+      "in_fno": false,
+      "published_at": "2026-07-02T20:48:05.973000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "July 2, 2026   The Secretary  BSE Limited  Pheeroze Jeejeebhoy Towers   Dalal Street, Fort  Mumbai - 400 001  Scrip Code: 531595  The Secretary  National Stock Exchange of India Limited  Exchange Plaza, 5th Floor  Plot…",
+      "value_cr": 9550.0,
+      "px_since": {
+        "pct_change": 0.7291206363234544,
+        "vol_ratio": 0.06562950528230548
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c601c956-dfb0-483f-8e06-882954f7870e.pdf"
+    },
+    {
+      "symbol": "MAHABANK",
+      "company": "Bank of Maharashtra",
+      "bse_code": "532525",
+      "isin": "INE457A01014",
+      "market_cap_cr": 70023.92,
+      "in_fno": false,
+      "published_at": "2026-07-02T20:47:49.370000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action",
+        "capacity_capex",
+        "capital_action",
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "Restricted              Investor Services Department  Corporate Ofﬁce: Montclaire, 134/1, Baner - Pashan Link Road,   Pashan, Pune 411021   E-mail: investor_services@bankofmaharashtra.bank.in   Phone nos - 020-71658139…",
+      "value_cr": 288104.0,
+      "px_since": {
+        "pct_change": -0.23013698630136298,
+        "vol_ratio": 0.3972637423305353
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/62e37c08-d12e-4f49-b78e-f8cf23abb373.pdf"
+    },
+    {
+      "symbol": "BPCL",
+      "company": "Bharat Petroleum Corporation Ltd.",
+      "bse_code": "500547",
+      "isin": "INE029A01011",
+      "market_cap_cr": 134687.78,
+      "in_fno": true,
+      "published_at": "2026-07-02T20:36:10.323000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "Sec.3.4.                       2 nd July 2026  The Secretary,  BSE Ltd.,  Phiroze Jeejeebhoy Towers, Dalal  Street, Mumbai 400 001  BSE Scrip Code: 500547    The Secretary,  National Stock Exchange of India Ltd.,  Excha…",
+      "value_cr": 2312.0,
+      "px_since": {
+        "pct_change": 2.0545693622616703,
+        "vol_ratio": 1.067739901716082
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0f7f2861-f430-46e1-a08b-ff3c52cdf353.pdf"
+    },
+    {
+      "symbol": "BPCL",
+      "company": "Bharat Petroleum Corporation Ltd.",
+      "bse_code": "500547",
+      "isin": "INE029A01011",
+      "market_cap_cr": 134687.78,
+      "in_fno": true,
+      "published_at": "2026-07-02T20:35:34.253000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "Sec.3.4.                       2 nd July 2026  The Secretary,  BSE Ltd.,  Phiroze Jeejeebhoy Towers, Dalal  Street, Mumbai 400 001  BSE Scrip Code: 500547    The Secretary,  National Stock Exchange of India Ltd.,  Excha…",
+      "value_cr": 2312.0,
+      "px_since": {
+        "pct_change": 2.0545693622616703,
+        "vol_ratio": 1.067739901716082
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dfdb13a1-0ab5-4939-a376-f6ff66bc859e.pdf"
+    },
+    {
+      "symbol": "MANORAMA",
+      "company": "Manorama Industries Limited",
+      "bse_code": "541974",
+      "isin": "INE00VM01036",
+      "market_cap_cr": 9445.29,
+      "in_fno": false,
+      "published_at": "2026-07-02T20:17:48.127000+05:30",
+      "category": "Others",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Board Meeting Outcome for Outcome Of Board Meeting To Close QIP Issue.",
+      "note": "S Manorama  Industries Limited  KHASRA No. - 2449-2610,  Parswani Road, Near  Birkoni Industrial Area,  Mahasamund (C.G.)- 493445  Date: July 02, 2026  To To  The Manager, The Manager,  BSE Limited National Stock Exchan…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.9959777820341018,
+        "vol_ratio": 0.8253330844553861
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e2141eb6-e669-4c4b-969e-be2ab5fb26f4.pdf"
+    },
+    {
+      "symbol": "DMART",
+      "company": "Avenue Supermarts Ltd.",
+      "bse_code": "540376",
+      "isin": "INE192R01011",
+      "market_cap_cr": 273157.35,
+      "in_fno": true,
+      "published_at": "2026-07-02T20:00:20.593000+05:30",
+      "category": "Board Meeting",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Board Meeting Intimation for Consideration Of Financial Results And Raising Of Funds By Issue Of Debt Securities",
+      "note": "July 2, 2026  To,    BSE Limited  Corporate Services Department  Phiroze Jeejeebhoy Towers,  Dalal Street,  Mumbai – 400 001  The National Stock Exchange of India Ltd.  Corporate Communications Department  “Exchange Pla…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -3.344219162906644,
+        "vol_ratio": 0.8859880705121023
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9a091fc8-f83b-456d-bb8a-be95f2f2dc09.pdf"
+    },
+    {
+      "symbol": "NDLVENTURE",
+      "company": "NDL Ventures Limited",
+      "bse_code": "500189",
+      "isin": "INE353A01023",
+      "market_cap_cr": 447.83,
+      "in_fno": false,
+      "published_at": "2026-07-02T19:53:03.583000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+      "note": "July 02, 2026    To To  BSE Limited National Stock Exchange of India Limited  Phiroze Jeejeebhoy Towers, Exchange Plaza, Bandra-Kurla Complex,  Dalal Street, Mumbai - 400 001 Bandra (East), Mumbai - 400 051  Company Scr…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.1791555724610205,
+        "vol_ratio": 1.367673765890705
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/05b6f871-bf04-4594-945d-6ec73197bbf7.pdf"
+    },
+    {
+      "symbol": "NDLVENTURE",
+      "company": "NDL Ventures Limited",
+      "bse_code": "500189",
+      "isin": "INE353A01023",
+      "market_cap_cr": 447.83,
+      "in_fno": false,
+      "published_at": "2026-07-02T19:52:07.693000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+      "note": "July 02, 2026    To To  BSE Limited National Stock Exchange of India Limited  Phiroze Jeejeebhoy Towers, Exchange Plaza, Bandra-Kurla Complex,  Dalal Street, Mumbai - 400 001 Bandra (East), Mumbai - 400 051  Company Scr…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.1791555724610205,
+        "vol_ratio": 1.367673765890705
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0a439d1c-6eff-4a7a-b6b3-bf49250fb40f.pdf"
+    },
+    {
+      "symbol": "ADSL",
+      "company": "Allied Digital Services Limited",
+      "bse_code": "532875",
+      "isin": "INE102I01027",
+      "market_cap_cr": 712.2,
+      "in_fno": false,
+      "published_at": "2026-07-02T19:49:08.043000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Resignation of Chief Executive Officer (CEO)",
+      "note": "July 02, 2026    To,                   To,   Corporate Relationship Department                          Listing Compliance Department  BSE Limited…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.19896538002387582,
+        "vol_ratio": 0.2685676847036764
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/738d3207-260b-418c-8417-a20ab387ef48.pdf"
+    },
+    {
+      "symbol": "RAMCOSYS",
+      "company": "Ramco Systems Ltd",
+      "bse_code": "532370",
+      "isin": "INE246B01019",
+      "market_cap_cr": 2992.06,
+      "in_fno": false,
+      "published_at": "2026-07-02T19:33:26.823000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Meeting Updates",
+      "note": "Ramco Systems Limited  Corporate Office: 64, Sardar Patel Road, Taramani, Chennai 600 113, Tamilnadu, India.  Tel: +91 44 2235 4510 / 6653 4000, Fax: +91 44 2235 5704│CIN : L72300TN1997PLC037550  Registered Office: 47,…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.5430664309169069,
+        "vol_ratio": 1.8408374278845936
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5c6693a4-a3d4-4dd8-837d-faa8cbf27bf6.pdf"
+    },
+    {
+      "symbol": "SANDHAR",
+      "company": "Sandhar Technologies Limited",
+      "bse_code": "541163",
+      "isin": "INE278H01035",
+      "market_cap_cr": 4377.07,
+      "in_fno": false,
+      "published_at": "2026-07-02T19:20:16.900000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "Sandhar Technologies Limited    Corporate Office: 13, Sector-44, Gurugram-122 002, Haryana, India. Ph: + 91 12-4518900  Registered Office: B-6/20, L.S.C., Safdarjung Enclave, New Delhi-110 029, India, Ph: +91-11-4051180…",
+      "value_cr": 1.63,
+      "px_since": {
+        "pct_change": 2.8716933088131373,
+        "vol_ratio": 1.123517676047954
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/297f83fe-98b2-46ee-94f2-61933341190e.pdf"
+    },
+    {
+      "symbol": "BLS",
+      "company": "BLS International Services Ltd.",
+      "bse_code": "540073",
+      "isin": "INE153T01027",
+      "market_cap_cr": 10414.99,
+      "in_fno": false,
+      "published_at": "2026-07-02T19:20:05.093000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "July 02, 2026  National Stock Exchange of India Ltd.,   Exchange Plaza, C-1 Block G, Bandra Kurla Complex Bandra [E], Mumbai – 400051  BSE Limited,  Phiroze Jeejeebhoy Towers, Dalal Street, Fort,…",
+      "value_cr": 395.6,
+      "px_since": {
+        "pct_change": 2.9088689991863212,
+        "vol_ratio": 0.7028557955983099
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/384e612f-a5e4-4c68-999a-b6c8ea7e6fd6.pdf"
+    },
+    {
+      "symbol": "BLSE",
+      "company": "BLS E-Services Limited",
+      "bse_code": "544107",
+      "isin": "INE0NLT01010",
+      "market_cap_cr": 2289.58,
+      "in_fno": false,
+      "published_at": "2026-07-02T18:46:54.473000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+      "note": "July 02, 2026      Subject: Press Release    Dear Sir / Madam,  Pursuant to Regulation 30 read with Schedule III of Securities and Exchange Board of India  (Listing Obligations and Disclosure Requirements) Regulations 2…",
+      "value_cr": 157.0,
+      "px_since": {
+        "pct_change": -1.36986301369863,
+        "vol_ratio": 2.520751245544085
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5b625866-ac6e-4dbc-8407-2ee21ec8a9de.pdf"
+    },
+    {
+      "symbol": "HFCL",
+      "company": "HFCL Ltd.",
+      "bse_code": "500183",
+      "isin": "INE548A01028",
+      "market_cap_cr": 31346.74,
+      "in_fno": false,
+      "published_at": "2026-07-02T18:46:22.670000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "We wish to inform you that CARE Ratings Limited (a SEBI Registered Credit Rating Agency) vide its letter dated July 01, 2026, has assigned/upgraded the credit ratings of various bank facilities of HTL Limited, a materia…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -3.4872761545711484,
+        "vol_ratio": 0.7113618553070682
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d31f2bf4-dea7-47e4-ad38-c3a949eba3c7.pdf"
+    },
+    {
+      "symbol": "PRIMO",
+      "company": "Primo Chemicals Limited",
+      "bse_code": "506852",
+      "isin": "INE607A01022",
+      "market_cap_cr": 601.5,
+      "in_fno": false,
+      "published_at": "2026-07-02T18:21:37.553000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.4597749062109293,
+        "vol_ratio": 0.4346341719628132
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0ec16b09-afce-4156-a1f4-7357bc299cf3.pdf"
+    },
+    {
+      "symbol": "BLSE",
+      "company": "BLS E-Services Limited",
+      "bse_code": "544107",
+      "isin": "INE0NLT01010",
+      "market_cap_cr": 2289.58,
+      "in_fno": false,
+      "published_at": "2026-07-02T18:20:48.160000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "Pursuant to the requirements of Regulation 30 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 (including any statutory modification(s), amendment(s), or re-enactment(s) thereof for the ti…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.36986301369863,
+        "vol_ratio": 2.520751245544085
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/32232afa-67a0-4a82-8e3d-06b8a30477e2.pdf"
+    },
+    {
+      "symbol": "ABFRL",
+      "company": "Aditya Birla Fashion and Retail Ltd.",
+      "bse_code": "535755",
+      "isin": "INE647O01011",
+      "market_cap_cr": 7553.74,
+      "in_fno": false,
+      "published_at": "2026-07-02T18:13:35.297000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Pronouncement Of Order By Hon''ble NCLT Regarding Scheme Of Amalgamation Amongst Jaypore E-Commerce Private Limited, TG Apparel & Decor Private Limited And Aditya Birla Fashion And Retail Limited And Their Respective Shareholders And Creditors",
+      "note": "Pronouncement of order by Hon''ble NCLT regarding scheme of Amalgamation amongst Jaypore E-Commerce Private Limited, TG Apparel & Decor Private Limited and Aditya Birla Fashion and Retail Limited and their respective Sh…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 5.488324527015508,
+        "vol_ratio": 4.665469879736614
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/042a93c2-b27a-4cea-9d91-91eba840273e.pdf"
+    },
+    {
+      "symbol": "TEXRAIL",
+      "company": "Texmaco Rail & Engineering Limited",
+      "bse_code": "533326",
+      "isin": "INE621L01012",
+      "market_cap_cr": 4573.16,
+      "in_fno": false,
+      "published_at": "2026-07-02T18:10:39.607000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.40196516301920754,
+        "vol_ratio": 0.8558942206436884
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2765edbd-0607-4eb6-b62b-981ea31e00ff.pdf"
+    },
+    {
+      "symbol": "TVSHLTD",
+      "company": "TVS Holdings Limited",
+      "bse_code": "520056",
+      "isin": "INE105A01035",
+      "market_cap_cr": 28658.85,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:40:51.727000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.8935765288703794,
+        "vol_ratio": 1.256271322496488
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/75e606a7-d6ed-4f73-98e1-5070f3761fec.pdf"
+    },
+    {
+      "symbol": "ORIENTCER",
+      "company": "ORIENT CERATECH LIMITED",
+      "bse_code": "504879",
+      "isin": "INE569C01020",
+      "market_cap_cr": 490.76,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:39:01.527000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 4.111675126903565,
+        "vol_ratio": 0.35768835703757307
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6393e493-690a-4cf0-adf7-1fb21b190909.pdf"
+    },
+    {
+      "symbol": "M&MFIN",
+      "company": "Mahindra & Mahindra Financial Services Ltd.",
+      "bse_code": "532720",
+      "isin": "INE774D01024",
+      "market_cap_cr": 44221.93,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:38:28.400000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.9839707982859756,
+        "vol_ratio": 0.15455614872138712
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/13c4342c-94c9-4c2d-a6b0-607e9570612c.pdf"
+    },
+    {
+      "symbol": "J&KBANK",
+      "company": "Jammu & Kashmir Bank Ltd.",
+      "bse_code": "532209",
+      "isin": "INE168A01041",
+      "market_cap_cr": 18130.97,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:22:54.160000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Memorandum of Understanding /Agreements",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 5.578711125360704,
+        "vol_ratio": 1.2299179592504346
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/936310e9-3c3f-428a-8943-360d4ad27d5d.pdf"
+    },
+    {
+      "symbol": "MSUMI",
+      "company": "Motherson Sumi Wiring India Ltd.",
+      "bse_code": "543498",
+      "isin": "INE0FS801015",
+      "market_cap_cr": 27508.13,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:16:52.810000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.9245742092457311,
+        "vol_ratio": 0.40911622780545936
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bb2eddac-cd1b-4b2e-888e-13d6ae3fee2e.pdf"
+    },
+    {
+      "symbol": "UTKARSHBNK",
+      "company": "UTKARSH SMALL FINANCE BANK LIMITED",
+      "bse_code": "543942",
+      "isin": "INE735W01017",
+      "market_cap_cr": 2695.98,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:14:13.247000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.1577882670263,
+        "vol_ratio": 1.9996766243392914
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/32b9109e-0338-40d9-99fb-c2d102560221.pdf"
+    },
+    {
+      "symbol": "LENSKART",
+      "company": "Lenskart Solutions Ltd.",
+      "bse_code": "544600",
+      "isin": "INE956O01016",
+      "market_cap_cr": 92343.45,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:08:31.147000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Joint Venture",
+      "note": "Lenskart Solutions Limited has informed the Exchange about the incorporation of a Joint Venture Company in India with Mingfeng Glassesworld Limited, pursuant to a strategic partnership between the parties",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.6538425092390876,
+        "vol_ratio": 0.2495905255295162
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0a173f60-5a7f-4f8b-b904-555175b70054.pdf"
+    },
+    {
+      "symbol": "LENSKART",
+      "company": "Lenskart Solutions Ltd.",
+      "bse_code": "544600",
+      "isin": "INE956O01016",
+      "market_cap_cr": 92343.45,
+      "in_fno": false,
+      "published_at": "2026-07-02T17:02:05.020000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Restructuring",
+      "note": "Lenskart Solutions Limited has informed the Exchange about the incorporation of a Joint Venture Company in India with Mingfeng Glassesworld Limited, pursuant to a strategic partnership between the parties",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.6538425092390876,
+        "vol_ratio": 0.2495905255295162
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a28aed8f-f231-4ea3-b702-56208fdf6072.pdf"
+    },
+    {
+      "symbol": "LENSKART",
+      "company": "Lenskart Solutions Ltd.",
+      "bse_code": "544600",
+      "isin": "INE956O01016",
+      "market_cap_cr": 92343.45,
+      "in_fno": false,
+      "published_at": "2026-07-02T16:56:52.260000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Restructuring",
+      "note": "Lenskart Solutions Limited has informed the Exchange about approval of Scheme of Amalgamation of Dealskart Online Services Private Limited and Lenskart Eyetech Private Limited, wholly-owned subsidiaries of the Company,…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.6538425092390876,
+        "vol_ratio": 0.2495905255295162
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e4502c5f-5685-474b-a3f7-0a8d1ae79c6c.pdf"
+    },
+    {
+      "symbol": "JSWINFRA",
+      "company": "JSW Infrastructure Ltd.",
+      "bse_code": "543994",
+      "isin": "INE880J01026",
+      "market_cap_cr": 76319.2,
+      "in_fno": false,
+      "published_at": "2026-07-02T16:36:25.657000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.8625907990314667,
+        "vol_ratio": 0.6904653708214685
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/886a9c0d-103e-4522-8f4c-65c26b3f2d94.pdf"
+    },
+    {
+      "symbol": "BIKAJI",
+      "company": "Bikaji Foods International Ltd.",
+      "bse_code": "543653",
+      "isin": "INE00E101023",
+      "market_cap_cr": 16409.44,
+      "in_fno": false,
+      "published_at": "2026-07-02T16:13:59.403000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.9953703703703773,
+        "vol_ratio": 1.3022806626550776
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/98cef42f-5a75-456d-8546-fb2c25442deb.pdf"
+    },
+    {
+      "symbol": "NILE",
+      "company": "Nile Ltd.",
+      "bse_code": "530129",
+      "isin": "INE445D01013",
+      "market_cap_cr": 524.13,
+      "in_fno": false,
+      "published_at": "2026-07-02T16:07:17.663000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "As per the provisions of Regulation 30 read with Part-A of Schedule- III to the SEBI(LODR) Regulations, 2015. Please find the enclosed copy of the rating letter issued by Care Rating Limited in connection with the ratin…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.2936989190614345,
+        "vol_ratio": 0.2926443448457685
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ae3e0278-ffc9-4a3c-8325-dcb77effbdf7.pdf"
+    },
+    {
+      "symbol": "SANGHVIMOV",
+      "company": "Sanghvi Movers Ltd.",
+      "bse_code": "530073",
+      "isin": "INE989A01032",
+      "market_cap_cr": 3936.18,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:52:45.293000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.7109454422229753,
+        "vol_ratio": 1.3508173127175949
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4dfe94e2-dc5a-4e52-bb64-49f291d27d7c.pdf"
+    },
+    {
+      "symbol": "EKC",
+      "company": "Everest Kanto Cylinders Ltd.",
+      "bse_code": "532684",
+      "isin": "INE184H01027",
+      "market_cap_cr": 1329.66,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:49:41.967000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Change in Management",
+      "note": "Further to our letter dated May 29, 2026, pursuant to Regulation 30 of SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 as amended, we wish to inform that Mr. Narender Prasad Gupta has joined the…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.282051282051282,
+        "vol_ratio": 1.231656323192759
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2a6233b1-71de-4133-9dc7-da359ca5f57c.pdf"
+    },
+    {
+      "symbol": "KRISHIVAL",
+      "company": "KRISHIVAL FOODS LIMITED",
+      "bse_code": "544416",
+      "isin": "INE0GGO01015",
+      "market_cap_cr": 1034.23,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:48:09.947000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Intimation Of Meeting Of The Rights Issue Committee Scheduled To Be Held On Tuesday, July 7, 2026",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.21018793273985312,
+        "vol_ratio": 0.5451534836326583
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7464f47-d7b1-41e8-be0a-29a99f51d9fd.pdf"
+    },
+    {
+      "symbol": "THELEELA",
+      "company": "Leela Palaces Hotels & Resorts Ltd.",
+      "bse_code": "544408",
+      "isin": "INE0AQ201015",
+      "market_cap_cr": 15864.67,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:32:51.710000+05:30",
+      "category": "Insider Trading / SAST",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Disclosures under Reg. 31(1) and 31(2) of SEBI (SAST) Regulations, 2011",
+      "note": "The Exchange has received Disclosure under Regulation 31(1) and 31(2) of SEBI (Substantial Acquisition of Shares & Takeovers) Regulations, 2011 on July 01, 2026 for Project Ballet Bangalore Holdings (DIFC) Pvt Ltd & Oth…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.0003125976867795,
+        "vol_ratio": 0.4052855414590003
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/673BA285_CA46_4402_B5AB_D9B580BFA34B_153244.pdf"
+    },
+    {
+      "symbol": "RENUKA",
+      "company": "Shree Renuka Sugars Ltd.",
+      "bse_code": "532670",
+      "isin": "INE087H01022",
+      "market_cap_cr": 4933.84,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:24:46.197000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Resignation of Director",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.8264462809917411,
+        "vol_ratio": 0.3053981520287836
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/79928578-67de-40f5-b0f8-e7fa64f3b0fb.pdf"
+    },
+    {
+      "symbol": "TALBROAUTO",
+      "company": "Talbros Automotive Components Ltd.",
+      "bse_code": "505160",
+      "isin": "INE187D01029",
+      "market_cap_cr": 2645.98,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:24:25.440000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Joint Venture",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.6338772156356354,
+        "vol_ratio": 0.5561001828181243
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/631e1190-2949-4895-9a83-32913690f360.pdf"
+    },
+    {
+      "symbol": "TALBROAUTO",
+      "company": "Talbros Automotive Components Ltd.",
+      "bse_code": "505160",
+      "isin": "INE187D01029",
+      "market_cap_cr": 2645.98,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:17:27.833000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Memorandum of Understanding /Agreements",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.6338772156356354,
+        "vol_ratio": 0.5561001828181243
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/da89d02d-541a-43d5-9307-c77aebcdc1cd.pdf"
+    },
+    {
+      "symbol": "ONESOURCE",
+      "company": "Onesource Specialty Pharma Ltd.",
+      "bse_code": "544292",
+      "isin": "INE013P01021",
+      "market_cap_cr": 19345.33,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:04:22.063000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "approval_patent"
+      ],
+      "headline": "Completion Of US-FDA Inspection At Sterile Product Division (SPD) Facility At Bengaluru",
+      "note": "We wish to inform that a routine current Good Manufacturing  (cGMP) inspection was conducted by the United States Food and Drug Administration (USFDA) at the Sterile Product Division facility (SPD) of OneSource Specialt…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.3783521417303755,
+        "vol_ratio": 0.7029660233088735
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/eafb648a-7d51-446d-8afd-a02d2c8a82f0.pdf"
+    },
+    {
+      "symbol": "BORANA",
+      "company": "BORANA WEAVES LIMITED",
+      "bse_code": "544404",
+      "isin": "INE16SF01016",
+      "market_cap_cr": 842.92,
+      "in_fno": false,
+      "published_at": "2026-07-02T15:02:24.360000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "govt_pli"
+      ],
+      "headline": "Receipt Of Approval Under The Production Linked Incentive (PLI) Scheme",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.095975232198142,
+        "vol_ratio": 0.8895442543122665
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5fdc9c46-e81b-437a-9bb0-2f546c28c38f.pdf"
+    },
+    {
+      "symbol": "BANKBARODA",
+      "company": "Bank of Baroda",
+      "bse_code": "532134",
+      "isin": "INE028A01039",
+      "market_cap_cr": 134532.99,
+      "in_fno": true,
+      "published_at": "2026-07-02T14:06:51.677000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "overhang_resolution"
+      ],
+      "headline": "Disclosure Under Regulation 30- Settlement Of Litigation",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -4.180478821362808,
+        "vol_ratio": 1.2228953990282987
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c7cfcda1-b1ab-4c6e-9fa0-3509d8a5d9e2.pdf"
+    },
+    {
+      "symbol": "AJANTPHARM",
+      "company": "Ajanta Pharmaceuticals Ltd.",
+      "bse_code": "532331",
+      "isin": "INE031B01049",
+      "market_cap_cr": 41775.97,
+      "in_fno": false,
+      "published_at": "2026-07-02T13:51:16.270000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "approval_patent"
+      ],
+      "headline": "Update On US FDA Inspection At Paithan Manufacturing Facility",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.08963786303334528,
+        "vol_ratio": 2.1794199712522193
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0369eea4-06e4-4de2-9405-86296df061e7.pdf"
+    },
+    {
+      "symbol": "NBCC",
+      "company": "NBCC (India) Ltd.",
+      "bse_code": "534309",
+      "isin": "INE095N01031",
+      "market_cap_cr": 27823.5,
+      "in_fno": true,
+      "published_at": "2026-07-02T13:49:36.230000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "order_win"
+      ],
+      "headline": "General Update: Work Awarded By NBCC During The Quarter Ended June 30, 2026, In The Normal Course Of Business",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.3403542364767884,
+        "vol_ratio": 0.6187246205258329
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8d5ed55c-048f-480e-bea8-c39d8e448641.pdf"
+    },
+    {
+      "symbol": "ADANIENT",
+      "company": "Adani Enterprises Ltd.",
+      "bse_code": "512599",
+      "isin": "INE423A01024",
+      "market_cap_cr": 413453.63,
+      "in_fno": true,
+      "published_at": "2026-07-02T13:35:15.810000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.1119064662371692,
+        "vol_ratio": 0.9295301305028858
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e52f6b26-4539-40b2-906c-5edc49dfe59e.pdf"
+    },
+    {
+      "symbol": "SRM",
+      "company": "SRM CONTRACTORS LIMITED",
+      "bse_code": "544158",
+      "isin": "INE0R6Z01013",
+      "market_cap_cr": 1186.1,
+      "in_fno": false,
+      "published_at": "2026-07-02T12:39:46.427000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.7699805068226209,
+        "vol_ratio": 0.6314625531739902
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/48a8c30f-061e-486e-b462-a48f542889ef.pdf"
+    },
+    {
+      "symbol": "KERNEX",
+      "company": "Kernex Microsystems (India) Ltd.",
+      "bse_code": "532686",
+      "isin": "INE202H01019",
+      "market_cap_cr": 4014.77,
+      "in_fno": false,
+      "published_at": "2026-07-02T12:38:23.420000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capacity_capex"
+      ],
+      "headline": "Successful Commissioning Of Kernex-Built Kavach System On North Central Railway",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 4.129170025929881,
+        "vol_ratio": 0.9419869451765055
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/aee20e40-f3c2-4884-aad1-912d938d837c.pdf"
+    },
+    {
+      "symbol": "GUJTHEM",
+      "company": "Gujarat Themis Biosyn Ltd.",
+      "bse_code": "506879",
+      "isin": "INE942C01045",
+      "market_cap_cr": 4312.85,
+      "in_fno": false,
+      "published_at": "2026-07-02T09:39:22.657000+05:30",
+      "category": "Insider Trading / SAST",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Disclosures under Reg. 10(5) in respect of acquisition under Reg. 10(1)(a) of SEBI (SAST) Regulations, 2011",
+      "note": "The Exchange has received the disclosure under Regulation 10(5) in respect of acquisition under Regulation 10(1)(a) of SEBI (Substantial Acquisition of Shares & Takeovers) Regulations, 2011 for Sachin D Patel",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.15182186234818387,
+        "vol_ratio": 0.3668415188933247
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/068F46D9_D7DA_4B4F_BD1C_2715E3077F81_093917.pdf"
+    },
+    {
+      "symbol": "NCLIND",
+      "company": "NCL Industries Limited",
+      "bse_code": "502168",
+      "isin": "INE732C01016",
+      "market_cap_cr": 867.79,
+      "in_fno": false,
+      "published_at": "2026-07-02T09:38:16.250000+05:30",
+      "category": "Insider Trading / SAST",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Disclosures under Reg. 29(2) of SEBI (SAST) Regulations, 2011",
+      "note": "The Exchange has received the disclosure under Regulation 29(2) of SEBI (Substantial Acquisition of Shares & Takeovers) Regulations, 2011 for Kalidindi Ravi, Kakatiya Industries Pvt Ltd & Vikram Chemicals Pvt Ltd",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.39246467817896385,
+        "vol_ratio": 0.3394518759473783
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/87ABC1B5_03BF_427C_A2AA_823AE3D41486_093811.pdf"
+    },
+    {
+      "symbol": "SOUTHWEST",
+      "company": "South West Pinnacle Exploration Limited",
+      "bse_code": "543986",
+      "isin": "INE980Y01015",
+      "market_cap_cr": 646.71,
+      "in_fno": false,
+      "published_at": "2026-07-02T08:41:56.627000+05:30",
+      "category": "Board Meeting",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Board Meeting Intimation for Allotment Of Equity Shares Pursuant To The Conversion Of Fully Convertible Warrants",
+      "note": "South West Pinnacle Exploration Ltdhas informed BSE that the meeting of the Board of Directors of the Company is scheduled on 10/07/2026 ,inter alia, to consider and approve Allotment of 28,21,411 equity shares pursuant…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.1174458380843733,
+        "vol_ratio": 0.4000796207692251
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2dd4ec54-8f20-4f1e-a8cd-8366cc697976.pdf"
+    },
+    {
+      "symbol": "MEDIASSIST",
+      "company": "Medi Assist Healthcare Services Limited",
+      "bse_code": "544088",
+      "isin": "INE456Z01021",
+      "market_cap_cr": 2804.68,
+      "in_fno": false,
+      "published_at": "2026-07-01T23:15:17.567000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Completion Of Acquisition Of Additional Stake In Mayfair We Care Limited, UK",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.694201312910275,
+        "vol_ratio": 0.541912470846481
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b453591a-6086-41a2-a631-88bc48902aa5.pdf"
+    },
+    {
+      "symbol": "NDLVENTURE",
+      "company": "NDL Ventures Limited",
+      "bse_code": "500189",
+      "isin": "INE353A01023",
+      "market_cap_cr": 447.83,
+      "in_fno": false,
+      "published_at": "2026-07-01T22:54:54.530000+05:30",
+      "category": "AGM/EGM",
+      "candidate_tags": [
+        "overhang_resolution",
+        "jv_ma"
+      ],
+      "headline": "Notice For NCLT Convening The Meeting Of The Equity Shareholders Of NDL Ventures Limited Pursuant To Proposed Scheme Of Merger By Absorption Of Hinduja Leyland Finance Limited ('Transferor Company/HLFL) Into NDL Ventures Limited (Formerly Known As NXTDIGITAL Limited) ('Transferee Company/NDL') And Their Respective Shareholders, Under Sections 230 To 232 And Other Applicable Provisions Of The Companies Act, 2013.",
+      "note": "The Exchange and Investors are hereby informed that as directed by the Hon''ble Company Law Tribunal (\"NCLT) vide Order dated June 17,2026, a meeting of equity shareholders of the company is scheduled to be held on July…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.371951219512204,
+        "vol_ratio": 0.8259342063238582
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f4de4bb2-74ee-4b3b-b28a-e2323b3b94bf.pdf"
+    },
+    {
+      "symbol": "TECHM",
+      "company": "Tech Mahindra Ltd.",
+      "bse_code": "532755",
+      "isin": "INE669C01036",
+      "market_cap_cr": 139276.04,
+      "in_fno": true,
+      "published_at": "2026-07-01T22:53:10.323000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.1315115286080175,
+        "vol_ratio": 1.5430076928164573
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e3692f1f-dd58-4b7b-9cc5-10d9a2dd798d.pdf"
+    },
+    {
+      "symbol": "AAVAS",
+      "company": "Aavas Financiers Ltd.",
+      "bse_code": "541988",
+      "isin": "INE216P01012",
+      "market_cap_cr": 11938.36,
+      "in_fno": false,
+      "published_at": "2026-07-01T22:38:07.873000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.0709592641261467,
+        "vol_ratio": 0.0603473252618548
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7327db58-0bc2-4a15-b462-67e0026038cb.pdf"
+    },
+    {
+      "symbol": "UTKARSHBNK",
+      "company": "UTKARSH SMALL FINANCE BANK LIMITED",
+      "bse_code": "543942",
+      "isin": "INE735W01017",
+      "market_cap_cr": 2695.98,
+      "in_fno": false,
+      "published_at": "2026-07-01T22:08:41.757000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Intimation Of Newspaper Publication Regarding Hearing Of Petition In Connection With The Scheme Of Amalgamation Of Utkarsh Coreinvest Limited With Utkarsh Small Finance Bank Limited",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 6.018194541637518,
+        "vol_ratio": 1.8731482440518388
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4929aaac-1da1-4cee-a3e0-74dcc0c10796.pdf"
+    },
+    {
+      "symbol": "HFCL",
+      "company": "HFCL Ltd.",
+      "bse_code": "500183",
+      "isin": "INE548A01028",
+      "market_cap_cr": 31346.74,
+      "in_fno": false,
+      "published_at": "2026-07-01T21:35:39.460000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "We wish to inform you that CARE Ratings Limited (a SEBI Registered Credit Rating Agency) vide its letter dated July 01, 2026, has upgraded the Company''s long-term credit rating to CARE A; Positive from CARE A-; Stable…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -3.7367802585193837,
+        "vol_ratio": 0.5073708162446403
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0b106123-8ef9-4197-b752-9d37a9e4cb4e.pdf"
+    },
+    {
+      "symbol": "ATL",
+      "company": "Allcargo Terminals Limited",
+      "bse_code": "543954",
+      "isin": "INE0NN701020",
+      "market_cap_cr": 599.15,
+      "in_fno": false,
+      "published_at": "2026-07-01T20:50:43.477000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Memorandum of Understanding /Agreements",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.5023022185014692,
+        "vol_ratio": 0.7354038693380791
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/aa5d4ce8-062b-420e-b0c8-ae06a1dcca68.pdf"
+    },
+    {
+      "symbol": "ADVENTHTL",
+      "company": "Advent Hotels International Limited",
+      "bse_code": "544446",
+      "isin": "INE28GN01010",
+      "market_cap_cr": 765.45,
+      "in_fno": false,
+      "published_at": "2026-07-01T20:00:21.397000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.17649135192375573,
+        "vol_ratio": 0.632997823344286
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a20fdeee-1dfb-465b-81c7-c4a52fbe147d.pdf"
+    },
+    {
+      "symbol": "SHREECEM",
+      "company": "Shree Cement Ltd.",
+      "bse_code": "500387",
+      "isin": "INE070A01015",
+      "market_cap_cr": 94586.58,
+      "in_fno": true,
+      "published_at": "2026-07-01T19:44:22.517000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.7935867538236834,
+        "vol_ratio": 0.27848759537707
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f55e6306-f98a-44e3-aeaf-8b0f07490917.pdf"
+    },
+    {
+      "symbol": "EMBDL",
+      "company": "EMBASSY DEVELOPMENTS LIMITED",
+      "bse_code": "532832",
+      "isin": "INE069I01010",
+      "market_cap_cr": 8834.69,
+      "in_fno": false,
+      "published_at": "2026-07-01T19:32:25.070000+05:30",
+      "category": "Board Meeting",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Board Meeting Intimation for Consideration And Approval Of The Raising Of Funds By Way Of Issuance Of Non-Convertible Debentures.",
+      "note": "Embassy Developments Ltdhas informed BSE that the meeting of the Board of Directors of the Company is scheduled on 06/07/2026 ,inter alia, to consider and approve the raising of funds by way of issuance of non-convertib…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.056224899598395,
+        "vol_ratio": 1.2325685306069025
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/57760b51-b597-4dae-9bfa-1845dc272e15.pdf"
+    },
+    {
+      "symbol": "SHAH",
+      "company": "SHAH METACORP LIMITED",
+      "bse_code": "533275",
+      "isin": "INE482J01021",
+      "market_cap_cr": 469.15,
+      "in_fno": false,
+      "published_at": "2026-07-01T19:31:25.943000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+      "note": "Intimation as per Regulation 92 of Securities and Exchange Board of India (Issue of Capital and Disclosure Requirements), 2018 ('SEBI ICDR Regulations') - Issue of advertisement in newspapers in respect of certain matte…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 15.291262135922326,
+        "vol_ratio": 0.7883192715428894
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c51d41f3-bd3f-4587-aef2-3b2c5e9982b5.pdf"
+    },
+    {
+      "symbol": "ENDURANCE",
+      "company": "Endurance Technologies Ltd.",
+      "bse_code": "540153",
+      "isin": "INE913H01037",
+      "market_cap_cr": 37446.56,
+      "in_fno": false,
+      "published_at": "2026-07-01T19:31:13.103000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "Endurance Technologies Limited has informed the exchange about update on acquisition of additional stake in Stoeferle GmbH and Stoeferle Automotive GmbH by Endurance Overseas SpA, Italy (\"EOSpA\"), a wholly-owned subsidi…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.40963675133739175,
+        "vol_ratio": 2.548094718359987
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c7be2c12-e666-410b-abe4-6d06144e9884.pdf"
+    },
+    {
+      "symbol": "PNCINFRA",
+      "company": "PNC Infratech Limited",
+      "bse_code": "539150",
+      "isin": "INE195J01029",
+      "market_cap_cr": 6047.91,
+      "in_fno": false,
+      "published_at": "2026-07-01T19:04:43.483000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.376452532339394,
+        "vol_ratio": 0.431824487016484
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/13221ea8-9645-4d7f-a805-fec697931bc3.pdf"
+    },
+    {
+      "symbol": "GANECOS",
+      "company": "Ganesha Ecosphere Limited",
+      "bse_code": "514167",
+      "isin": "INE845D01014",
+      "market_cap_cr": 2458.13,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:58:49.637000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Resignation of Director",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.5104570100697108,
+        "vol_ratio": 0.5780557071109805
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5b6999bb-c108-4286-89d0-ecd71b48a58b.pdf"
+    },
+    {
+      "symbol": "HINDCOPPER",
+      "company": "Hindustan Copper Ltd.",
+      "bse_code": "513599",
+      "isin": "INE531E01026",
+      "market_cap_cr": 47843.51,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:48:21.320000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Contact Details Of Key Managerial Personnel Pursuant To Regulation 30(5) Of SEBI (Listing Obligations And Disclosure Requirements) Regulations, 2015",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.237648467910967,
+        "vol_ratio": 0.7474634797215117
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7c4cb1c3-04ce-4275-8075-b551c27ce51f.pdf"
+    },
+    {
+      "symbol": "ASTERDM",
+      "company": "Aster DM Healthcare Ltd.",
+      "bse_code": "540975",
+      "isin": "INE914M01019",
+      "market_cap_cr": 40962.65,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:44:15.387000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Resignation of Director",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.7390417940876743,
+        "vol_ratio": 0.30516319265246816
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ce8b41e3-ac6d-4020-95b5-d8b6d6da3f31.pdf"
+    },
+    {
+      "symbol": "APLLTD",
+      "company": "ALEMBIC PHARMACEUTICALS LIMITED",
+      "bse_code": "533573",
+      "isin": "INE901L01018",
+      "market_cap_cr": 16023.83,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:43:57.970000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.0139032238479644,
+        "vol_ratio": 1.2398807509941503
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6f651d40-6c60-4568-b972-99178c2a9ed6.pdf"
+    },
+    {
+      "symbol": "PARACABLES",
+      "company": "Paramount Communications Ltd.",
+      "bse_code": "530555",
+      "isin": "INE074B01023",
+      "market_cap_cr": 2192.32,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:41:33.640000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Preferential Issue",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 4.2525399129172605,
+        "vol_ratio": 0.5940256812887948
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/77aaa33d-b66f-4985-b25b-67ee0f47693a.pdf"
+    },
+    {
+      "symbol": "PERSISTENT",
+      "company": "Persistent Systems Ltd.",
+      "bse_code": "533179",
+      "isin": "INE262H01021",
+      "market_cap_cr": 72259.75,
+      "in_fno": true,
+      "published_at": "2026-07-01T18:32:54.477000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 5.888947964585404,
+        "vol_ratio": 1.0918010165193424
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f7e83f18-0b8e-45af-b872-549f5464175b.pdf"
+    },
+    {
+      "symbol": "FAZE3Q",
+      "company": "Faze Three Ltd.",
+      "bse_code": "530079",
+      "isin": "INE963C01033",
+      "market_cap_cr": 1518.36,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:27:04.447000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "govt_pli"
+      ],
+      "headline": "Receipt Of Approval Under Production Linked Incentive (PLI) Scheme Of Government Of India",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 4.00633016824922,
+        "vol_ratio": 1.3186008845698625
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1ef63952-38cf-4cf2-a877-d2861fb276f7.pdf"
+    },
+    {
+      "symbol": "LUPIN",
+      "company": "Lupin Ltd.",
+      "bse_code": "500257",
+      "isin": "INE326A01037",
+      "market_cap_cr": 109676.37,
+      "in_fno": true,
+      "published_at": "2026-07-01T18:22:46.033000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.8863086998739859,
+        "vol_ratio": 0.4076081282765037
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d6b6a7a5-bbbb-4c97-9ab7-5cd7122b2371.pdf"
+    },
+    {
+      "symbol": "DEVYANI",
+      "company": "Devyani International Ltd.",
+      "bse_code": "543330",
+      "isin": "INE872J01023",
+      "market_cap_cr": 14092.5,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:22:27.467000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.511210762331836,
+        "vol_ratio": 0.10410083002730143
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1a7e785f-b0fb-4231-8796-5f6454b46053.pdf"
+    },
+    {
+      "symbol": "SEPC",
+      "company": "SEPC LIMITED",
+      "bse_code": "532945",
+      "isin": "INE964H01014",
+      "market_cap_cr": 1076.54,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:17:10.920000+05:30",
+      "category": "Board Meeting",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Board Meeting Intimation for Consideration And Approval Of Fund Raising By Way Of Preferential Issue Of Securities For Consideration Other Than Cash.",
+      "note": "SEPC Ltdhas informed BSE that the meeting of the Board of Directors of the Company is scheduled on 06/07/2026 ,inter alia, to consider and approve We inform the Exchange that the meeeting of the Board of Directors of th…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.786377708978324,
+        "vol_ratio": 0.5337797853809152
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3b9eed30-891d-40a5-a08c-004b1c48ae65.pdf"
+    },
+    {
+      "symbol": "ALLCARGO",
+      "company": "Allcargo Logistics Ltd",
+      "bse_code": "532749",
+      "isin": "INE418H01029",
+      "market_cap_cr": 1255.14,
+      "in_fno": false,
+      "published_at": "2026-07-01T18:02:42.227000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.4567901234568046,
+        "vol_ratio": 0.7955361832334719
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5afd2e59-f2c1-4ca3-8c39-0396237709dc.pdf"
+    },
+    {
+      "symbol": "RAJPALAYAM",
+      "company": "Rajapalayam Mills Limited",
+      "bse_code": "532503",
+      "isin": "INE296E01026",
+      "market_cap_cr": 769.89,
+      "in_fno": false,
+      "published_at": "2026-07-01T17:57:43.427000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.23894862604540024,
+        "vol_ratio": 0.044931021389697505
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9beb87b1-6e3e-4eda-a702-cf10badbe455.pdf"
+    },
+    {
+      "symbol": "ASTERDM",
+      "company": "Aster DM Healthcare Ltd.",
+      "bse_code": "540975",
+      "isin": "INE914M01019",
+      "market_cap_cr": 40962.65,
+      "in_fno": false,
+      "published_at": "2026-07-01T17:54:48.590000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Update On Scheme Of Amalgamation Of The Company With Regard To 'Effective Date' Of The Scheme, Change In Promoter Category, And Amended MOA & AOA",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.7390417940876743,
+        "vol_ratio": 0.30516319265246816
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3eb889bf-6016-4899-bdee-00c907489edc.pdf"
+    },
+    {
+      "symbol": "TREL",
+      "company": "Transindia Real Estate Limited",
+      "bse_code": "543955",
+      "isin": "INE0O3901029",
+      "market_cap_cr": 662.64,
+      "in_fno": false,
+      "published_at": "2026-07-01T17:40:22.593000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Update On Private Placement/ Preferential Issue By Wholly Owned Subsidiary",
+      "note": "The Board of Directors of Allcargo Group Services Private Limited (AGSPL) has by way of resolution passed on July 01, 2026 approved the allotment of equity shares by way of preferential allotment on private placement ba…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.4696048632218788,
+        "vol_ratio": 0.2845528455284553
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a863adde-886b-454d-8b88-aa7359a51bf3.pdf"
+    },
+    {
+      "symbol": "HAVELLS",
+      "company": "Havells India Ltd.",
+      "bse_code": "517354",
+      "isin": "INE176B01034",
+      "market_cap_cr": 74479.02,
+      "in_fno": true,
+      "published_at": "2026-07-01T17:35:25.447000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 2.35004958820232,
+        "vol_ratio": 1.1747363980641006
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5e59b489-5756-4766-b42e-34b5e6fa8d6b.pdf"
+    },
+    {
+      "symbol": "GRWRHITECH",
+      "company": "GARWARE HI-TECH FILMS LIMITED",
+      "bse_code": "500655",
+      "isin": "INE291A01017",
+      "market_cap_cr": 16115.85,
+      "in_fno": false,
+      "published_at": "2026-07-01T17:11:41.817000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.7596571659349842,
+        "vol_ratio": 0.7685437223545424
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e11904be-0cff-4ea2-a849-c656b68cede8.pdf"
+    },
+    {
+      "symbol": "JSFB",
+      "company": "JANA SMALL FINANCE BANK LIMITED",
+      "bse_code": "544118",
+      "isin": "INE953L01027",
+      "market_cap_cr": 5031.62,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:57:45.457000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.8877986348122793,
+        "vol_ratio": 0.7553875775511659
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a62a31b3-66c8-4da1-b9cf-85e7eb761842.pdf"
+    },
+    {
+      "symbol": "MAITHANALL",
+      "company": "Maithan Alloys Limited",
+      "bse_code": "590078",
+      "isin": "INE683C01011",
+      "market_cap_cr": 2966.03,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:57:10.790000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Scheme Of Amalgamation - Update",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.8032324019082745,
+        "vol_ratio": 0.35850301734076473
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/030981f4-be4e-4fe9-89d0-27778395a3db.pdf"
+    },
+    {
+      "symbol": "STUDDS",
+      "company": "Studds Accessories Limited",
+      "bse_code": "544599",
+      "isin": "INE00Q601028",
+      "market_cap_cr": 1848.23,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:54:27.977000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Change in Management",
+      "note": "1. Change in designation of Mr. Manish Mehta from the position of Cheif Financial Officer (CFO) and Key Managerial Personnel (KMP) to Vice President Taxation & Compliance in the category of Senior Management of the Comp…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.14882534282981724,
+        "vol_ratio": 0.07150164102126934
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/64285ea0-cac6-4b0e-9f88-368e68b12d62.pdf"
+    },
+    {
+      "symbol": "TCI",
+      "company": "Transport Corporation of India Ltd",
+      "bse_code": "532349",
+      "isin": "INE688A01022",
+      "market_cap_cr": 7188.59,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:37:34.087000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.336073997944504,
+        "vol_ratio": 0.7707424921697477
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8dcf179d-70b5-4f74-9745-e5d91a66f7e8.pdf"
+    },
+    {
+      "symbol": "MAXIND",
+      "company": "Max India Limited",
+      "bse_code": "543223",
+      "isin": "INE0CG601016",
+      "market_cap_cr": 830.65,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:27:23.170000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "mgmt_change"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Resignation of Director",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.0,
+        "vol_ratio": 0.3580033127541033
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c9a3053a-7dac-490d-b0b6-a65fe44dd654.pdf"
+    },
+    {
+      "symbol": "IOLCP",
+      "company": "IOL Chemicals & Pharmaceuticals Ltd",
+      "bse_code": "524164",
+      "isin": "INE485C01029",
+      "market_cap_cr": 4408.78,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:12:22.477000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.443526170798898,
+        "vol_ratio": 1.5504603512235968
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/76c80ddd-3f7e-48cc-ae16-ca01fea09b02.pdf"
+    },
+    {
+      "symbol": "LATENTVIEW",
+      "company": "Latent View Analytics Ltd.",
+      "bse_code": "543398",
+      "isin": "INE0I7C01011",
+      "market_cap_cr": 5774.24,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:06:27.960000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "Please be informed that there is a delay in the acquisition of the remaining equity stake in the target company beyond the originally indicated timeline. This delay is on account of a disagreement between the parties on…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.103639386661753,
+        "vol_ratio": 1.2848968371955105
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c6583f02-a3d4-424a-ac5e-d471d8e632d6.pdf"
+    },
+    {
+      "symbol": "RCF",
+      "company": "Rashtriya Chemicals & Fertilizers Limited",
+      "bse_code": "524230",
+      "isin": "INE027A01015",
+      "market_cap_cr": 7307.11,
+      "in_fno": false,
+      "published_at": "2026-07-01T16:02:46.353000+05:30",
+      "category": "Board Meeting",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Board Meeting Intimation for Intimation Of Board Meeting Of Rashtriya Chemicals And Fertilizers Limited",
+      "note": "Rashtriya Chemicals And Fertilizers Ltdhas informed BSE that the meeting of the Board of Directors of the Company is scheduled on 07/07/2026 ,inter alia, to consider and approve Raising of funds by way of Further Public…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.1454753722794961,
+        "vol_ratio": 0.3735727188497764
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/737619ba-0552-48c1-9f2d-dcc2422b37c3.pdf"
+    },
+    {
+      "symbol": "SHREECEM",
+      "company": "Shree Cement Ltd.",
+      "bse_code": "500387",
+      "isin": "INE070A01015",
+      "market_cap_cr": 94586.58,
+      "in_fno": true,
+      "published_at": "2026-07-01T16:01:08.177000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.7935867538236834,
+        "vol_ratio": 0.27848759537707
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/090980a9-c270-4d97-b306-3b158d18d059.pdf"
+    },
+    {
+      "symbol": "SATIN",
+      "company": "SATIN CREDITCARE NETWORK LIMITED",
+      "bse_code": "539404",
+      "isin": "INE836B01017",
+      "market_cap_cr": 2866.72,
+      "in_fno": false,
+      "published_at": "2026-07-01T15:57:38.237000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 5.573637103336041,
+        "vol_ratio": 1.6751584441406735
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e4d378e3-2d5b-4684-ba82-38915f9b7bac.pdf"
+    },
+    {
+      "symbol": "TEAMLEASE",
+      "company": "TeamLease Services Limited",
+      "bse_code": "539658",
+      "isin": "INE985S01024",
+      "market_cap_cr": 2461.93,
+      "in_fno": false,
+      "published_at": "2026-07-01T15:22:32.440000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Public Announcement-Buyback of Shares",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.711178080293744,
+        "vol_ratio": 1.8183042629133275
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/89285647-7d08-4775-8764-eb97564adbf7.pdf"
+    },
+    {
+      "symbol": "BAYERCROP",
+      "company": "Bayer Cropscience Ltd.",
+      "bse_code": "506285",
+      "isin": "INE462A01022",
+      "market_cap_cr": 18673.66,
+      "in_fno": false,
+      "published_at": "2026-07-01T15:16:38.743000+05:30",
+      "category": "Insider Trading / SAST",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Disclosures under Reg. 10(5) in respect of acquisition under Reg. 10(1)(a) of SEBI (SAST) Regulations, 2011",
+      "note": "The Exchange has received the disclosure under Regulation 10(5) in respect of acquisition under Regulation 10(1)(a) of SEBI (Substantial Acquisition of Shares & Takeovers) Regulations, 2011 for Bayer AG",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.23641517399433523,
+        "vol_ratio": 1.608150245359685
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/AA9B3992_35FC_4331_A76A_994AB7FC3F65_151632.pdf"
+    },
+    {
+      "symbol": "TCIEXP",
+      "company": "TCI Express Limited",
+      "bse_code": "540212",
+      "isin": "INE586V01016",
+      "market_cap_cr": 1963.59,
+      "in_fno": false,
+      "published_at": "2026-07-01T12:59:12.830000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Disclosure Under Regulation 29(2) Of SEBI (Substantial Acquisition Of Shares And Takeover)\r\nRegulations, 2011",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.32179424670891804,
+        "vol_ratio": 0.23333879155067955
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3fd63574-5c14-4f58-83e1-2c8ba6e454ed.pdf"
+    },
+    {
+      "symbol": "CENTRUM",
+      "company": "Centrum Capital Limited",
+      "bse_code": "501150",
+      "isin": "INE660C01027",
+      "market_cap_cr": 1229.24,
+      "in_fno": false,
+      "published_at": "2026-07-01T12:25:47.557000+05:30",
+      "category": "Insider Trading / SAST",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Disclosures under Reg. 31(1) and 31(2) of SEBI (SAST) Regulations, 2011.",
+      "note": "The Exchange has received Disclosure under Regulation 31(1) and 31(2) of SEBI (Substantial Acquisition of Shares & Takeovers) Regulations, 2011 on July 01, 2026 for Business Match Services (India) Pvt Ltd",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 16.844053678852386,
+        "vol_ratio": 25.004502157819925
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/B49C1BCE_8438_4D9F_86D3_DDE0ECA26CF0_122542.pdf"
+    },
+    {
+      "symbol": "AJANTPHARM",
+      "company": "Ajanta Pharmaceuticals Ltd.",
+      "bse_code": "532331",
+      "isin": "INE031B01049",
+      "market_cap_cr": 41775.97,
+      "in_fno": false,
+      "published_at": "2026-07-01T12:21:41.053000+05:30",
+      "category": "Insider Trading / SAST",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Disclosures under Reg. 31(1) and 31(2) of SEBI (SAST) Regulations, 2011.",
+      "note": "The Exchange has received Disclosure under Regulation 31(1) and 31(2) of SEBI (Substantial Acquisition of Shares & Takeovers) Regulations, 2011 on July 01, 2026 for Ravi Agrawal, trustee Ravi Agrawal Trust",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -2.3051976509772882,
+        "vol_ratio": 1.450394199554334
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6D339C96_9B4C_4A90_A2DC_1337ED13DD5D_122136.pdf"
+    },
+    {
+      "symbol": "CENTURYPLY",
+      "company": "Century Plyboards (India) Ltd.",
+      "bse_code": "532548",
+      "isin": "INE348B01021",
+      "market_cap_cr": 16747.4,
+      "in_fno": false,
+      "published_at": "2026-07-01T11:55:04.900000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.580425645473335,
+        "vol_ratio": 0.06747147345791302
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/278fa783-87bb-4789-b869-9fad9d6640dd.pdf"
+    },
+    {
+      "symbol": "KAJARIACER",
+      "company": "Kajaria Ceramics Ltd.",
+      "bse_code": "500233",
+      "isin": "INE217B01036",
+      "market_cap_cr": 19156.47,
+      "in_fno": false,
+      "published_at": "2026-07-01T11:47:34.080000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Submission Of Letter Of Offer For Buyback Of Equity Shares Of The Company",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.5169561621174524,
+        "vol_ratio": 0.2391807999604072
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1e8e1ac7-ce66-4f70-9896-f29cbb02d984.pdf"
+    },
+    {
+      "symbol": "LTM",
+      "company": "LTM Ltd.",
+      "bse_code": "540005",
+      "isin": "INE214T01019",
+      "market_cap_cr": 109094.36,
+      "in_fno": true,
+      "published_at": "2026-07-01T11:36:12.580000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.9439286673166922,
+        "vol_ratio": 1.2014980905886876
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fe159b59-0237-48a9-a533-6c56c78ca050.pdf"
+    },
+    {
+      "symbol": "AAVAS",
+      "company": "Aavas Financiers Ltd.",
+      "bse_code": "541988",
+      "isin": "INE216P01012",
+      "market_cap_cr": 11938.36,
+      "in_fno": false,
+      "published_at": "2026-07-01T11:26:19.737000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.0709592641261467,
+        "vol_ratio": 0.0603473252618548
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/977addff-db83-4cca-98f2-243a9f2b334c.pdf"
+    },
+    {
+      "symbol": "JINDALSTEL",
+      "company": "Jindal Steel Ltd.",
+      "bse_code": "532286",
+      "isin": "INE749A01030",
+      "market_cap_cr": 106466.59,
+      "in_fno": true,
+      "published_at": "2026-07-01T11:25:17.327000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.5098612814947625,
+        "vol_ratio": 1.3231126735483019
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c4d23df6-723f-4053-a28d-39ad0d1e440a.pdf"
+    },
+    {
+      "symbol": "EBGNG",
+      "company": "GNG Electronics Limited",
+      "bse_code": "544455",
+      "isin": "INE18JU01028",
+      "market_cap_cr": 7696.92,
+      "in_fno": false,
+      "published_at": "2026-07-01T11:15:37.587000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+      "note": "GNG Electronics Limited has informed the Exchange regarding a Press Release dated July 01, 2026 titled \"GNG Electronics Limited Announces Strategic Distribution Partnership with Redington Limited to Accelerate Nationwid…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 8.024641971357704,
+        "vol_ratio": 2.1783303420143305
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5a4126fe-2f12-4518-9314-0872db98b74f.pdf"
+    },
+    {
+      "symbol": "SHILCTECH",
+      "company": "Shilchar Technologies Ltd.",
+      "bse_code": "531201",
+      "isin": "INE024F01011",
+      "market_cap_cr": 5149.23,
+      "in_fno": false,
+      "published_at": "2026-07-01T11:04:39.537000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -1.4440709882963425,
+        "vol_ratio": 0.4551886480553315
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/229b7d97-5983-4fe2-89f1-74671428c3a9.pdf"
+    },
+    {
+      "symbol": "SURYAROSNI",
+      "company": "Surya Roshni Ltd.",
+      "bse_code": "500336",
+      "isin": "INE335A01020",
+      "market_cap_cr": 5613.92,
+      "in_fno": false,
+      "published_at": "2026-07-01T10:43:33.887000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -0.309178743961357,
+        "vol_ratio": 1.0899918728355018
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1b51dd4d-e990-4376-b512-c10abf334b37.pdf"
+    },
+    {
+      "symbol": "PATANJALI",
+      "company": "Patanjali Foods Ltd.",
+      "bse_code": "500368",
+      "isin": "INE619A01035",
+      "market_cap_cr": 45064.02,
+      "in_fno": true,
+      "published_at": "2026-07-01T10:27:03.460000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "rating_action"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Credit Rating",
+      "note": "Dear Sir/Madam,    Pursuant to Regulation 30 read with sub para (3) of Para (A) Part (A) of Schedule III of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015. We wish to inform you that ICRA L…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.7174124513618649,
+        "vol_ratio": 1.1335311442779017
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5d6d74f5-6d0f-41b5-9bcd-39911c491001.pdf"
+    },
+    {
+      "symbol": "ACMESOLAR",
+      "company": "ACME Solar Holdings Ltd.",
+      "bse_code": "544283",
+      "isin": "INE622W01025",
+      "market_cap_cr": 27801.37,
+      "in_fno": false,
+      "published_at": "2026-07-01T08:16:24.843000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capacity_capex"
+      ],
+      "headline": "Update On Commissioning Of Battery Energy Storage System (BESS) Project",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 3.3639947437582163,
+        "vol_ratio": 0.6703759814353906
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/acbc2f7e-3c72-4e54-ac9d-300815987c87.pdf"
+    },
+    {
+      "symbol": "RELTD",
+      "company": "RAVINDRA ENERGY LIMITED",
+      "bse_code": "504341",
+      "isin": "INE206N01018",
+      "market_cap_cr": 3298.9,
+      "in_fno": false,
+      "published_at": "2026-07-01T00:16:49.827000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.45344619105199513,
+        "vol_ratio": 0.40888982816929365
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/602b0273-e686-47e5-9bdb-60ac297ad833.pdf"
+    },
+    {
+      "symbol": "RELTD",
+      "company": "RAVINDRA ENERGY LIMITED",
+      "bse_code": "504341",
+      "isin": "INE206N01018",
+      "market_cap_cr": 3298.9,
+      "in_fno": false,
+      "published_at": "2026-06-30T23:47:06.717000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Intimation On Completion Of Rights Issue Process By Ravindra Energy Limited",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 1.995089011663597,
+        "vol_ratio": 0.3981509032423173
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/abc89d56-561d-49d8-ac67-d6128fe25b85.pdf"
+    },
+    {
+      "symbol": "POWERGRID",
+      "company": "Power Grid Corporation of India Ltd.",
+      "bse_code": "532898",
+      "isin": "INE752E01010",
+      "market_cap_cr": 268043.4,
+      "in_fno": true,
+      "published_at": "2026-06-30T22:44:31.663000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "capacity_capex",
+        "jv_ma",
+        "govt_pli"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 0.6109268633269332,
+        "vol_ratio": 1.1104143535855842
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dd8d2190-3bf9-42d3-abe4-fddfbd4665f0.pdf"
+    },
+    {
+      "symbol": "ASHIKA",
+      "company": "Ashika Credit Capital Ltd.",
+      "bse_code": "543766",
+      "isin": "INE094B01013",
+      "market_cap_cr": 2876.77,
+      "in_fno": false,
+      "published_at": "2026-06-30T21:41:43.207000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": 4.920677601505784,
+        "vol_ratio": 1.0092201789421793
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ff0e3950-2c7e-4cdc-aed5-be32849efd55.pdf"
+    },
+    {
+      "symbol": "HFCL",
+      "company": "HFCL Ltd.",
+      "bse_code": "500183",
+      "isin": "INE548A01028",
+      "market_cap_cr": 31346.74,
+      "in_fno": false,
+      "published_at": "2026-06-30T21:32:57.447000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement Under Regulation 30 - Update",
+      "note": "With reference to our earlier intimations dated September 01, 2025, October 15, 2025, December 15, 2025 and March 16, 2026 regarding the execution of the Share Purchase Agreement (\"SPA'\" among HFCL Limited (\"the Company…",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -2.684723212164399,
+        "vol_ratio": 0.48853591688165415
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/861bdfe7-10fb-4a96-8a87-1bc13f82f823.pdf"
+    },
+    {
+      "symbol": "HGINFRA",
+      "company": "H.G. Infra Engineering Limited",
+      "bse_code": "541019",
+      "isin": "INE926X01010",
+      "market_cap_cr": 3676.95,
+      "in_fno": false,
+      "published_at": "2026-06-30T21:16:12.500000+05:30",
+      "category": "Company Update",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Announcement under Regulation 30 (LODR)-Acquisition",
+      "note": "",
+      "value_cr": null,
+      "px_since": {
+        "pct_change": -2.7409067402172,
+        "vol_ratio": 0.23576877326128381
+      },
+      "source": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7ffbee2-9969-4718-91a7-27c9aec333ce.pdf"
+    }
+  ],
+  "investor_deals": [
+    {
+      "symbol": "CONFIPET",
+      "company": "Confidence Petroleum India Limited",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "Essenn LPG Bottling Private Limited",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 1026000.0,
+      "price": null,
+      "pct_pre": 9.48,
+      "pct_post": 9.79,
+      "date": "2026-07-02T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_526829_27202623234_PIT.html"
+    },
+    {
+      "symbol": "CONFIPET",
+      "company": "Confidence Petroleum India Limited",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "Essenn LPG Bottling Private Limited",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 1048000.0,
+      "price": null,
+      "pct_pre": 9.16,
+      "pct_post": 9.48,
+      "date": "2026-07-02T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_526829_272026232239_PIT.html"
+    },
+    {
+      "symbol": "",
+      "company": "Atvo Enterprises Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "Naresh Gattani HUF",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 169500.0,
+      "price": null,
+      "pct_pre": 2.64,
+      "pct_post": 2.8,
+      "date": "2026-07-02T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532090_2720261963_PIT.html"
+    },
+    {
+      "symbol": "",
+      "company": "Three M Paper Boards Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "HITENDRA DHANJI SHAH",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 2000.0,
+      "price": null,
+      "pct_pre": 47.52,
+      "pct_post": 47.53,
+      "date": "2026-07-02T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_544214_272026183444_PIT.html"
+    },
+    {
+      "symbol": "",
+      "company": "Bhatia Colour Chem Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "Dhawal Rameshchandra Bhatia",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 49600.0,
+      "price": null,
+      "pct_pre": 4.24,
+      "pct_post": 4.53,
+      "date": "2026-07-02T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_543497_272026182036_PIT.html"
+    },
+    {
+      "symbol": "",
+      "company": "NOL",
+      "exchange": "BSE",
+      "deal_type": "bulk",
+      "investor": "Hitesh Ramji Javeri",
+      "is_marquee": true,
+      "is_promoter_buy": false,
+      "side": "BUY",
+      "qty": 32000.0,
+      "price": 50.99,
+      "pct_pre": null,
+      "pct_post": null,
+      "date": "2026-06-30T00:00:00+05:30",
+      "source": "https://www.bseindia.com/markets/equity/EQReports/bulk_deals.aspx"
+    },
+    {
+      "symbol": "GENUSPOWER",
+      "company": "Genus Power Infrastructures Ltd",
+      "exchange": "NSE",
+      "deal_type": "block",
+      "investor": "Madhusudan Kela",
+      "is_marquee": true,
+      "is_promoter_buy": false,
+      "side": "BUY",
+      "qty": 1379310.0,
+      "price": 290.0,
+      "pct_pre": null,
+      "pct_post": null,
+      "date": "2026-06-30T00:00:00+05:30",
+      "source": "https://www.nseindia.com/report-detail/display-bulk-and-block-deals"
+    },
+    {
+      "symbol": "",
+      "company": "NOL",
+      "exchange": "BSE",
+      "deal_type": "bulk",
+      "investor": "Hitesh Ramji Javeri",
+      "is_marquee": true,
+      "is_promoter_buy": false,
+      "side": "BUY",
+      "qty": 120838.0,
+      "price": 52.02,
+      "pct_pre": null,
+      "pct_post": null,
+      "date": "2026-06-29T00:00:00+05:30",
+      "source": "https://www.bseindia.com/markets/equity/EQReports/bulk_deals.aspx"
+    },
+    {
+      "symbol": "",
+      "company": "PNGS Reva Diamond Jewellery Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "P. N. Gadgil & Sons Limited",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 45000.0,
+      "price": null,
+      "pct_pre": 13.77,
+      "pct_post": 13.91,
+      "date": "2026-06-18T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_544718_18620261868.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "Gokul Refoils & Solvent Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "Bhikhiben Balvantsinh Rajput",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 1500.0,
+      "price": null,
+      "pct_pre": 22.99,
+      "pct_post": 22.99,
+      "date": "2026-06-18T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532980_18062026054506.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "Gokul Refoils & Solvent Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "Bhikhiben Balvantsinh Rajput",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 17000.0,
+      "price": null,
+      "pct_pre": 22.99,
+      "pct_post": 23.01,
+      "date": "2026-06-18T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532980_18062026054506.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "Motor & General Finance Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "RAM PRAKASH & CO.(P) LTD",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 8161.0,
+      "price": null,
+      "pct_pre": 7.63,
+      "pct_post": 7.65,
+      "date": "2026-06-18T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_501343_186202617039.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "AK Capital Services Ltd",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "A. K. Mittal",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 10.0,
+      "price": null,
+      "pct_pre": 17.71,
+      "pct_post": 17.71,
+      "date": "2026-06-17T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_530499_1862026181252.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "Nicco Parks & Resorts Ltd-$",
+      "exchange": "BSE",
+      "deal_type": "sast",
+      "investor": "NICCO ENGINEERING SERVICES LIMITED",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 18167.0,
+      "price": null,
+      "pct_pre": 10.56,
+      "pct_post": 10.6,
+      "date": "2026-06-17T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_526721_186202617559.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "MSP Steel & Power Ltd",
+      "exchange": "BSE",
+      "deal_type": "insider",
+      "investor": "M A Hire Purchase Private Limited",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 2400000.0,
+      "price": null,
+      "pct_pre": 2.61,
+      "pct_post": 3.03,
+      "date": "2026-06-16T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532650_18062026051832.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "MSP Steel & Power Ltd",
+      "exchange": "BSE",
+      "deal_type": "insider",
+      "investor": "Shree Vinay Finvest P Ltd.",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 400000.0,
+      "price": null,
+      "pct_pre": 3.84,
+      "pct_post": 3.91,
+      "date": "2026-06-16T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532650_18062026051832.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "MSP Steel & Power Ltd",
+      "exchange": "BSE",
+      "deal_type": "insider",
+      "investor": "Sampat Marketing Company Pvt Ltd",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 1025000.0,
+      "price": null,
+      "pct_pre": 2.12,
+      "pct_post": 2.3,
+      "date": "2026-06-16T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532650_18062026051832.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "MSP Steel & Power Ltd",
+      "exchange": "BSE",
+      "deal_type": "insider",
+      "investor": "M A Hire Purchase Private Limited",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 2400000.0,
+      "price": null,
+      "pct_pre": 2.61,
+      "pct_post": 3.03,
+      "date": "2026-06-16T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532650_18062026051800.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "MSP Steel & Power Ltd",
+      "exchange": "BSE",
+      "deal_type": "insider",
+      "investor": "Shree Vinay Finvest P Ltd.",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 400000.0,
+      "price": null,
+      "pct_pre": 3.84,
+      "pct_post": 3.91,
+      "date": "2026-06-16T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532650_18062026051800.xml_PIT.xml"
+    },
+    {
+      "symbol": "",
+      "company": "MSP Steel & Power Ltd",
+      "exchange": "BSE",
+      "deal_type": "insider",
+      "investor": "Sampat Marketing Company Pvt Ltd",
+      "is_marquee": false,
+      "is_promoter_buy": true,
+      "side": "BUY",
+      "qty": 1025000.0,
+      "price": null,
+      "pct_pre": 2.12,
+      "pct_post": 2.3,
+      "date": "2026-06-16T00:00:00+05:30",
+      "source": "/XBRLFILES/PITXBRLDataXML/PIT_532650_18062026051800.xml_PIT.xml"
+    }
+  ],
+  "rating_actions": [
+    {
+      "symbol": "SPANDANA",
+      "company": "Spandana Sphoorty Financial Limited",
+      "isin": "INE572J01011",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-07-02T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nSpandana Sphoorty Financial Limited \nJuly 02, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 800.00 CARE BBB+; Stable Reaffirmed \nNon-convertible debentures 280.00 CARE BBB+; Stable Reaffirmed \nNon-convertible debentures 450.00 CARE BBB+; Stable Reaffirmed \nNon-convertible debentures 150.00  CARE BBB+; Stable",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607150710_Spandana_Sphoorty_Financial_Limited.pdf"
+    },
+    {
+      "symbol": "ALBERTDAVD",
+      "company": "Albert David Ltd.",
+      "isin": "INE155C01010",
+      "agency": "CARE",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-07-02T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nAlbert David Limited \nJuly 02, 2026  \n  \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 50.50 \n (Reduced from 51.50) CARE A; Negative Reaffirmed \nLong-term / Short-term bank \nfacilities \n12.00 \n (Reduced from 13.00) CARE A; Negative / CARE A1 Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \nThe list of",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607140747_Albert_David_Limited.pdf"
+    },
+    {
+      "symbol": "FIVESTAR",
+      "company": "Five-Star Business Finance Ltd.",
+      "isin": "INE128S01021",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-07-02T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nFive-Star Business Finance Limited \nJuly 02, 2026 \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 183.62 \n (Reduced from 497.00) CARE AA-; Positive Reaffirmed \nLong-term / Short-term bank facilities 3.00 CARE AA-; Positive / CARE A1+ Reaffirmed \nCommercial paper 25.00 CARE A1+ Reaffirmed \nDetails of instruments/faci",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607140722_Five-Star_Business_Finance_Limited.pdf"
+    },
+    {
+      "symbol": "APTUS",
+      "company": "Aptus Value Housing Finance India Ltd.",
+      "isin": "INE852O01025",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-07-02T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nAptus Value Housing Finance India Limited \nJuly 02, 2026 \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 2,100.00 CARE AA; Stable Reaffirmed \nNon-convertible debentures – II 45.00 \n (Reduced from 65.00) CARE AA; Stable Reaffirmed \nNon-convertible debentures – III 240.00 \n (Reduced from 300.00) CARE AA; Stable Reaffi",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607140754_Aptus_Value_Housing_Finance_India_Limited.pdf"
+    },
+    {
+      "symbol": "MAHABANK",
+      "company": "Bank of Maharashtra",
+      "isin": "INE457A01014",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-07-02T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nBank of Maharashtra \nJuly 02, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nInfrastructure Bonds 10,000.00 CARE AA+; Stable Reaffirmed \nTier-II Bonds& 1,000.00 CARE AA+; Stable Reaffirmed \nTier-II Bonds& 1,000.00 CARE AA+; Stable Reaffirmed \nTier-II Bonds& 1,000.00 CARE AA+; Stable Reaffirmed \nTier-II Bonds& 1,000.00 CARE AA+; Stable",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607140720_Bank_of_Maharashtra.pdf"
+    },
+    {
+      "symbol": "BIRLACORPN",
+      "company": "Birla Corporation Ltd.",
+      "isin": "INE340A01012",
+      "agency": "CARE",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-07-02T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nBirla Corporation Limited \nJuly 02, 2026 \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 526.00 \n (Reduced from 542.50) CARE AA; Stable Reaffirmed \nLong-term / Short-term bank facilities 960.00 \n (Enhanced from 945.00) CARE AA; Stable / CARE A1+ Reaffirmed \nNon-convertible debentures 80.00 \n (Reduced from 140.00) CA",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607120747_Birla_Corporation_Limited.pdf"
+    },
+    {
+      "symbol": "AAVAS",
+      "company": "Aavas Financiers Ltd.",
+      "isin": "INE216P01012",
+      "agency": "CARE",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-07-01T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nAavas Financiers Limited \nJuly 01, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong Term Bank Facilities 12,262.00 CARE AA; (RWD) Placed on Rating watch with \nDeveloping Implications \nNon Convertible Debentures 170.92 CARE AA; (RWD) Placed on Rating watch with \nDeveloping Implications \nNon Convertible Debentures 119.00 \n (Reduced f",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607160710_Aavas_Financiers_Limited.pdf"
+    },
+    {
+      "symbol": "TCI",
+      "company": "Transport Corporation of India Ltd",
+      "isin": "INE688A01022",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-07-01T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nTransport Corporation Of India limited \nJuly 01, 2026 \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 300.00 CARE AA+; Stable Assigned \nCommercial paper (Carved out)* 50.00 CARE A1+ Assigned \nDetails of instruments/facilities in Annexure-1. \nThe list of facilities / instruments falling under the purview of various f",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607130731_Transport_Corporation_Of_India_limited.pdf"
+    },
+    {
+      "symbol": "TOLINS",
+      "company": "Tolins Tyres Limited",
+      "isin": "INE0RWQ01014",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-07-01T00:00:00+05:30",
+      "summary": "Tolins Tyres Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607120711_Tolins_Tyres_Limited.pdf"
+    },
+    {
+      "symbol": "MANAPPURAM",
+      "company": "Manappuram Finance Ltd.",
+      "isin": "INE522D01027",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-07-01T00:00:00+05:30",
+      "summary": "Manappuram Finance Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202607120712_Manappuram_Finance_Limited.pdf"
+    },
+    {
+      "symbol": "NITINSPIN",
+      "company": "Nitin Spinners Ltd.",
+      "isin": "INE229H01012",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-06-30T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nNitin Spinners Limited \nJune 30, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 2,371.71 \n (Reduced from 2,375.62) CARE A+; Stable Upgraded from CARE A; Positive  \nShort-term bank facilities 66.70 CARE A1 Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \nThe list of facilities / instruments fall",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120643_Nitin_Spinners_Limited.pdf"
+    },
+    {
+      "symbol": "YESBANK",
+      "company": "Yes Bank Ltd.",
+      "isin": "INE528G01035",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-06-30T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nYes Bank Limited \nJune 30, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nInfrastructure Bonds 4,670.00 CARE AA+; Stable Upgraded from CARE AA-; Stable  \nTier II Bonds 8,900.00 CARE AA+; Stable Upgraded from CARE AA-; Stable  \nCertificate Of Deposit 20,000.00 CARE A1+ Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \nThe",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606040621_Yes_Bank_Limited.pdf"
+    },
+    {
+      "symbol": "HMAAGRO",
+      "company": "HMA Agro Industries Limited",
+      "isin": "INE0ECP01024",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-30T00:00:00+05:30",
+      "summary": "HMA Agro Industries Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120645_HMA_Agro_Industries_Limited.pdf"
+    },
+    {
+      "symbol": "MMFL",
+      "company": "M.M.Forgings Ltd.",
+      "isin": "INE227C01017",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-30T00:00:00+05:30",
+      "summary": "M M Forgings Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120650_M_M_Forgings_Limited.pdf"
+    },
+    {
+      "symbol": "ASHOKA",
+      "company": "Ashoka Buildcon Limited",
+      "isin": "INE442H01029",
+      "agency": "CARE",
+      "action": "downgrade",
+      "direction": "negative",
+      "notch": null,
+      "date": "2026-06-29T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nAshoka \nJune 29, 2026 \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 15.00 \n (Reduced from 20.00) CARE BBB-; Stable Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \nThe list of facilities / instruments falling under the purview of various financial sector regulators (FSRs), along with the names of re",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606130635_Ashoka.pdf"
+    },
+    {
+      "symbol": "SATIN",
+      "company": "SATIN CREDITCARE NETWORK LIMITED",
+      "isin": "INE836B01017",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-29T00:00:00+05:30",
+      "summary": "Satin Creditcare Network Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606130611_Satin_Creditcare_Network_Limited.pdf"
+    },
+    {
+      "symbol": "PRIMO",
+      "company": "Primo Chemicals Limited",
+      "isin": "INE607A01022",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-29T00:00:00+05:30",
+      "summary": "Primo Chemicals Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606130610_Primo_Chemicals_Limited.pdf"
+    },
+    {
+      "symbol": "FAIRCHEMOR",
+      "company": "Fairchem Organics Limited",
+      "isin": "INE0DNW01011",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-29T00:00:00+05:30",
+      "summary": "Fairchem Organics Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606130621_Fairchem_Organics_Limited.pdf"
+    },
+    {
+      "symbol": "MASFIN",
+      "company": "MAS Financial Services Limited",
+      "isin": "INE348L01012",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-06-26T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nMas Financial Services Limited \nJune 26, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 8,600.00 CARE AA-; Stable Reaffirmed \nNon-convertible debentures 500.00 CARE AA-; Stable Assigned \nNon-convertible debentures 125.00 \n (Reduced from 275.00) CARE AA-; Stable Reaffirmed \nNon-convertible debentures 455.00",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606160612_Mas_Financial_Services_Limited.pdf"
+    },
+    {
+      "symbol": "NIVABUPA",
+      "company": "Niva Bupa Health Insurance Company Ltd.",
+      "isin": "INE995S01015",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-06-26T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nNiva Bupa Health Insurance Company Limited \nJune 26, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nSubordinate debt@ 150.00 CARE AA; Stable Reaffirmed \nSubordinate debt@ 100.00 CARE AA; Stable Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \n@CARE Ratings Limited (CareEdge Ratings) has rated the aforesaid subordinate d",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120646_Niva_Bupa_Health_Insurance_Company_Limited.pdf"
+    },
+    {
+      "symbol": "EIDPARRY",
+      "company": "E.I.D. Parry (India) Ltd.",
+      "isin": "INE126A01031",
+      "agency": "CARE",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-26T00:00:00+05:30",
+      "summary": "Press Release  \nE.I.D. Parry (India) Limited \nJune 26, 2026 \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nCommercial Paper 650.00 CARE A1+ Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \nThe list of facilities / instruments falling under the purview of financial sector regulators (FSRs), along with the names of  respective FSRs has been \ndisclosed under Annexure",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120623_E.I.D._Parry_(India)_Limited.pdf"
+    },
+    {
+      "symbol": "SHINDL",
+      "company": "Sharat Industries Ltd.",
+      "isin": "INE220Z01013",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-26T00:00:00+05:30",
+      "summary": "Sharat Industries Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120600_Sharat_Industries_Limited.pdf"
+    },
+    {
+      "symbol": "ULTRACEMCO",
+      "company": "UltraTech Cement Ltd.",
+      "isin": "INE481G01011",
+      "agency": "CARE",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-24T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nUltraTech Cement Limited \nJune 24, 2026 \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nLong-term bank facilities 2,400.00 CARE AAA; Stable Reaffirmed \nLong-term / Short-term bank facilities 14,700.00 CARE AAA; Stable / CARE A1+ Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \nThe list of facilities / instruments falling under",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606130625_UltraTech_Cement_Limited.pdf"
+    },
+    {
+      "symbol": "AXISCADES",
+      "company": "AXISCADES TECHNOLOGIES LIMITED",
+      "isin": "INE555B01013",
+      "agency": "CARE",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-23T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nAxiscades Technologies Limited \nJune 23, 2026 \n \nFacilities/Instruments Amount (₹ \ncrore) Rating1 Rating Action \nLong-term bank facilities 21.00 CARE A- (RWD) Placed on Rating Watch with Developing \nImplications \nLong-term / Short-term bank \nfacilities 80.00 CARE A- / CARE A2+ \n(RWD) \nPlaced on Rating Watch with Developing \nImplications \nDetails of instrument",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120654_Axiscades_Technologies_Limited.pdf"
+    },
+    {
+      "symbol": "SKIPPER",
+      "company": "Skipper Limited",
+      "isin": "INE439E01022",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-22T00:00:00+05:30",
+      "summary": "Skipper Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606140658_Skipper_Limited.pdf"
+    },
+    {
+      "symbol": "GRSE",
+      "company": "Garden Reach Shipbuilders & Engineers Ltd.",
+      "isin": "INE382Z01011",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-22T00:00:00+05:30",
+      "summary": "Garden Reach Shipbuilders and Engineers Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606140613_Garden_Reach_Shipbuilders_and_Engineers_Limited.pdf"
+    },
+    {
+      "symbol": "AZAD",
+      "company": "Azad Engineering Limited",
+      "isin": "INE02IJ01035",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-22T00:00:00+05:30",
+      "summary": "Azad Engineering Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120613_Azad_Engineering_Limited.pdf"
+    },
+    {
+      "symbol": "IKS",
+      "company": "Inventurus Knowledge Solutions Ltd.",
+      "isin": "INE115Q01022",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-22T00:00:00+05:30",
+      "summary": "Inventurus Knowledge Solutions Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120603_Inventurus_Knowledge_Solutions_Limited.pdf"
+    },
+    {
+      "symbol": "MANAPPURAM",
+      "company": "Manappuram Finance Ltd.",
+      "isin": "INE522D01027",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-19T00:00:00+05:30",
+      "summary": "Manappuram Finance Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120641_Manappuram_Finance_Limited.pdf"
+    },
+    {
+      "symbol": "SENSEXIETF",
+      "company": "ICICI Prudential Mutual Fund",
+      "isin": "INF346A01034",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-19T00:00:00+05:30",
+      "summary": "ICICI Prudential Asset Management Company Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120617_ICICI_Prudential_Asset_Management_Company_Limited.pdf"
+    },
+    {
+      "symbol": "CENTRALBK",
+      "company": "Central Bank of India",
+      "isin": "INE483A01010",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-06-18T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nCentral Bank of India \nJune 18, 2026  \n \nFacilities/Instruments Amount (₹ crore) Rating1 Rating Action \nCertificate of deposit 20,000.00 \n (Enhanced from 10,000.00) CARE A1+ Reaffirmed \nDetails of instruments/facilities in Annexure-1. \n \nThe list of facilities / instruments falling under the purview of various financial sector regulators (FSRs), along with th",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120653_Central_Bank_of_India.pdf"
+    },
+    {
+      "symbol": "BHEL",
+      "company": "Bharat Heavy Electricals Ltd.",
+      "isin": "INE257A01026",
+      "agency": "CARE",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-06-16T00:00:00+05:30",
+      "summary": "1 CARE Ratings Ltd. \n \nPress Release  \nBharat Heavy Electricals Limited \nJune 16, 2026 \n \nFacilities/Instruments Amount (₹ \ncrore) Rating1 Rating Action \nLong-term bank facilities 9,500.00 CARE AA; Stable Upgraded from CARE AA-; Stable  \nLong-term / Short-term bank \nfacilities 70,500.00 CARE AA; Stable / \nCARE A1+ \nLT rating upgraded from CARE AA-; Stable \nand ST rating reaffirmed  \nCommercial pap",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606140646_Bharat_Heavy_Electricals_Limited.pdf"
+    },
+    {
+      "symbol": "FINKURVE",
+      "company": "Finkurve Financial Services Limited",
+      "isin": "INE734I01027",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-15T00:00:00+05:30",
+      "summary": "Finkurve Financial Services Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120601_Finkurve_Financial_Services_Limited.pdf"
+    },
+    {
+      "symbol": "APLLTD",
+      "company": "ALEMBIC PHARMACEUTICALS LIMITED",
+      "isin": "INE901L01018",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-11T00:00:00+05:30",
+      "summary": "Alembic Pharmaceuticals Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606120641_Alembic_Pharmaceuticals_Limited.pdf"
+    },
+    {
+      "symbol": "PAKKA",
+      "company": "PAKKA LIMITED",
+      "isin": "INE551D01018",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-09T00:00:00+05:30",
+      "summary": "Pakka Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606130658_Pakka_Limited.pdf"
+    },
+    {
+      "symbol": "TOLINS",
+      "company": "Tolins Tyres Limited",
+      "isin": "INE0RWQ01014",
+      "agency": "CARE",
+      "action": "other",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-06-08T00:00:00+05:30",
+      "summary": "Tolins Tyres Limited",
+      "source": "https://www.careratings.com/upload/CompanyFiles/PR/202606130611_Tolins_Tyres_Limited.pdf"
+    },
+    {
+      "symbol": "IIFLCAPS",
+      "company": "IIFL CAPITAL SERVICES LIMITED",
+      "isin": "INE489L01022",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-05-18T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/IIFLCapitalServicesLimited_May%2018_%202026_RR_396057.html"
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "company": "Sun Pharmaceutical Industries Ltd.",
+      "isin": "INE044A01036",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-05-06T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/SunPharmaceuticalIndustriesLimited_May%2006_%202026_RR_394483.html"
+    },
+    {
+      "symbol": "KIRLPNU",
+      "company": "Kirloskar Pneumatic Co.Ltd.",
+      "isin": "INE811A01020",
+      "agency": "CRISIL",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-05-05T00:00:00+05:30",
+      "summary": "upgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/KirloskarPneumaticCompanyLimited_May%2005_%202026_RR_391476.html"
+    },
+    {
+      "symbol": "MOL",
+      "company": "Meghmani Organics Limited",
+      "isin": "INE0CT101020",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-04-27T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/MeghmaniOrganicsLimited_April%2027_%202026_RR_394416.html"
+    },
+    {
+      "symbol": "MOSCHIP",
+      "company": "MOSCHIP TECHNOLOGIES LIMITED",
+      "isin": "INE935B01025",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-04-27T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/MoschipTechnologiesLimited_April%2027_%202026_RR_394242.html"
+    },
+    {
+      "symbol": "SFL",
+      "company": "Sheela Foam Limited",
+      "isin": "INE916U01025",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-04-24T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/SheelaFoamLimited_April%2024_%202026_RR_393655.html"
+    },
+    {
+      "symbol": "SOLARINDS",
+      "company": "Solar Industries India Ltd.",
+      "isin": "INE343H01029",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-04-23T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/SolarIndustriesIndiaLimited_April%2023_%202026_RR_393359.html"
+    },
+    {
+      "symbol": "SIGNPOST",
+      "company": "Signpost India Limited",
+      "isin": "INE0KGZ01021",
+      "agency": "CRISIL",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-04-21T00:00:00+05:30",
+      "summary": "upgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/SignpostIndiaLimited_April%2021_%202026_RR_394140.html"
+    },
+    {
+      "symbol": "SAMMAANCAP",
+      "company": "Sammaan Capital Ltd.",
+      "isin": "INE148I01020",
+      "agency": "CRISIL",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-04-09T00:00:00+05:30",
+      "summary": "upgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/SammaanCapitalLimited_April%2009_%202026_RR_393429.html"
+    },
+    {
+      "symbol": "SHRIRAMFIN",
+      "company": "Shriram Finance Ltd.",
+      "isin": "INE721A01047",
+      "agency": "CRISIL",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-04-09T00:00:00+05:30",
+      "summary": "upgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/ShriramFinanceLimited_April%2009_%202026_RR_393407.html"
+    },
+    {
+      "symbol": "MIRZAINT",
+      "company": "Mirza International  Limited",
+      "isin": "INE771A01026",
+      "agency": "CRISIL",
+      "action": "downgrade",
+      "direction": "negative",
+      "notch": null,
+      "date": "2026-04-08T00:00:00+05:30",
+      "summary": "downgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/MirzaInternationalLimited_April%2008_%202026_RR_393198.html"
+    },
+    {
+      "symbol": "PFS",
+      "company": "PTC India Financial Services Limited",
+      "isin": "INE560K01014",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-04-06T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/PTCIndiaFinancialServicesLimited_April%2006_%202026_RR_392391.html"
+    },
+    {
+      "symbol": "INDIGO",
+      "company": "InterGlobe Aviation Ltd.",
+      "isin": "INE646L01027",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-03-31T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/InterGlobeAviationLimited_March%2031_%202026_RR_392283.html"
+    },
+    {
+      "symbol": "JISLJALEQS",
+      "company": "Jain Irrigation Systems Ltd.",
+      "isin": "INE175A01038",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-03-27T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/JainIrrigationSystemsLimited_March%2027_%202026_RR_392303.html"
+    },
+    {
+      "symbol": "CHEMPLASTS",
+      "company": "Chemplast Sanmar Limited",
+      "isin": "INE488A01050",
+      "agency": "CRISIL",
+      "action": "downgrade",
+      "direction": "negative",
+      "notch": null,
+      "date": "2026-03-25T00:00:00+05:30",
+      "summary": "downgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/ChemplastSanmarLimited_March%2025_%202026_RR_389217.html"
+    },
+    {
+      "symbol": "RAMKY",
+      "company": "Ramky Infrastructure Limited",
+      "isin": "INE874I01013",
+      "agency": "CRISIL",
+      "action": "upgrade",
+      "direction": "positive",
+      "notch": null,
+      "date": "2026-03-17T00:00:00+05:30",
+      "summary": "upgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/RamkyInfrastructureLimited_March%2017_%202026_RR_391812.html"
+    },
+    {
+      "symbol": "JPPOWER",
+      "company": "Jaiprakash Power Ventures Ltd.",
+      "isin": "INE351F01018",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-03-11T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/JaiprakashPowerVenturesLimited_March%2011_%202026_RR_390965.html"
+    },
+    {
+      "symbol": "SEPC",
+      "company": "SEPC LIMITED",
+      "isin": "INE964H01014",
+      "agency": "CRISIL",
+      "action": "downgrade",
+      "direction": "negative",
+      "notch": null,
+      "date": "2026-03-09T00:00:00+05:30",
+      "summary": "downgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/SEPCLimited_March%2009_%202026_RR_387260.html"
+    },
+    {
+      "symbol": "INDIGO",
+      "company": "InterGlobe Aviation Ltd.",
+      "isin": "INE646L01027",
+      "agency": "CRISIL",
+      "action": "outlook",
+      "direction": "neutral",
+      "notch": null,
+      "date": "2026-03-06T00:00:00+05:30",
+      "summary": "outlook (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/InterGlobeAviationLimited_March%2006_%202026_RR_390423.html"
+    },
+    {
+      "symbol": "LXCHEM",
+      "company": "Laxmi Organic Industries Limited",
+      "isin": "INE576O01020",
+      "agency": "CRISIL",
+      "action": "downgrade",
+      "direction": "negative",
+      "notch": null,
+      "date": "2026-03-02T00:00:00+05:30",
+      "summary": "downgrade (CRISIL rating action)",
+      "source": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/LaxmiOrganicIndustriesLimited_March%2002_%202026_RR_387939.html"
+    }
+  ],
+  "company_news": [
+    {
+      "symbols": [
+        "PCJEWELLER"
+      ],
+      "source": "NDTV Profit",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T23:26:09+05:30",
+      "candidate_tags": [
+        "overhang_resolution"
+      ],
+      "headline": "PC Jeweller Posts 21% Growth In Revenue During Q1; To Become Debt Free In Sep Quarter",
+      "url": "https://www.ndtvprofit.com/business/pc-jeweller-posts-21-growth-in-revenue-during-q1-to-become-debt-free-in-sep-quarter-11719794#publisher=newsstand"
+    },
+    {
+      "symbols": [
+        "MARUTI",
+        "TATAPOWER",
+        "IRCTC",
+        "BEL"
+      ],
+      "source": "NDTV Profit",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T23:11:16+05:30",
+      "candidate_tags": [],
+      "headline": "Buy, Sell Or Hold: BEL, Maruti Suzuki, Bajaj Housing, IRCTC And Tata Power — Ask Profit",
+      "url": "https://www.ndtvprofit.com/markets/buy-sell-or-hold-bel-maruti-suzuki-bajaj-housing-irctc-and-tata-power-ask-profit-11719746#publisher=newsstand"
+    },
+    {
+      "symbols": [
+        "DMART"
+      ],
+      "source": "NDTV Profit",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T22:08:44+05:30",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Avenue Supermart Q1 Results: Check Date, Fundraise And Share Price History Details",
+      "url": "https://www.ndtvprofit.com/markets/avenue-supermart-q1-results-date-share-price-history-debt-fundraise-and-more-11719461#publisher=newsstand"
+    },
+    {
+      "symbols": [
+        "BPCL"
+      ],
+      "source": "NDTV Profit",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T22:02:08+05:30",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "BPCL Arm Acquires Remaining 39.1% Stake In IBV Brasil Petroleo For Rs 2,312 Crore",
+      "url": "https://www.ndtvprofit.com/business/bpcl-arm-acquires-remaining-39-1-stake-in-ibv-brasil-petroleo-for-rs-2-312-crore-11719448#publisher=newsstand"
+    },
+    {
+      "symbols": [
+        "COALINDIA",
+        "EMKAY"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T21:49:57+05:30",
+      "candidate_tags": [],
+      "headline": "Broker’s call: Coal India (Add)",
+      "url": "https://www.thehindubusinessline.com/markets/brokers-call-coal-india-add/article71175519.ece"
+    },
+    {
+      "symbols": [
+        "TECHM"
+      ],
+      "source": "Business Today (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T21:48:08+05:30",
+      "candidate_tags": [],
+      "headline": "'AI isn't just..': Anand Mahindra backs Palantir CEO's theory, sees India's edge lie elsewhere",
+      "url": "https://www.businesstoday.in/technology/story/ai-isnt-just-anand-mahindra-backs-palantir-ceos-theory-sees-indias-edge-lie-elsewhere-540676-2026-07-02?utm_source=rssfeed"
+    },
+    {
+      "symbols": [
+        "BAJFINANCE"
+      ],
+      "source": "NDTV Profit",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T21:40:35+05:30",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Bajaj Finance Q1 Update: AUM Surges 24% to Rs 5.46 Lakh Crore, New Loans Climb 20%",
+      "url": "https://www.ndtvprofit.com/business/bajaj-finance-q1-update-aum-surges-24-to-rs-5-46-lakh-crore-new-loans-climb-20-11718995#publisher=newsstand"
+    },
+    {
+      "symbols": [
+        "UTKARSHBNK"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T21:31:58+05:30",
+      "candidate_tags": [],
+      "headline": "Icra cuts Utkarsh Small Finance Bank ratings on weak asset quality",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/icra-cuts-utkarsh-small-finance-bank-ratings-on-weak-asset-quality/articleshow/132141926.cms"
+    },
+    {
+      "symbols": [
+        "COALINDIA"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T21:15:42+05:30",
+      "candidate_tags": [],
+      "headline": "Coal India's June supplies to power sector rise 5.9% on strong electricity demand",
+      "url": "https://www.livemint.com/market/stock-market-news/coal-indias-june-supplies-to-power-sector-rise-5-9-on-strong-electricity-demand-11783006638264.html"
+    },
+    {
+      "symbols": [
+        "LODHA"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T21:01:00+05:30",
+      "candidate_tags": [],
+      "headline": "PACL refunds cross ₹3,720 crore as of May 2026",
+      "url": "https://www.thehindubusinessline.com/markets/pacl-refunds-cross-3720-crore-as-of-may-2026/article71174481.ece"
+    },
+    {
+      "symbols": [
+        "POLICYBZR"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T20:50:09+05:30",
+      "candidate_tags": [],
+      "headline": "Temasek to sell $200 million stake in Policybazaar via block deal",
+      "url": "https://www.livemint.com/market/stock-market-news/temasek-pb-fintech-policybazaar-shares-block-deal-tencent-11782998569376.html"
+    },
+    {
+      "symbols": [
+        "SUVEN"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T20:42:32+05:30",
+      "candidate_tags": [],
+      "headline": "Market Trading Guide: Suven Life Sciences among 2 stock recommendations for Friday",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/market-trading-guide-suven-life-sciences-among-2-stock-recommendations-for-friday/articleshow/132141470.cms"
+    },
+    {
+      "symbols": [
+        "TMCV"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T20:37:58+05:30",
+      "candidate_tags": [],
+      "headline": "Broker’s call: Tata Motors PV (Add)",
+      "url": "https://www.thehindubusinessline.com/markets/brokers-call-tata-motors-pv-add/article71174938.ece"
+    },
+    {
+      "symbols": [
+        "ADANIENT"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T20:23:55+05:30",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Adani Enterprises launches ₹10,000-cr QIP, sets floor price at ₹3,034.68 a share",
+      "url": "https://www.thehindubusinessline.com/markets/stock-markets/adani-enterprises-launches-10000-cr-qip-sets-floor-price-at-303468-a-share/article71174800.ece"
+    },
+    {
+      "symbols": [
+        "HINDZINC"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T20:07:21+05:30",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Hindustan Zinc reports record Q1 mined metal output for fifth straight year",
+      "url": "https://www.livemint.com/market/stock-market-news/hindustan-zinc-reports-record-q1-mined-metal-output-for-fifth-straight-year-11783002586454.html"
+    },
+    {
+      "symbols": [
+        "POLICYBZR"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T19:53:04+05:30",
+      "candidate_tags": [],
+      "headline": "MacRitchie to sell up to $200 million stake in India's PB Fintech, term sheet shows",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/macritchie-to-sell-up-to-200-million-stake-in-indias-pb-fintech-term-sheet-shows/articleshow/132140824.cms"
+    },
+    {
+      "symbols": [
+        "ADANIENT"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T19:05:56+05:30",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Adani Enterprises launches QIP, sets floor price at Rs 3,034.68 per share",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/adani-enterprises-launches-qip-sets-floor-price-at-rs-3034-68-per-share/articleshow/132140272.cms"
+    },
+    {
+      "symbols": [
+        "TMCV"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T18:29:16+05:30",
+      "candidate_tags": [],
+      "headline": "Tata Motors PV Q1 update: Sales jump 46%; JLR volumes hit by supply disruptions and Middle East conflict",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/tata-motors-pv-q1-update-sales-jump-46-jlr-volumes-hit-by-supply-disruptions-and-middle-east-conflict/articleshow/132139701.cms"
+    },
+    {
+      "symbols": [
+        "UJJIVANSFB"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T15:56:44+05:30",
+      "candidate_tags": [],
+      "headline": "NRIs looking to park your dollars? Ujjivan SFB offers 7.5%, DBS up to 5.6% on FCNR deposits",
+      "url": "https://economictimes.indiatimes.com/markets/forex/forex-news/nris-looking-to-park-your-dollars-ujjivan-sfb-offers-7-5-dbs-up-to-5-6-on-fcnr-deposits/articleshow/132136210.cms"
+    },
+    {
+      "symbols": [
+        "APOLLOTYRE",
+        "BHARATFORG",
+        "ANANTRAJ",
+        "COFORGE",
+        "APOLLO",
+        "TCS"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T15:44:07+05:30",
+      "candidate_tags": [],
+      "headline": "Top Gainers &amp; Losers on 2 July: Zensar Tech, TCS, Coforge, Apollo Tyres, Bharat Forge, Anant Raj among top gainers",
+      "url": "https://www.livemint.com/market/stock-market-news/top-gainers-losers-on-2-july-zensar-tech-tcs-coforge-apollo-tyres-bharat-forge-anant-raj-among-top-gainers-11782984189497.html"
+    },
+    {
+      "symbols": [
+        "ETERNAL"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T14:51:10+05:30",
+      "candidate_tags": [],
+      "headline": "Blinkit to remain undisputed market leader despite Amazon, Flipkart's QC entry, says Anand Rathi, sees 43% upside",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/blinkit-to-remain-undisputed-market-leader-despite-amazon-flipkarts-qc-entry-says-anand-rathi-sees-43-upside/articleshow/132134798.cms"
+    },
+    {
+      "symbols": [
+        "TATATECH"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T14:48:12+05:30",
+      "candidate_tags": [
+        "jv_ma"
+      ],
+      "headline": "Tata Technologies shares jump 9% after expanding strategic partnership with Tenneco",
+      "url": "https://www.livemint.com/market/stock-market-news/tata-technologies-shares-jump-9-after-expanding-strategic-partnership-with-tenneco-11782983564354.html"
+    },
+    {
+      "symbols": [
+        "HFCL"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T14:44:48+05:30",
+      "candidate_tags": [
+        "order_win"
+      ],
+      "headline": "HFCL shares slip nearly 7% this week after 212% rally. Is this multibagger a buy on dips?",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/hfcl-shares-slip-nearly-7-this-week-after-212-rally-is-this-multibagger-a-buy-on-dips/articleshow/132134685.cms"
+    },
+    {
+      "symbols": [
+        "INFY"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T14:28:55+05:30",
+      "candidate_tags": [],
+      "headline": "IT surge powers Nifty past 24,100; crude below $68 lifts sentiment",
+      "url": "https://www.thehindubusinessline.com/markets/stock-markets/it-surge-powers-nifty-past-24100-crude-below-68-lifts-sentiment/article71173496.ece"
+    },
+    {
+      "symbols": [
+        "KAJARIACER"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T13:38:40+05:30",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Kajaria Ceramics buyback opens July 3: Check key dates, price, eligibility, and more",
+      "url": "https://www.livemint.com/market/stock-market-news/kajaria-ceramics-buyback-opens-july-3-check-key-dates-price-eligibility-and-more-11782978089215.html"
+    },
+    {
+      "symbols": [
+        "PAISALO"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T13:36:07+05:30",
+      "candidate_tags": [],
+      "headline": "Paisalo Digital bets on AI and Nvidia chips to double its loan book in 3 years",
+      "url": "https://economictimes.indiatimes.com/markets/expert-view/paisalo-digital-bets-on-ai-and-nvidia-chips-to-double-its-loan-book-in-3-years/articleshow/132133039.cms"
+    },
+    {
+      "symbols": [
+        "FIRSTCRY"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T13:23:21+05:30",
+      "candidate_tags": [],
+      "headline": "FirstCry-promoted Swara Baby Products files draft papers for ₹1,000-crore IPO",
+      "url": "https://www.thehindubusinessline.com/markets/firstcry-promoted-swara-baby-products-files-draft-papers-for-1000-crore-ipo/article71173456.ece"
+    },
+    {
+      "symbols": [
+        "FIRSTCRY"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T13:18:51+05:30",
+      "candidate_tags": [],
+      "headline": "Upcoming IPO: FirstCry-backed Swara Baby Products files draft papers to raise over  ₹1,000 crore via IPO. Details here",
+      "url": "https://www.livemint.com/market/ipo/upcoming-ipo-firstcry-backed-swara-baby-products-files-draft-papers-to-raise-over-1-000-crore-via-ipo-details-here-11782977830213.html"
+    },
+    {
+      "symbols": [
+        "VOLTAS"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T13:18:20+05:30",
+      "candidate_tags": [],
+      "headline": "Room AC firms set to have a moment in the sun?",
+      "url": "https://www.livemint.com/market/mark-to-market/room-ac-firms-set-to-have-a-moment-in-the-sun-11782975084575.html"
+    },
+    {
+      "symbols": [
+        "SENSEXIETF",
+        "CONCOR"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T13:05:40+05:30",
+      "candidate_tags": [],
+      "headline": "ICICI Prudential Mutual Fund raises stake to 5.24% in Container Corporation of India",
+      "url": "https://www.livemint.com/market/stock-market-news/icici-prudential-mutual-fund-raises-stake-to-5-24-in-container-corporation-of-india-11782976943930.html"
+    },
+    {
+      "symbols": [
+        "INFY",
+        "COFORGE"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T12:44:52+05:30",
+      "candidate_tags": [],
+      "headline": "Infosys, Coforge lead IT stocks rebound, Nifty IT climbs 4.5% after 4-day losing streak",
+      "url": "https://www.thehindubusinessline.com/markets/infosys-leads-it-stocks-rebound-nifty-it-climbs-45-after-4-day-losing-streak-coforge-mphasis-infosys-tcs-hcl-tech-wipro-lead-gainers/article71173385.ece"
+    },
+    {
+      "symbols": [
+        "IFCI"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T12:43:49+05:30",
+      "candidate_tags": [],
+      "headline": "Stocks to buy: Nagaraj Shetti recommends IFCI, Five-Star Business Finance shares to buy in the short-term",
+      "url": "https://www.livemint.com/market/stock-market-news/stocks-to-buy-nagaraj-shetti-recommends-ifci-five-star-business-finance-shares-to-buy-in-the-shortterm-11782974932260.html"
+    },
+    {
+      "symbols": [
+        "HINDZINC"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T12:39:10+05:30",
+      "candidate_tags": [],
+      "headline": "India ramps up share sale plans to cushion budget hit from oil",
+      "url": "https://www.thehindubusinessline.com/markets/india-ramps-up-share-sale-plans-to-cushion-budget-hit-from-oil/article71173301.ece"
+    },
+    {
+      "symbols": [
+        "WEWORK"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T12:19:14+05:30",
+      "candidate_tags": [
+        "capacity_capex"
+      ],
+      "headline": "Can WeWork India's managed-office bet pay off?",
+      "url": "https://www.livemint.com/market/mark-to-market/wework-india-stock-rally-managed-office-growth-11782971111171.html"
+    },
+    {
+      "symbols": [
+        "INFY",
+        "TCS"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T11:45:19+05:30",
+      "candidate_tags": [],
+      "headline": "Nifty IT jumps almost 5%; Infosys, TCS shares surge up to 6%. Should you buy IT stocks at this juncture?",
+      "url": "https://www.livemint.com/market/stock-market-news/nifty-it-jumps-over-4-infosys-tcs-shares-surge-up-to-5-should-you-buy-it-stocks-at-this-juncture-11782969939148.html"
+    },
+    {
+      "symbols": [
+        "TMCV",
+        "EMKAY",
+        "MARUTI",
+        "HYUNDAI"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T11:32:41+05:30",
+      "candidate_tags": [],
+      "headline": "June auto sales data: Commercial vehicle turns consensus player; brokerages list stocks to buy",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/june-auto-sales-data-commercial-vehicle-turns-consensus-player-brokerages-list-stocks-to-buy/articleshow/132130312.cms"
+    },
+    {
+      "symbols": [
+        "KPITTECH"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T11:26:16+05:30",
+      "candidate_tags": [],
+      "headline": "KPIT outlook disappoints, analysts push growth recovery to FY28",
+      "url": "https://economictimes.indiatimes.com/markets/expert-view/kpit-outlook-disappoints-analysts-push-growth-recovery-to-fy28/articleshow/132130185.cms"
+    },
+    {
+      "symbols": [
+        "CORDELIA"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T11:14:55+05:30",
+      "candidate_tags": [],
+      "headline": "Newly listed Waterways Leisure Tourism share price hits 10% upper circuit after weak stock market debut",
+      "url": "https://www.livemint.com/market/stock-market-news/at-record-high-newly-listed-waterways-leisure-tourism-share-price-hits-10-upper-circuit-after-weak-stock-market-debut-11782970077448.html"
+    },
+    {
+      "symbols": [
+        "VISL",
+        "VEDL"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T11:05:20+05:30",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "113% returns in 13 days! How Vedanta Iron and Steel shares made investors richer since listing",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/vedanta-iron-and-steel-shares-rocket-113-in-13-sessions-since-listing-market-value-more-than-doubles/articleshow/132129896.cms"
+    },
+    {
+      "symbols": [
+        "TMB",
+        "MERCANTILE"
+      ],
+      "source": "Economic Times (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T10:54:10+05:30",
+      "candidate_tags": [],
+      "headline": "Tamilnad Mercantile Bank shares surge 5% after strong Q1FY27 business update",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/tamilnad-mercantile-bank-shares-surge-5-after-strong-q1fy27-business-update/articleshow/132129770.cms"
+    },
+    {
+      "symbols": [
+        "VISL",
+        "VEDL"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T10:31:43+05:30",
+      "candidate_tags": [
+        "jv_ma",
+        "earnings_surprise"
+      ],
+      "headline": "Multibagger Alert! Vedanta Iron and Steel share price soars 113% since listing - More upside ahead?",
+      "url": "https://www.livemint.com/market/stock-market-news/multibagger-alert-vedanta-iron-and-steel-share-price-soars-113-since-listing-more-upside-ahead-11782967910054.html"
+    },
+    {
+      "symbols": [
+        "TVSMOTOR"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T10:26:51+05:30",
+      "candidate_tags": [],
+      "headline": "TVS Motor rises 3% on record quarterly sales of 16.31 lakh units",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/tvs-motor-rises-3-on-record-quarterly-sales-of-16-31-lakh-units/articleshow/132129309.cms"
+    },
+    {
+      "symbols": [
+        "VEDL",
+        "EMKAY"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T10:18:21+05:30",
+      "candidate_tags": [],
+      "headline": "Vedanta Aluminium shares jump over 3% as Emkay starts coverage with Buy call. 3 reasons why",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/vedanta-aluminium-shares-rally-over-3-as-emkay-starts-coverage-with-buy-call-3-reasons-why/articleshow/132129197.cms"
+    },
+    {
+      "symbols": [
+        "PERSISTENT",
+        "INFY",
+        "COFORGE",
+        "MPHASIS",
+        "TCS"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T10:10:18+05:30",
+      "candidate_tags": [],
+      "headline": "Infosys, TCS and other IT stocks jump up to 5% on dip buying. Is the worst over?",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/infosys-tcs-and-other-it-stocks-jump-up-to-5-on-dip-buying-is-the-worst-over/articleshow/132129063.cms"
+    },
+    {
+      "symbols": [
+        "HDFCBANK"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T10:06:54+05:30",
+      "candidate_tags": [],
+      "headline": "HDFC Bank shares down 20% in 2026 so far. Time to buy as the governance cloud clears up?",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/hdfc-bank-shares-down-20-in-2026-so-far-time-to-buy-as-the-governance-cloud-clears-up/articleshow/132129013.cms"
+    },
+    {
+      "symbols": [
+        "ANGELONE",
+        "INDHOTEL"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T10:00:53+05:30",
+      "candidate_tags": [],
+      "headline": "Stocks to buy or sell: Osho Krishan of Angel One suggests buying CDSL, Indian Hotels shares on 2 July",
+      "url": "https://www.livemint.com/market/stocks-to-buy-or-sell-osho-krishan-of-angel-one-suggests-buying-cdsl-indian-hotels-shares-on-2-july-11782964575702.html"
+    },
+    {
+      "symbols": [
+        "FIRSTCRY"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:55:21+05:30",
+      "candidate_tags": [],
+      "headline": "FirstCry shares in focus ahead of Rs 300 crore Swara Baby stake sale via IPO",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/firstcry-shares-in-focus-ahead-of-rs-300-crore-swara-baby-stake-sale-via-ipo/articleshow/132128893.cms"
+    },
+    {
+      "symbols": [
+        "HCLTECH",
+        "INFY",
+        "TCS"
+      ],
+      "source": "The Hindu BusinessLine (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:41:19+05:30",
+      "candidate_tags": [],
+      "headline": "IT stocks lead Nifty rebound as crude slips below $71; Sensex reclaims 77,000",
+      "url": "https://www.thehindubusinessline.com/markets/it-stocks-lead-nifty-rebound-as-crude-slips-below-71-sensex-reclaims-77000/article71172970.ece"
+    },
+    {
+      "symbols": [
+        "ADANIENSOL"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:31:12+05:30",
+      "candidate_tags": [
+        "capital_action"
+      ],
+      "headline": "Adani Energy Solutions approves  ₹10,000 crore fundraising via QIP; check Q1 results date for the Adani Group stock",
+      "url": "https://www.livemint.com/market/stock-market-news/adani-energy-solutions-approves-rs-10-000-crore-fundraising-via-qip-check-q1-results-date-for-the-adani-group-stock-11782963982557.html"
+    },
+    {
+      "symbols": [
+        "CPPLUS",
+        "ACUTAAS",
+        "HFCL"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:26:01+05:30",
+      "candidate_tags": [],
+      "headline": "10 smallcap stocks soar up to 212% this year, 3 turn multibaggers. Do you own any?",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/10-smallcap-stocks-soar-up-to-212-this-year-3-turn-multibaggers-do-you-own-any/slideshow/132128568.cms"
+    },
+    {
+      "symbols": [
+        "OLAELEC"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:24:13+05:30",
+      "candidate_tags": [],
+      "headline": "Ola Electric shares in focus as Q1 registrations nearly double sequentially to 43,719 units",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/ola-electric-shares-in-focus-as-q1-registrations-nearly-double-sequentially-to-43719-units/articleshow/132128432.cms"
+    },
+    {
+      "symbols": [
+        "WIPRO",
+        "INFY"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:21:18+05:30",
+      "candidate_tags": [],
+      "headline": "Wipro share price climbs 1% following a 17% drop in ADRs overnight amid growing AI concerns. Do you own?",
+      "url": "https://www.livemint.com/market/stock-market-news/wipro-share-price-climbs-1-following-a-17-drop-in-adrs-overnight-amid-growing-ai-concerns-do-you-own-11782961689819.html"
+    },
+    {
+      "symbols": [
+        "PAYTM"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:13:41+05:30",
+      "candidate_tags": [],
+      "headline": "Paytm among 4 stocks that closed crossing above VWAP",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/paytm-among-4-stocks-that-closed-crossing-above-vwap/slideshow/132128324.cms"
+    },
+    {
+      "symbols": [
+        "MCX"
+      ],
+      "source": "LiveMint (Markets)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T09:08:57+05:30",
+      "candidate_tags": [],
+      "headline": "Gold price today: MCX gold drops 0.20%, silver climbs 0.50% after soft US jobs data",
+      "url": "https://www.livemint.com/market/commodities/gold-price-today-mcx-gold-drops-0-20-silver-climbs-0-50-after-soft-us-jobs-data-11782962585156.html"
+    },
+    {
+      "symbols": [
+        "BHARTIARTL"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T08:53:22+05:30",
+      "candidate_tags": [
+        "earnings_surprise"
+      ],
+      "headline": "Bharti Airtel shares in focus as NBFC Airtel Money commences commercial operations after RBI nod",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/bharti-airtel-shares-in-focus-as-nbfc-airtel-money-commences-commercial-operations-after-rbi-nod/articleshow/132128118.cms"
+    },
+    {
+      "symbols": [
+        "WIPRO"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T08:44:36+05:30",
+      "candidate_tags": [],
+      "headline": "Wipro shares could crash 17% on Thursday if ADR is an indicator. What’s worrying investors?",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/wipro-shares-could-crash-17-on-thursday-if-adr-is-an-indicator-whats-worrying-investors/articleshow/132128043.cms"
+    },
+    {
+      "symbols": [
+        "DELHIVERY",
+        "ETERNAL"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T08:27:30+05:30",
+      "candidate_tags": [],
+      "headline": "Delhivery, Eternal among 6 stocks flashing bullish signals, hinting at a possible uptrend",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/delhivery-eternal-among-6-stocks-flashing-bullish-signals-hinting-at-a-possible-uptrend/slideshow/132127775.cms"
+    },
+    {
+      "symbols": [
+        "SWARAJENG",
+        "TECHM"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T08:25:40+05:30",
+      "candidate_tags": [],
+      "headline": "Dividend Alert! Last day to buy M&amp;M, Swaraj Engines, 31 other stocks to earn payouts up to Rs 110",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/dividend-alert-last-day-to-buy-mm-other-32-stocks-for-dividends-worth-rs-473-how-many-do-you-own/articleshow/132127684.cms"
+    },
+    {
+      "symbols": [
+        "RITES"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T08:17:24+05:30",
+      "candidate_tags": [],
+      "headline": "Rites among 5 stocks showing bullish RSI upswing",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/rites-among-5-stocks-showing-bullish-rsi-upswing/slideshow/132127642.cms"
+    },
+    {
+      "symbols": [
+        "ITC"
+      ],
+      "source": "Economic Times (Stocks)",
+      "trust": "reputed_news",
+      "published_at": "2026-07-02T08:07:15+05:30",
+      "candidate_tags": [],
+      "headline": "ITC Share Price Highlights: ITC Stock Price History",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/stock-liveblog/itc-share-price-today-live-02-jul-2026/liveblog/132127482.cms"
+    }
+  ]
+}

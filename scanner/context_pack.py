@@ -85,8 +85,15 @@ def build_context_pack(summary: dict[str, Any] | None = None,
     try:
         # Pull PDF body text for catalyst-tagged filings, then re-tag on the
         # richer text (catches catalysts only visible inside the attachment).
+        # Value-bearing tags (orders/capex/approvals/overhangs) are enriched
+        # FIRST — they feed the materiality line; coverage extends across scans
+        # via the cache, so a slow/interrupted run self-heals.
         if enrich_pdf and pdf_extract.is_enabled():
-            tagged_anns = [a for a in anns_sorted if a.get("candidate_tags")]
+            value_tags = {"order_win", "capacity_capex", "approval_patent",
+                          "overhang_resolution"}
+            tagged_anns = sorted(
+                (a for a in anns_sorted if a.get("candidate_tags")),
+                key=lambda a: 0 if value_tags & set(a.get("candidate_tags") or []) else 1)
             if pdf_extract.enrich_filings(tagged_anns, conn=conn):
                 _retag_enriched(tagged_anns, conn=conn)
 

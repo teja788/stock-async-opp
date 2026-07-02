@@ -111,18 +111,34 @@ def extract_url(url: str, session: PoliteSession) -> str:
 
 
 def enrich_filings(anns: list[dict[str, Any]], session: PoliteSession | None = None,
-                   limit: int = 25, conn=None) -> int:
-    """Best-effort: pull PDF body text for the first `limit` filings and attach it
-    as ann['pdf_text']. Bounded + cached so repeat scans are cheap. Returns count."""
+                   limit: int | None = None, conn=None) -> int:
+    """Best-effort: pull PDF body text for filings and attach as ann['pdf_text'].
+
+    Self-continuing by design: extraction is cached per filing and transient
+    fetch errors are NOT cached, so each scan retries failures and extends
+    coverage until every filing in scope has text — an interrupted/timed-out
+    run loses nothing. The `limit` caps NEW fetches per run (cached hits are
+    free and don't count), so backlogs drain across scans. Default from
+    settings pdf_extract.max_per_scan. Returns count enriched.
+    """
     if not is_enabled():
         return 0
+    if limit is None:
+        limit = int(_cfg().get("max_per_scan", 40))
     session = session or PoliteSession()
-    done = 0
-    for a in anns[:limit]:
+    done = fetched = 0
+    for a in anns:
+        ref = a.get("dedupe_hash")
+        cached = store.get_filing_text(ref, conn=conn) if ref else None
+        if cached is None:
+            if fetched >= limit:
+                continue  # budget spent — next scan continues from cache
+            fetched += 1
         text = extract_for(a, session, conn=conn)
         if text:
             a["pdf_text"] = text
             done += 1
-    if done:
-        log.info("PDF-enriched %d/%d filings", done, min(len(anns), limit))
+    if done or fetched:
+        log.info("PDF-enriched %d filings (%d fresh fetches, %d in scope)",
+                 done, fetched, len(anns))
     return done

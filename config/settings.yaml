@@ -35,6 +35,8 @@ scoring:
 # Optional enrichment layer (degrades gracefully if its deps are absent).
 pdf_extract:
   enabled: true                    # pull PDF body text for catalyst-tagged filings; uses pymupdf if present, else pypdf.
+  max_per_scan: 40                 # NEW PDF fetches per scan (cached ones are free);
+                                   # backlogs drain across scans automatically.
 
 # Daily close + volume from the free BSE bhavcopy (one CSV per trading day).
 # Powers the "already priced in?" line on pack items and the `review` command.

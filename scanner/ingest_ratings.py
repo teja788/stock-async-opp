@@ -60,6 +60,52 @@ def _direction(text: str) -> str:
     return "other"
 
 
+# Indian long-term rating scale, worst -> best. BBB- is the investment-grade
+# floor: crossing it is the classic re-rating catalyst (debt gets cheaper,
+# institutional mandates open up).
+_RATING_SCALE = ["D", "C", "B-", "B", "B+", "BB-", "BB", "BB+",
+                 "BBB-", "BBB", "BBB+", "A-", "A", "A+", "AA-", "AA", "AA+", "AAA"]
+_IG_FLOOR = _RATING_SCALE.index("BBB-")
+_TOKEN_RE = (r"(?:\[?(?:CARE|ICRA|CRISIL|IND|BWR|ACUITE)\]?\s*)?"
+             r"(AAA|AA\+|AA-|AA|A\+|A-|A|BBB\+|BBB-|BBB|BB\+|BB-|BB|B\+|B-|B|C|D)")
+# Only trust ratings inside an explicit to/from construct, and match grade
+# tokens CASE-SENSITIVELY (a lowercase "a" is the article, not a rating).
+# NOTE: a trailing \b would fail after +/- (no word boundary before a space),
+# silently truncating "BBB-" to "BBB" — hence the explicit lookahead.
+_END = r"(?![\w+\-])"
+_TO_FROM = re.compile(rf"\b[Tt]o\s+{_TOKEN_RE}{_END}.{{0,60}}?\b[Ff]rom\s+{_TOKEN_RE}{_END}",
+                      re.DOTALL)
+_FROM_TO = re.compile(rf"\b[Ff]rom\s+{_TOKEN_RE}{_END}.{{0,60}}?\b[Tt]o\s+{_TOKEN_RE}{_END}",
+                      re.DOTALL)
+
+
+def parse_notch(text: str) -> dict[str, Any] | None:
+    """Extract {from, to, notches, ig_crossover} from an action's text.
+
+    "upgraded to CARE BBB- from CARE BB+" -> {from: BB+, to: BBB-, notches: +1,
+    ig_crossover: True}. Returns None when no to/from rating pair is present —
+    one-notch housekeeping and multi-notch re-ratings look identical otherwise.
+    """
+    if not text:
+        return None
+    m = _TO_FROM.search(text)
+    if m:
+        new, old = m.group(1).upper(), m.group(2).upper()
+    else:
+        m = _FROM_TO.search(text)
+        if not m:
+            return None
+        old, new = m.group(1).upper(), m.group(2).upper()
+    if old not in _RATING_SCALE or new not in _RATING_SCALE or old == new:
+        return None
+    i_old, i_new = _RATING_SCALE.index(old), _RATING_SCALE.index(new)
+    return {
+        "from": old, "to": new,
+        "notches": i_new - i_old,
+        "ig_crossover": i_old < _IG_FLOOR <= i_new,  # crossed INTO investment grade
+    }
+
+
 def _norm_core(name: str) -> str:
     """Lower-case, strip punctuation + trailing corporate-suffix tokens."""
     cleaned = _PUNCT.sub(" ", (name or "").lower())

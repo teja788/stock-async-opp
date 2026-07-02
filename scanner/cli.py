@@ -128,8 +128,9 @@ def _refresh_all(bse_limit: int | None = None,
     "news", "deals"}); None runs all. Lets the dashboard do a fast news+deals
     update without the slow BSE poll.
     """
-    run = sources or {"bse_announcements", "news", "deals", "ratings"}
-    from scanner import ingest_bse, ingest_deals, ingest_news, ingest_ratings, store
+    run = sources or {"bse_announcements", "news", "deals", "ratings", "prices"}
+    from scanner import (ingest_bse, ingest_deals, ingest_news, ingest_prices,
+                         ingest_ratings, store)
     from scanner.http import PoliteSession
     from scanner.universe import load_map
 
@@ -201,6 +202,17 @@ def _refresh_all(bse_limit: int | None = None,
         note = f"{failed}/{stats.get('total_agencies', 0)} agencies failed" if failed else ""
         return len(items), store.upsert_ratings(items), note, failed == 0
 
+    def _prices():
+        if not ingest_prices.is_enabled():
+            return 0, 0, "disabled in settings", True
+        stats: dict = {}
+        new = ingest_prices.ingest(session=session, stats=stats)
+        failed = stats.get("days_failed", 0)
+        note = f"{failed} bhavcopy days failed (retried next run)" if failed else ""
+        # Missing dates self-heal: they stay absent from the store and are
+        # re-attempted next run, so no cursor to hold back.
+        return stats.get("days_fetched", 0), new, note, True
+
     if "bse_announcements" in run:
         _do("bse_announcements", _bse)
     if "news" in run:
@@ -209,6 +221,8 @@ def _refresh_all(bse_limit: int | None = None,
         _do("deals", _deals)
     if "ratings" in run:
         _do("ratings", _ratings)
+    if "prices" in run:
+        _do("prices", _prices)
     return results
 
 
@@ -451,6 +465,122 @@ def digest(hours: int = _HOURS_OPT, days: int = _DAYS_OPT) -> None:
         path = digest_dir / f"{today}-{datetime.now(_IST).strftime('%H%M')}.md"
     path.write_text(f"# Daily Digest — {today}\n\n{note}\n\n---\n\n{md}", encoding="utf-8")
     console.print(f"[green]Digest saved:[/green] {path}")
+
+
+@app.command()
+def watch(action: str = typer.Argument("list", help="add | remove | list"),
+          query: str = typer.Argument("", help="Company name or ticker (for add/remove)"),
+          note: str = typer.Option("", "--note", help="Optional note stored with the entry.")) -> None:
+    """Manage the watchlist. Watchlisted names get a ★ and a dedicated
+    'WATCHLIST ACTIVITY' section at the top of every context pack."""
+    from scanner import store
+    from scanner.universe import load_map
+
+    store.init_db()
+    if action == "list":
+        rows = store.get_watchlist()
+        if not rows:
+            console.print("[dim]Watchlist is empty. Add with: watch add \"<company or ticker>\"[/dim]")
+        for w in rows:
+            console.print(f"  ★ {w.get('symbol','?')}  ({w.get('isin')})  "
+                          f"added {(w.get('added_at') or '')[:10]}  {w.get('note','')}")
+        return
+
+    universe = load_map()
+    companies = _resolve_companies(query, universe)
+    if not companies:
+        console.print(f"[yellow]No universe company matched '{query}'.[/yellow]")
+        raise typer.Exit(1)
+    for c in companies:
+        if action == "add":
+            store.add_to_watchlist(c["isin"], c.get("symbol", ""), note)
+            console.print(f"[green]Added[/green] ★ {c['symbol']} ({c['name']})")
+        elif action == "remove":
+            n = store.remove_from_watchlist(c["isin"])
+            console.print(f"[green]Removed[/green] {c['symbol']}" if n
+                          else f"[dim]{c['symbol']} was not on the watchlist.[/dim]")
+        else:
+            console.print(f"[red]Unknown action '{action}' — use add | remove | list.[/red]")
+            raise typer.Exit(1)
+
+
+_LEAD_RE = None  # compiled lazily in review()
+
+
+@app.command()
+def review(min_age_days: int = typer.Option(7, "--min-age", help="Only score leads at least this old."),
+           limit: int = typer.Option(50, help="Max leads to show.")) -> None:
+    """Score past research-log leads against subsequent price moves.
+
+    The feedback loop: reads digests/research_log.md, finds every numbered
+    lead (`1. **TICKER — ...`), and compares the close on the log date with the
+    latest stored close (bhavcopy history, ~90d backfill). Research only — this
+    calibrates the flagging bar, it is not a performance record.
+    """
+    import re as _re
+    from scanner import store
+    from scanner.config import resolve_path
+    from scanner.universe import load_map
+
+    log_path = resolve_path("digests/research_log.md")
+    if not log_path.exists():
+        console.print("[yellow]No research log yet (digests/research_log.md).[/yellow]")
+        raise typer.Exit()
+
+    entry_re = _re.compile(r"^## (\d{4}-\d{2}-\d{2}) \d{2}:\d{2} IST — (.+)$")
+    lead_re = _re.compile(r"^\s*\d+\.\s+\*\*([A-Z0-9&._\-]+)\s*[—–-]")
+    store.init_db()
+    universe = load_map()
+    sym_to_isin = {c["symbol"].upper(): c["isin"] for c in universe if c.get("symbol")}
+
+    leads: list[tuple[str, str]] = []   # (date, ticker)
+    seen = set()
+    current_date = None
+    for line in log_path.read_text(encoding="utf-8").splitlines():
+        m = entry_re.match(line)
+        if m:
+            current_date = m.group(1)
+            continue
+        m = lead_re.match(line)
+        if m and current_date and (current_date, m.group(1)) not in seen:
+            seen.add((current_date, m.group(1)))
+            leads.append((current_date, m.group(1)))
+
+    cutoff = (datetime.now(_IST) - timedelta(days=min_age_days)).strftime("%Y-%m-%d")
+    today = datetime.now(_IST).strftime("%Y-%m-%d")
+    table = Table(title=f"Lead review — {len(leads)} leads found in the log", border_style="cyan")
+    for col in ("Logged", "Ticker", "Then", "Now", "Move", "Age(d)"):
+        table.add_column(col, justify="right" if col in ("Then", "Now", "Move", "Age(d)") else "left")
+
+    shown = scored = 0
+    moves: list[float] = []
+    for date, ticker in leads:
+        if date > cutoff or shown >= limit:
+            continue
+        shown += 1
+        age = (datetime.strptime(today, "%Y-%m-%d") - datetime.strptime(date, "%Y-%m-%d")).days
+        isin = sym_to_isin.get(ticker.upper())
+        then = store.price_on(isin, date) if isin else None
+        now_px = store.price_on(isin, today) if isin else None
+        if then and now_px and then["close"]:
+            pct = (now_px["close"] - then["close"]) / then["close"] * 100
+            moves.append(pct)
+            scored += 1
+            colour = "green" if pct > 0 else "red"
+            table.add_row(date, ticker, f"{then['close']:,.1f}", f"{now_px['close']:,.1f}",
+                          f"[{colour}]{pct:+.1f}%[/{colour}]", str(age))
+        else:
+            table.add_row(date, ticker, "—", "—", "[dim]no price data[/dim]", str(age))
+    console.print(table)
+    if moves:
+        winners = sum(1 for m in moves if m > 0)
+        console.print(f"Scored {scored}: hit-rate {winners}/{scored} positive · "
+                      f"median move {sorted(moves)[len(moves)//2]:+.1f}% · "
+                      f"avg {sum(moves)/len(moves):+.1f}%")
+    else:
+        console.print("[dim]No leads scoreable yet — price history accumulates from the "
+                      "bhavcopy backfill (~90 days); older leads stay unscored.[/dim]")
+    console.print("[dim]Research calibration only — not a performance record, not advice.[/dim]")
 
 
 @app.command(name="setup-universe")

@@ -69,6 +69,29 @@ def fetch_nifty500(session: PoliteSession) -> list[dict[str, str]]:
     return rows
 
 
+def fetch_fno_symbols(session: PoliteSession) -> set[str]:
+    """NSE symbols with F&O contracts (under-coverage proxy: F&O = well covered).
+
+    Best-effort: an empty set (fetch failed) simply omits the F&O flag.
+    """
+    src = load_sources().get("nse", {})
+    url = src.get("fo_mktlots")
+    if not url:
+        return set()
+    try:
+        text = session.get(url, timeout=30).text
+    except Exception as exc:  # noqa: BLE001 - flag is optional enrichment
+        log.warning("F&O list fetch failed (flag omitted): %s", exc)
+        return set()
+    symbols: set[str] = set()
+    for row in csv.reader(io.StringIO(text)):
+        if len(row) >= 2:
+            sym = row[1].strip().upper()
+            if sym and sym != "SYMBOL":
+                symbols.add(sym)
+    return symbols
+
+
 def fetch_bse_master(session: PoliteSession) -> list[dict[str, Any]]:
     """Return active BSE equity securities (scrip_code, isin, names, market cap)."""
     src = load_sources().get("bse", {})
@@ -188,6 +211,7 @@ def build_map(session: PoliteSession | None = None) -> dict[str, Any]:
 
     nifty = fetch_nifty500(session)
     bse = fetch_bse_master(session)
+    fno = fetch_fno_symbols(session)
 
     # Cache raw pulls so we can inspect/debug without re-fetching.
     (UNIVERSE_DIR / "nifty500_raw.json").write_text(
@@ -219,11 +243,14 @@ def build_map(session: PoliteSession | None = None) -> dict[str, Any]:
             "sector": c["industry"],
             "market_cap_cr": _parse_market_cap(b),
             "aliases": make_aliases(c["company"], c["symbol"]),
+            "in_fno": c["symbol"].upper() in fno,
         })
 
     index_count = len(merged)
     # Expand beyond the index to liquid BSE companies above the market-cap floor.
     expansion = _expand_universe(bse, {c["isin"] for c in merged})
+    for rec in expansion:  # expansion symbols are BSE scrip_ids; still match when they align
+        rec["in_fno"] = (rec.get("symbol") or "").upper() in fno
     merged.extend(expansion)
 
     # Persist the merged map (JSON for code, CSV for eyeballing in Excel).

@@ -100,9 +100,9 @@ with st.sidebar:
                f"· Ratings: {cov['ratings']['count']}")
 
     c1, c2 = st.columns(2)
-    if c1.button("Update fast feeds", help="News + deals + ratings — incremental, only new data (~30s)"):
-        with st.spinner("Fetching news + deals + ratings (catch-up)..."):
-            res = _refresh_all(sources={"news", "deals", "ratings"})
+    if c1.button("Update fast feeds", help="News + deals + ratings + prices — incremental, only new data (~30s; first prices backfill ~2 min)"):
+        with st.spinner("Fetching news + deals + ratings + prices (catch-up)..."):
+            res = _refresh_all(sources={"news", "deals", "ratings", "prices"})
         _bump()
         st.success(f"news {res.get('news',{}).get('new',0)} new · deals {res.get('deals',{}).get('new',0)} new "
                    f"· ratings {res.get('ratings',{}).get('new',0)} new")

@@ -139,6 +139,16 @@ CREATE TABLE IF NOT EXISTS ratings (
     dedupe_hash TEXT UNIQUE
 );
 
+-- Daily close/volume per universe scrip from the free BSE bhavcopy.
+-- Powers the "already priced in?" context lines and the `review` command.
+CREATE TABLE IF NOT EXISTS prices (
+    isin   TEXT,
+    date   TEXT,               -- YYYY-MM-DD (trade date)
+    close  REAL,
+    volume REAL,
+    PRIMARY KEY (isin, date)
+);
+
 CREATE INDEX IF NOT EXISTS idx_ann_isin   ON announcements(isin);
 CREATE INDEX IF NOT EXISTS idx_ann_pub    ON announcements(published_at);
 CREATE INDEX IF NOT EXISTS idx_news_pub   ON news(published_at);
@@ -391,6 +401,19 @@ def add_to_watchlist(isin: str, symbol: str = "", note: str = "",
             conn.close()
 
 
+def remove_from_watchlist(isin: str, conn: sqlite3.Connection | None = None) -> int:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        before = conn.total_changes
+        conn.execute("DELETE FROM watchlist WHERE isin=?", (isin,))
+        conn.commit()
+        return conn.total_changes - before
+    finally:
+        if own:
+            conn.close()
+
+
 def get_watchlist(conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
     own = conn is None
     conn = conn or get_conn()
@@ -566,6 +589,141 @@ def save_filing_text(ref_hash: str, url: str, text: str, method: str,
             "method=excluded.method, created_at=excluded.created_at",
             (ref_hash, url, text, len(text or ""), method, _now_iso()))
         conn.commit()
+    finally:
+        if own:
+            conn.close()
+
+
+# --------------------------------------------------------------------------- #
+# Prices (daily bhavcopy closes) + derived context.
+# --------------------------------------------------------------------------- #
+def upsert_prices(rows: list[tuple[str, str, float, float]],
+                  conn: sqlite3.Connection | None = None) -> int:
+    """Insert (isin, date, close, volume) rows; returns NEW rows inserted."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        before = conn.total_changes
+        conn.executemany(
+            "INSERT OR IGNORE INTO prices (isin, date, close, volume) VALUES (?,?,?,?)",
+            rows)
+        conn.commit()
+        return conn.total_changes - before
+    finally:
+        if own:
+            conn.close()
+
+
+def price_dates(conn: sqlite3.Connection | None = None) -> set[str]:
+    """Distinct trade dates already stored (so the ingester fetches only gaps)."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return {r["date"] for r in conn.execute("SELECT DISTINCT date FROM prices")}
+    finally:
+        if own:
+            conn.close()
+
+
+def prune_prices(keep_after_iso: str, conn: sqlite3.Connection | None = None) -> int:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        before = conn.total_changes
+        conn.execute("DELETE FROM prices WHERE date < ?", (keep_after_iso,))
+        conn.commit()
+        return conn.total_changes - before
+    finally:
+        if own:
+            conn.close()
+
+
+def price_context(isin: str, since_date: str,
+                  conn: sqlite3.Connection | None = None) -> dict[str, Any] | None:
+    """Price/volume move since a catalyst date — the "already priced in?" check.
+
+    Returns {pct_change, vol_ratio, ref_date, last_date, last_close} or None if
+    there isn't enough stored history. `vol_ratio` compares average daily volume
+    AFTER the catalyst to the 20 sessions BEFORE it.
+    """
+    if not isin or not since_date:
+        return None
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        day = since_date[:10]
+        # Baseline strictly BEFORE the catalyst day — that day's close (and
+        # volume) may already contain the reaction we're trying to measure.
+        ref = conn.execute(
+            "SELECT date, close FROM prices WHERE isin=? AND date<? "
+            "ORDER BY date DESC LIMIT 1", (isin, day)).fetchone()
+        last = conn.execute(
+            "SELECT date, close FROM prices WHERE isin=? "
+            "ORDER BY date DESC LIMIT 1", (isin,)).fetchone()
+        if not ref or not last or not ref["close"]:
+            return None
+        base_vol = conn.execute(
+            "SELECT AVG(volume) v FROM (SELECT volume FROM prices "
+            "WHERE isin=? AND date<? ORDER BY date DESC LIMIT 20)",
+            (isin, day)).fetchone()["v"]
+        after_vol = conn.execute(
+            "SELECT AVG(volume) v FROM prices WHERE isin=? AND date>=?",
+            (isin, day)).fetchone()["v"]
+        return {
+            "pct_change": (last["close"] - ref["close"]) / ref["close"] * 100,
+            "vol_ratio": (after_vol / base_vol) if (after_vol and base_vol) else None,
+            "ref_date": ref["date"], "last_date": last["date"],
+            "last_close": last["close"],
+        }
+    finally:
+        if own:
+            conn.close()
+
+
+def price_on(isin: str, on_or_before: str,
+             conn: sqlite3.Connection | None = None) -> dict[str, Any] | None:
+    """Close on/most-recently-before a date (for the `review` command)."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        row = conn.execute(
+            "SELECT date, close FROM prices WHERE isin=? AND date<=? "
+            "ORDER BY date DESC LIMIT 1", (isin, on_or_before[:10])).fetchone()
+        return dict(row) if row else None
+    finally:
+        if own:
+            conn.close()
+
+
+# --------------------------------------------------------------------------- #
+# Insider accumulation (trailing aggregation over insider/SAST buys).
+# --------------------------------------------------------------------------- #
+def insider_accumulation(since_iso: str,
+                         conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    """Per-company aggregate of promoter/insider BUYs since `since_iso`.
+
+    A promoter buying five times in 60 days is a far stronger signal than any
+    single row. Also flags a SAST 5% threshold crossing (a NEW substantial
+    shareholder appearing). Sorted by cumulative stake added, desc.
+    """
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn, """
+            SELECT isin, symbol, company,
+                   COUNT(*)                                  AS n_buys,
+                   SUM(COALESCE(pct_post,0) - COALESCE(pct_pre,0)) AS cum_pct,
+                   MIN(date)                                 AS first_buy,
+                   MAX(date)                                 AS last_buy,
+                   MAX(CASE WHEN pct_pre IS NOT NULL AND pct_post IS NOT NULL
+                            AND pct_pre < 5 AND pct_post >= 5 THEN 1 ELSE 0 END)
+                                                             AS crossed_5pct
+            FROM deals
+            WHERE deal_type IN ('insider','sast') AND side='BUY'
+              AND isin IS NOT NULL AND date >= ?
+            GROUP BY isin
+            HAVING n_buys >= 2 OR cum_pct >= 0.5 OR crossed_5pct = 1
+            ORDER BY cum_pct DESC, n_buys DESC""", (since_iso,))
     finally:
         if own:
             conn.close()

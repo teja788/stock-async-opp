@@ -15,11 +15,13 @@ Run via `run.bat <command>` (Windows) or `.venv\Scripts\python.exe -m scanner.cl
 
 | Command | What it does |
 |---|---|
-| `setup-universe` | (Re)build the Nifty 500 ↔ BSE map (joined on ISIN). Run once / occasionally. |
-| `refresh` | Run all ingesters (catch-up since last run), store with dedupe. ~8 min for the full BSE pull. |
+| `setup-universe` | (Re)build the universe map: Nifty 500 + BSE A/B smallcaps > ₹250 cr, joined on ISIN, F&O-flagged. Run once / occasionally. |
+| `refresh` | Run all ingesters (catch-up since last run), store with dedupe. Includes daily bhavcopy closes. |
 | `scan` | `refresh` → pre-filter → write `runtime/context_pack.md`. Add `--skip-refresh` to use stored data. |
 | `ask "<question>"` | Print stored data relevant to a company / tag / date for a follow-up. |
 | `digest` | Save a dated ranked digest to `digests/`. |
+| `watch add\|remove\|list "<co>"` | Manage the watchlist (★ + top section in every pack). |
+| `review` | Score past research-log leads against subsequent price moves (calibration loop). |
 | `schedule` | Print/install the Windows Task Scheduler job. |
 
 **The core loop:** the user runs `scan` (Python assembles the context pack), then
@@ -34,6 +36,23 @@ Read `runtime/context_pack.md` and produce a **ranked list of asymmetric
 opportunities**. The pack separates HARD FILINGS (high trust) from INVESTOR DEALS
 (disclosed), RATING ACTIONS (CRA upgrades/downgrades), and NEWS (lower trust) —
 preserve that separation and never blur it.
+
+The pack also carries **deterministic evidence lines — use them**:
+- **CONFLUENCE** section: companies with ≥2 independent signal kinds in-window.
+  Inspect these first; confluence is the classic asymmetric setup.
+- **★ WATCHLIST ACTIVITY**: user-pinned names — always address them explicitly.
+- **INSIDER ACCUMULATION** (trailing 90d): aggregated promoter/insider buying;
+  `CROSSED 5%` = a new substantial shareholder appeared.
+- **`Value: ~₹X cr ≈ Y% of mcap`** on filings: regex-extracted headline figure —
+  the materiality gate quantified. Treat as an estimate; verify in the filing.
+- **`Px since: +X% · vol Yx prior 20d`**: the priced-in check. A big catalyst
+  with a small move = possibly under-appreciated; already +15-20% = the market
+  got there first (down-rank on gate 3).
+- **`F&O` in a label** = institutionally covered; its ABSENCE on a smallcap is
+  the under-coverage signal gate 3 favours.
+- **Rating notch info** (`BB+→BBB- (+1 notch) [CROSSES INTO INVESTMENT GRADE]`):
+  multi-notch moves and IG crossovers are the re-rating catalysts; one-notch
+  reaffirm-adjacent moves usually are not.
 
 For each candidate, judge:
 

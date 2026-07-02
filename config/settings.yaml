@@ -5,10 +5,13 @@ universe: nifty500
 # scan only the Nifty 500. Current setting ≈ 980 companies (~16 min full BSE scan).
 universe_expansion:
   enabled: true
-  mcap_floor_cr: 500           # base ₹-crore floor
-  groups: [A]                  # BSE groups included at the floor (A = most liquid)
-  group_caps:                  # extra groups included only above a higher ₹cr cap
-    B: 3000                    # Group B companies above ₹3,000 cr
+  mcap_floor_cr: 250           # base ₹-crore floor. The ₹250-3,000 cr smallcap band is
+                               # the asymmetric sweet spot: one order/approval is
+                               # needle-moving, and coverage is thin.
+  groups: [A, B]               # BSE groups included at the floor. T (trade-to-trade
+                               # surveillance), Z (compliance defaulters), X/XT (BSE-only
+                               # illiquid) and M/MT (SME) stay deliberately excluded.
+  group_caps: {}               # extra groups included only above a higher ₹cr cap
 
 lookback_hours: 24                 # DEFAULT rolling window. Override per-run with
                                   # CLI flags --hours N / --days N on
@@ -32,3 +35,10 @@ scoring:
 # Optional enrichment layer (degrades gracefully if its deps are absent).
 pdf_extract:
   enabled: true                    # pull PDF body text for catalyst-tagged filings; uses pymupdf if present, else pypdf.
+
+# Daily close + volume from the free BSE bhavcopy (one CSV per trading day).
+# Powers the "already priced in?" line on pack items and the `review` command.
+prices:
+  enabled: true
+  lookback_days: 90                # backfill / keep this many calendar days of closes
+  prune_after_days: 200            # delete rows older than this to bound DB size

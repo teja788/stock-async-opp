@@ -15,12 +15,13 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from scanner import pdf_extract, store
+from scanner import materiality, pdf_extract, store
 from scanner.config import load_settings, resolve_path
+from scanner.ingest_ratings import parse_notch
 from scanner.prefilter import run_prefilter, tag_catalysts
 from scanner.universe import load_map
 
@@ -95,11 +96,50 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         market_news = [n for n in news if not _news_isins(n)]
 
         ratings = store.get_recent_ratings(summary["window_since"], conn=conn)
+
+        # Enrich tagged filings with the two materiality signals: the rupee
+        # value mentioned (vs mcap) and the price/volume move since publication.
+        for a in anns_sorted[:MAX_FILINGS]:
+            if not a.get("candidate_tags"):
+                continue
+            a["value_cr"] = materiality.headline_value_cr(
+                a.get("headline", ""), a.get("body_text", ""), a.get("pdf_text", ""))
+            if a.get("isin") and a.get("published_at"):
+                a["px_ctx"] = store.price_context(a["isin"], a["published_at"], conn=conn)
+
+        # Rating notch info (multi-notch moves / IG crossover are the re-raters).
+        for r in ratings:
+            r["notch"] = parse_notch(f"{r.get('rating','')} {r.get('summary','')}")
+
+        # Confluence: companies with >=2 INDEPENDENT signal kinds in-window.
+        confluence: dict[str, set[str]] = {}
+        def _mark(isin: str | None, kind: str) -> None:
+            if isin:
+                confluence.setdefault(isin, set()).add(kind)
+        for a in anns_sorted:
+            if a.get("candidate_tags"):
+                _mark(a.get("isin"), "tagged filing")
+        for d in flagged_deals:
+            _mark(d.get("isin"), "investor deal")
+        for r in ratings:
+            _mark(r.get("isin"), f"rating {r.get('action','')}".strip())
+        for n in tagged_news:
+            for i in _news_isins(n):
+                _mark(i, "news")
+        confluence = {i: k for i, k in confluence.items() if len(k) >= 2}
+
+        # Insider accumulation over a trailing 90d (independent of the window).
+        accum_since = (datetime.now(IST) - timedelta(days=90)).isoformat()
+        accumulation = store.insider_accumulation(accum_since, conn=conn)
+
+        watch = {w["isin"] for w in store.get_watchlist(conn=conn)}
     finally:
         conn.close()
 
-    md = _render_md(summary, anns_sorted, flagged_deals, tagged_news, market_news, ratings, idx)
-    pack_json = _render_json(summary, anns_sorted, flagged_deals, tagged_news, ratings, idx)
+    md = _render_md(summary, anns_sorted, flagged_deals, tagged_news, market_news,
+                    ratings, idx, confluence, accumulation, watch)
+    pack_json = _render_json(summary, anns_sorted, flagged_deals, tagged_news,
+                             ratings, idx, confluence, accumulation)
 
     md_path = resolve_path(settings.get("output", {}).get("context_pack", "runtime/context_pack.md"))
     json_path = md_path.with_suffix(".json")
@@ -174,29 +214,97 @@ def _mcap_str(isin: str | None, idx: dict[str, dict]) -> str:
     return f", ₹{mcap:,.0f} cr"
 
 
-def _co_label(rec: dict[str, Any], idx: dict[str, dict]) -> str:
-    """SYMBOL (Company, BSE:code, ₹mcap) label. Market cap feeds the
-    materiality-relative-to-size judgement in the rubric."""
+def _co_label(rec: dict[str, Any], idx: dict[str, dict],
+              watch: set[str] | None = None) -> str:
+    """SYMBOL (Company, BSE:code, ₹mcap[, F&O]) label. Market cap feeds the
+    materiality judgement; F&O marks institutional coverage (its absence on a
+    smallcap = likely under-followed); ★ = user watchlist."""
     symbol = rec.get("symbol") or "?"
     company = rec.get("company") or ""
     bse = rec.get("bse_code") or ""
+    isin = rec.get("isin") or ""
     tail = f", BSE:{bse}" if bse else ""
-    return f"{symbol} ({company}{tail}{_mcap_str(rec.get('isin'), idx)})"
+    fno = ", F&O" if idx.get(isin, {}).get("in_fno") else ""
+    star = "★ " if (watch and isin in watch) else ""
+    return f"{star}{symbol} ({company}{tail}{_mcap_str(rec.get('isin'), idx)}{fno})"
 
 
-def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> str:
+def _px_line(px: dict[str, Any] | None) -> str:
+    """'Px since: +4.2% · vol 3.1x prior 20d' — the priced-in check."""
+    if not px:
+        return ""
+    s = f"Px since: {px['pct_change']:+.1f}%"
+    if px.get("vol_ratio"):
+        s += f" · vol {px['vol_ratio']:.1f}x prior 20d"
+    return s
+
+
+def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
+               confluence=None, accumulation=None, watch=None) -> str:
+    confluence = confluence or {}
+    accumulation = accumulation or []
+    watch = watch or set()
     out: list[str] = []
     now = datetime.now(IST).strftime("%Y-%m-%d %H:%M IST")
     out.append(f"# Context Pack — {now}")
-    out.append(f"Window since: {_ist_short(summary['window_since'])}  |  Universe: Nifty 500")
+    out.append(f"Window since: {_ist_short(summary['window_since'])}  |  Universe: Nifty 500 + smallcap expansion")
     out.append(
         f"Counts: filings {len(anns)} (tagged {sum(1 for a in anns if a.get('candidate_tags'))}), "
         f"investor deals {len(deals)}, rating actions {len(ratings)}, "
         f"company news {len(tagged_news)}, market news {len(market_news)}")
     out.append("")
     out.append("> Trust order: HARD FILING > INVESTOR DEAL (disclosed) > RATING ACTION > NEWS. "
-               "Research leads only — not advice.")
+               "Research leads only — not advice. 'Value ≈ % of mcap' is a regex estimate — "
+               "verify in the filing. 'Px since' answers 'already priced in?'. "
+               "F&O in a label = institutionally covered; its absence on a smallcap = likely under-followed.")
     out.append("")
+
+    # --- WATCHLIST (user-pinned names with any in-window items) ---
+    if watch:
+        hits: dict[str, list[str]] = {}
+        for a in anns:
+            if a.get("isin") in watch:
+                hits.setdefault(a["isin"], []).append(f"filing: {_short(a.get('headline',''), 90)}")
+        for d in deals:
+            if d.get("isin") in watch:
+                hits.setdefault(d["isin"], []).append(f"deal: {d.get('matched_investor') or d.get('client_name','')} {d.get('side','')}")
+        for r in ratings:
+            if r.get("isin") in watch:
+                hits.setdefault(r["isin"], []).append(f"rating: {r.get('agency','')} {r.get('action','')}")
+        for n in tagged_news:
+            for i in _news_isins(n):
+                if i in watch:
+                    hits.setdefault(i, []).append(f"news: {_short(n.get('headline',''), 90)}")
+        if hits:
+            out.append("## ★ WATCHLIST ACTIVITY (user-pinned)")
+            for isin, items in hits.items():
+                c = idx.get(isin, {})
+                out.append(f"[WATCH] {c.get('symbol','?')} ({c.get('name','')}{_mcap_str(isin, idx)})")
+                for it in items[:6]:
+                    out.append(f"  - {it}")
+                out.append("")
+
+    # --- CONFLUENCE (>=2 independent signal kinds — the classic asymmetric setup) ---
+    if confluence:
+        out.append("## CONFLUENCE (multiple independent signals in-window — inspect first)")
+        for isin, kinds in sorted(confluence.items(), key=lambda kv: -len(kv[1])):
+            c = idx.get(isin, {})
+            label = f"{c.get('symbol','?')} ({c.get('name','')}{_mcap_str(isin, idx)})"
+            out.append(f"[CONFLUENCE] {label} — {' + '.join(sorted(kinds))}")
+        out.append("")
+
+    # --- INSIDER ACCUMULATION (trailing 90d aggregate; single rows are weak) ---
+    if accumulation:
+        out.append("## INSIDER ACCUMULATION (trailing 90d — promoter/insider BUYs aggregated)")
+        for row in accumulation[:15]:
+            c = idx.get(row.get("isin") or "", {})
+            sym = row.get("symbol") or c.get("symbol") or "?"
+            cum = row.get("cum_pct") or 0
+            cross = "  [CROSSED 5% — new substantial shareholder]" if row.get("crossed_5pct") else ""
+            out.append(f"[ACCUM] {sym} ({row.get('company','')}{_mcap_str(row.get('isin'), idx)}) — "
+                       f"{row['n_buys']} buys, stake +{cum:.2f}pp "
+                       f"({(row.get('first_buy') or '')[:10]} → {(row.get('last_buy') or '')[:10]}){cross}")
+        out.append("")
 
     # --- HARD FILINGS ---
     shown_anns = anns[:MAX_FILINGS]
@@ -208,12 +316,17 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> 
     for a in shown_anns:
         tags = a.get("candidate_tags") or []
         tagstr = f"  | Candidate tags: [{', '.join(tags)}]" if tags else ""
-        out.append(f"[HARD FILING] {_co_label(a, idx)} — {_ist_short(a.get('published_at'))}")
+        out.append(f"[HARD FILING] {_co_label(a, idx, watch)} — {_ist_short(a.get('published_at'))}")
         out.append(f"  Category: {a.get('category','')}{tagstr}")
         out.append(f"  Headline: {_short(a.get('headline',''))}")
         note = _short(a.get("pdf_text") or a.get("body_text", ""))
         if note:
             out.append(f"  Note: {note}")
+        mat = materiality.materiality_line(
+            a.get("value_cr"), idx.get(a.get("isin") or "", {}).get("market_cap_cr"))
+        px = _px_line(a.get("px_ctx"))
+        if mat or px:
+            out.append(f"  {'  ·  '.join(x for x in (f'Value: {mat}' if mat else '', px) if x)}")
         if a.get("pdf_url"):
             out.append(f"  Source: {a['pdf_url']}")
         out.append("")
@@ -233,7 +346,7 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> 
         if d.get("pct_pre") is not None and d.get("pct_post") is not None:
             pct = f" (stake {d['pct_pre']}%→{d['pct_post']}%)"
         exch = d.get("exchange", "")
-        out.append(f"[INVESTOR] {_co_label(d, idx)} — {exch} {d.get('deal_type','')} [{flag}]")
+        out.append(f"[INVESTOR] {_co_label(d, idx, watch)} — {exch} {d.get('deal_type','')} [{flag}]")
         out.append(f"  {who} {d.get('side','')} {qtystr}{pricestr}{pct}  ({_ist_short(d.get('date'))})")
         if d.get("url"):
             out.append(f"  Source: {d['url']}")
@@ -243,9 +356,15 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> 
     if ratings:
         out.append("## RATING ACTIONS (credit-rating agencies — universe-matched)")
         for r in ratings:
+            notch = r.get("notch")
+            notchstr = ""
+            if notch:
+                notchstr = f"  | {notch['from']}→{notch['to']} ({notch['notches']:+d} notch{'es' if abs(notch['notches']) != 1 else ''})"
+                if notch.get("ig_crossover"):
+                    notchstr += "  [CROSSES INTO INVESTMENT GRADE]"
             out.append(f"[RATING] {r.get('symbol') or r.get('company','?')} — {r.get('agency','')} "
                        f"{(r.get('action') or '').upper()} ({r.get('direction','')})  "
-                       f"({(r.get('date') or '')[:10]})")
+                       f"({(r.get('date') or '')[:10]}){notchstr}")
             if r.get("summary"):
                 out.append(f"  {_short(r.get('summary',''), 180)}")
             if r.get("url"):
@@ -280,7 +399,10 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> 
     return "\n".join(out)
 
 
-def _render_json(summary, anns, deals, tagged_news, ratings, idx) -> dict[str, Any]:
+def _render_json(summary, anns, deals, tagged_news, ratings, idx,
+                 confluence=None, accumulation=None) -> dict[str, Any]:
+    confluence = confluence or {}
+    accumulation = accumulation or []
     return {
         "generated_at": datetime.now(IST).isoformat(),
         "window_since": summary["window_since"],
@@ -290,12 +412,29 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx) -> dict[str, A
             "rating_actions": len(ratings),
             "company_news": len(tagged_news),
         },
+        "confluence": [{
+            "isin": i, "symbol": idx.get(i, {}).get("symbol"),
+            "company": idx.get(i, {}).get("name"),
+            "market_cap_cr": idx.get(i, {}).get("market_cap_cr"),
+            "signals": sorted(kinds),
+        } for i, kinds in sorted(confluence.items(), key=lambda kv: -len(kv[1]))],
+        "insider_accumulation": [{
+            "symbol": r.get("symbol"), "company": r.get("company"), "isin": r.get("isin"),
+            "n_buys": r.get("n_buys"), "cum_pct": r.get("cum_pct"),
+            "first_buy": r.get("first_buy"), "last_buy": r.get("last_buy"),
+            "crossed_5pct": bool(r.get("crossed_5pct")),
+        } for r in accumulation[:15]],
         "hard_filings": [{
             "symbol": a.get("symbol"), "company": a.get("company"), "bse_code": a.get("bse_code"),
             "isin": a.get("isin"), "market_cap_cr": idx.get(a.get("isin") or "", {}).get("market_cap_cr"),
+            "in_fno": bool(idx.get(a.get("isin") or "", {}).get("in_fno")),
             "published_at": a.get("published_at"),
             "category": a.get("category"), "candidate_tags": a.get("candidate_tags") or [],
             "headline": a.get("headline"), "note": _short(a.get("pdf_text") or a.get("body_text", "")),
+            "value_cr": a.get("value_cr"),
+            "px_since": ({"pct_change": a["px_ctx"]["pct_change"],
+                          "vol_ratio": a["px_ctx"].get("vol_ratio")}
+                         if a.get("px_ctx") else None),
             "source": a.get("pdf_url"),
         } for a in anns[:MAX_FILINGS]],
         "investor_deals": [{
@@ -310,6 +449,7 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx) -> dict[str, A
         "rating_actions": [{
             "symbol": r.get("symbol"), "company": r.get("company"), "isin": r.get("isin"),
             "agency": r.get("agency"), "action": r.get("action"), "direction": r.get("direction"),
+            "notch": r.get("notch"),
             "date": r.get("date"), "summary": r.get("summary"), "source": r.get("url"),
         } for r in ratings],
         "company_news": [{

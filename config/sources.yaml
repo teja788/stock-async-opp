@@ -57,6 +57,9 @@ bse:
   announcements_api: https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w
   # Securities ("List of Scrips") master — used for ISIN -> scrip_code mapping in Milestone 2.
   scrip_master: https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w
+  # Daily bhavcopy CSV (CM common format; verified live 2026-07-02). {date}=YYYYMMDD.
+  # A 404 means holiday/weekend — expected and skipped by the prices ingester.
+  bhavcopy: https://www.bseindia.com/download/BhavCopy/Equity/BhavCopy_BSE_CM_0_0_0_{date}_F_0000.CSV
 
   # Deals + insider/SAST endpoints (verified live 2026-06-05 via the real site XHR).
   # NOTE the differing date formats per endpoint (see ingest_deals.py).
@@ -87,6 +90,9 @@ ratings:
 # NSE / NiftyIndices source for the Nifty 500 constituent list (verified in Milestone 2).
 nse:
   nifty500_csv: https://niftyindices.com/IndexConstituent/ind_nifty500list.csv
+  # F&O market-lots CSV (verified live 2026-07-02). Symbols with derivatives are
+  # institutionally covered -> used as an UNDER-COVERAGE proxy (non-F&O = under-followed).
+  fo_mktlots: https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv
   # Bulk/block deals snapshot (verified live 2026-06-05). Returns current/recent
   # BULK_DEALS_DATA + BLOCK_DEALS_DATA. The historical date-range endpoint is
   # bot-blocked (503), so this snapshot is current-day(s) only — fine for a daily run.

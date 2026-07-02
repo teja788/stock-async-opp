@@ -299,14 +299,17 @@ def _normalize_insider(row: dict[str, Any], code_to_meta: dict[str, dict],
 # Orchestration
 # --------------------------------------------------------------------------- #
 def ingest(session: PoliteSession | None = None,
-           since: datetime | None = None) -> list[dict[str, Any]]:
+           since: datetime | None = None,
+           stats: dict[str, int] | None = None) -> list[dict[str, Any]]:
     """Fetch all deal datasets, normalise, flag, and keep the relevant ones.
 
     A deal is KEPT if it is marquee-matched, a promoter buy, OR involves a
     Nifty-500 (in-universe) company. Marquee/promoter signals are kept even for
     companies outside the universe, since marquee investors often buy small/mid
     caps -- exactly the under-the-radar setups this tool is meant to surface.
-    Per-source failures are isolated.
+    Per-source failures are isolated; `stats` (optional) is populated with
+    {"total_sources", "failed_sources"} so the caller can hold back its
+    catch-up cursor when a sub-feed failed (else that window is lost).
     """
     session = session or PoliteSession()
     settings = load_settings()
@@ -322,6 +325,7 @@ def ingest(session: PoliteSession | None = None,
     sym_to_meta = {c["symbol"]: c for c in universe if c.get("symbol")}
 
     out: list[dict[str, Any]] = []
+    failed = 0
 
     for deal_type in ("bulk", "block"):
         try:
@@ -330,6 +334,7 @@ def ingest(session: PoliteSession | None = None,
                 out.append(_normalize_deal(r, deal_type, code_to_meta, matcher, src))
             log.info("Deals %-5s -> %d raw rows", deal_type, len(rows))
         except Exception as exc:  # noqa: BLE001
+            failed += 1
             log.warning("Deals fetch failed (%s): %s", deal_type, exc)
 
     try:
@@ -338,6 +343,7 @@ def ingest(session: PoliteSession | None = None,
             out.append(_normalize_insider(r, code_to_meta, matcher, src))
         log.info("Insider/SAST -> %d raw rows", len(rows))
     except Exception as exc:  # noqa: BLE001
+        failed += 1
         log.warning("Insider/SAST fetch failed: %s", exc)
 
     # NSE bulk/block (snapshot feed; resolved by NSE symbol). Isolated like the rest.
@@ -349,7 +355,12 @@ def ingest(session: PoliteSession | None = None,
             out.append(_normalize_nse_deal(r, "block", sym_to_meta, matcher, nse_src))
         log.info("NSE deals -> %d bulk + %d block raw rows", len(nse_bulk), len(nse_block))
     except Exception as exc:  # noqa: BLE001
+        failed += 1
         log.warning("NSE deals fetch failed: %s", exc)
+
+    if stats is not None:
+        stats["total_sources"] = 4  # bulk, block, insider/SAST, NSE snapshot
+        stats["failed_sources"] = failed
 
     # Keep only relevant deals (and only within the lookback window).
     kept: list[dict[str, Any]] = []

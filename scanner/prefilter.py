@@ -13,9 +13,11 @@ tags so the agent reads a small, well-organised packet.
 """
 from __future__ import annotations
 
+import json
 import logging
 import re
 from datetime import datetime, timedelta
+from functools import lru_cache
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -128,11 +130,24 @@ def tag_catalysts(*texts: str) -> list[str]:
     return [cat for cat, pat in _COMPILED_RULES.items() if pat.search(blob)]
 
 
+@lru_cache(maxsize=8)
+def _noise_pattern(patterns: tuple[str, ...]) -> re.Pattern | None:
+    """Boundary-guarded alternation over the noise phrases.
+
+    Bare substring matching is too greedy — "AGM" would match inside
+    "diaphragm" and drop a real filing. Same guards as the catalyst rules.
+    """
+    items = [p.lower() for p in patterns if p]
+    if not items:
+        return None
+    alt = "|".join(re.escape(p) for p in sorted(items, key=len, reverse=True))
+    return re.compile(rf"(?<![a-z0-9])(?:{alt})(?![a-z0-9])")
+
+
 def is_noise(category: str, headline: str) -> bool:
     """True if the announcement matches a routine/administrative noise pattern."""
-    patterns = load_noise_filters().get("drop_or_downrank", [])
-    blob = f"{category} {headline}".lower()
-    return any(p.lower() in blob for p in patterns)
+    pat = _noise_pattern(tuple(load_noise_filters().get("drop_or_downrank", [])))
+    return bool(pat and pat.search(f"{category} {headline}".lower()))
 
 
 def run_prefilter(since: datetime | None = None) -> dict[str, Any]:
@@ -155,11 +170,24 @@ def run_prefilter(since: datetime | None = None) -> dict[str, Any]:
         ann_candidates: list[dict[str, Any]] = []
         noise_dropped = 0
         for a in anns:
-            tags = tag_catalysts(a.get("category", ""), a.get("headline", ""), a.get("body_text", ""))
+            # Include cached PDF body text (if previously extracted) so tags
+            # found only inside the attachment survive re-scans — otherwise a
+            # headline-only recompute would silently wipe them.
+            pdf_text = ""
+            if a.get("dedupe_hash"):
+                cached = store.get_filing_text(a["dedupe_hash"], conn=conn)
+                pdf_text = (cached or {}).get("text") or ""
+            tags = tag_catalysts(a.get("category", ""), a.get("headline", ""),
+                                 a.get("body_text", ""), pdf_text)
             noise = is_noise(a.get("category", ""), a.get("headline", ""))
+            try:
+                old_tags = json.loads(a.get("candidate_tags") or "[]")
+            except (json.JSONDecodeError, TypeError):
+                old_tags = []
             a["candidate_tags"] = tags
             a["is_noise"] = noise
-            store.set_announcement_tags(a["id"], tags, conn=conn)
+            if set(tags) != set(old_tags):  # skip no-op writes (commit churn)
+                store.set_announcement_tags(a["id"], tags, conn=conn)
             # Keep if it carries a catalyst tag, or is not routine noise.
             if tags or not noise:
                 ann_candidates.append(a)

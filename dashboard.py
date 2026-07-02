@@ -96,18 +96,19 @@ with st.sidebar:
     cov = store.coverage()
     a = cov["announcements"]
     st.caption(f"Filings: {a['count']} stored · oldest {(a['earliest'] or '—')[:10]}")
-    st.caption(f"Deals: {cov['deals']['count']} · News: {cov['news']['count']}")
+    st.caption(f"Deals: {cov['deals']['count']} · News: {cov['news']['count']} "
+               f"· Ratings: {cov['ratings']['count']}")
 
     c1, c2 = st.columns(2)
-    if c1.button("Update news+deals", help="Incremental — only new data since last fetch (~30s)"):
+    if c1.button("Update fast feeds", help="News + deals + ratings — incremental, only new data (~30s)"):
         with st.spinner("Fetching news + deals + ratings (catch-up)..."):
             res = _refresh_all(sources={"news", "deals", "ratings"})
         _bump()
         st.success(f"news {res.get('news',{}).get('new',0)} new · deals {res.get('deals',{}).get('new',0)} new "
                    f"· ratings {res.get('ratings',{}).get('new',0)} new")
-    if c2.button("+ BSE filings", help="Incremental BSE filings poll (~8 min)"):
+    if c2.button("+ BSE filings", help="Incremental BSE filings poll only (~8 min)"):
         with st.spinner("Polling BSE filings (slow, ~8 min)..."):
-            res = _refresh_all()
+            res = _refresh_all(sources={"bse_announcements"})
         _bump()
         st.success(f"filings {res.get('bse_announcements',{}).get('new',0)} new")
 
@@ -148,6 +149,9 @@ tab_sig, tab_fil, tab_deal, tab_chat = st.tabs(
 # Signals
 # --------------------------------------------------------------------------- #
 with tab_sig:
+    # Key the displayed ranking to the window+provider it was produced for, so
+    # changing the window doesn't show a stale ranking above fresh metrics.
+    ranked_key = f"{since.isoformat()}|{provider}"
     if ai_on:
         if st.button(f"🤖 Rank with AI ({provider})", type="primary"):
             from scanner.scoring import llm_scorer
@@ -155,6 +159,7 @@ with tab_sig:
                 try:
                     ranked = llm_scorer.score(md, provider=provider, model=model, api_key=api_key)
                     st.session_state["ranked"] = ranked
+                    st.session_state["ranked_key"] = ranked_key
                     from scanner import research_log
                     status = research_log.save(
                         ranked, title=f"Dashboard AI rank ({provider}, {total_h}h)",
@@ -162,7 +167,7 @@ with tab_sig:
                     st.caption(f"📝 Research log: {status} → digests/research_log.md")
                 except Exception as exc:  # noqa: BLE001
                     st.error(f"AI ranking failed: {exc}")
-        if st.session_state.get("ranked"):
+        if st.session_state.get("ranked") and st.session_state.get("ranked_key") == ranked_key:
             st.markdown(st.session_state["ranked"])
             st.divider()
     else:

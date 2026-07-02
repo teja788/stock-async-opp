@@ -108,13 +108,14 @@ def _claude_complete(system: str, user: str, model: str, api_key: str | None) ->
     import anthropic
 
     client = anthropic.Anthropic(api_key=api_key) if api_key else anthropic.Anthropic()
-    # System (stable) is prompt-cached; the volatile pack sits in messages after it.
+    # No cache_control: the rubric is well under the ~4096-token minimum
+    # cacheable prefix on Opus-tier models, so caching would never engage.
     with client.messages.stream(
         model=model,
         max_tokens=16000,
         thinking={"type": "adaptive"},
         output_config={"effort": "high"},
-        system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
+        system=system,
         messages=[{"role": "user", "content": user}],
     ) as stream:
         msg = stream.get_final_message()

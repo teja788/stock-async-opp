@@ -29,6 +29,10 @@ IST = ZoneInfo("Asia/Kolkata")
 
 MAX_NOTE = 220          # truncate filing body text for token economy
 MAX_MARKET_NEWS = 25    # cap untagged market-wide headlines
+MAX_FILINGS = 120       # cap filings in the pack (catalyst-tagged sort first, so
+                        # truncation drops the least interesting tail); wide
+                        # --days windows would otherwise blow up the pack
+MAX_COMPANY_NEWS = 60   # cap company-tagged news items
 
 
 def _ist_short(iso: str | None) -> str:
@@ -195,10 +199,13 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> 
     out.append("")
 
     # --- HARD FILINGS ---
-    out.append("## HARD FILINGS (high trust — BSE)")
+    shown_anns = anns[:MAX_FILINGS]
+    trunc = (f" — showing {len(shown_anns)} of {len(anns)} (catalyst-tagged first)"
+             if len(anns) > len(shown_anns) else "")
+    out.append(f"## HARD FILINGS (high trust — BSE){trunc}")
     if not anns:
         out.append("_None in window._")
-    for a in anns:
+    for a in shown_anns:
         tags = a.get("candidate_tags") or []
         tagstr = f"  | Candidate tags: [{', '.join(tags)}]" if tags else ""
         out.append(f"[HARD FILING] {_co_label(a, idx)} — {_ist_short(a.get('published_at'))}")
@@ -246,10 +253,13 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx) -> 
             out.append("")
 
     # --- COMPANY NEWS ---
-    out.append("## NEWS (lower trust — reputed outlets, company-tagged)")
+    shown_news = tagged_news[:MAX_COMPANY_NEWS]
+    trunc = (f" — showing {len(shown_news)} of {len(tagged_news)}"
+             if len(tagged_news) > len(shown_news) else "")
+    out.append(f"## NEWS (lower trust — reputed outlets, company-tagged){trunc}")
     if not tagged_news:
         out.append("_None in window._")
-    for n in tagged_news:
+    for n in shown_news:
         isins = _news_isins(n)
         syms = ", ".join(idx.get(i, {}).get("symbol", "?") for i in isins) or "?"
         tags = n.get("candidate_tags") or []
@@ -287,7 +297,7 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx) -> dict[str, A
             "category": a.get("category"), "candidate_tags": a.get("candidate_tags") or [],
             "headline": a.get("headline"), "note": _short(a.get("pdf_text") or a.get("body_text", "")),
             "source": a.get("pdf_url"),
-        } for a in anns],
+        } for a in anns[:MAX_FILINGS]],
         "investor_deals": [{
             "symbol": d.get("symbol"), "company": d.get("company"),
             "exchange": d.get("exchange"), "deal_type": d.get("deal_type"),
@@ -307,5 +317,5 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx) -> dict[str, A
             "source": n.get("source"), "trust": n.get("trust"),
             "published_at": n.get("published_at"), "candidate_tags": n.get("candidate_tags") or [],
             "headline": n.get("headline"), "url": n.get("url"),
-        } for n in tagged_news],
+        } for n in tagged_news[:MAX_COMPANY_NEWS]],
     }

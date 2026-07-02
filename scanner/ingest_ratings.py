@@ -138,18 +138,22 @@ def fetch_care(session: PoliteSession, src: dict[str, Any],
     except Exception:  # noqa: BLE001
         pass
     now = datetime.now(IST)
-    resp = session.get(base, timeout=60, params={
-        "companyName": "%", "YearID": now.year,
-        "fdate": since.strftime("%Y-%m-%d"), "tdate": now.strftime("%Y-%m-%d")},
-        headers={"X-Requested-With": "XMLHttpRequest",
-                 "Referer": "https://www.careratings.com/find-ratings",
-                 "Accept": "application/json"})
-    parsed = resp.json()
-    if not isinstance(parsed, dict):   # endpoint returns a bare int 0 under some conditions
-        return []
-    data = parsed.get("data", [])
-    if not isinstance(data, list):
-        return []
+    # YearID is per calendar year; a window that spans New Year needs both
+    # years' pulls or late-December actions vanish from a January query.
+    data: list[dict[str, Any]] = []
+    for year in sorted({since.year, now.year}):
+        resp = session.get(base, timeout=60, params={
+            "companyName": "%", "YearID": year,
+            "fdate": since.strftime("%Y-%m-%d"), "tdate": now.strftime("%Y-%m-%d")},
+            headers={"X-Requested-With": "XMLHttpRequest",
+                     "Referer": "https://www.careratings.com/find-ratings",
+                     "Accept": "application/json"})
+        parsed = resp.json()
+        if not isinstance(parsed, dict):   # endpoint returns a bare int 0 under some conditions
+            continue
+        year_data = parsed.get("data", [])
+        if isinstance(year_data, list):
+            data.extend(year_data)
     out = []
     for d in data:
         fileurl = (d.get("FileURL") or "").strip()
@@ -170,10 +174,15 @@ def fetch_crisil(session: PoliteSession, src: dict[str, Any]) -> list[dict[str, 
     actions = ["upgrade", "downgrade", "outlook"]   # tables[0..2]
     out: list[dict[str, Any]] = []
     now = datetime.now(IST)
-    # Last day of the prior month — `now - 31 days` skips a month on the 1st
-    # (e.g. Jul 1 - 31d = May 31, missing June's newsletter entirely).
-    prev = now.replace(day=1) - timedelta(days=1)
-    months = [(now.year, now.month), (prev.year, prev.month)]
+    # The newsletter is published with a 4-8 WEEK lag, so the freshest published
+    # issue can be two months back — probe the current + prior 3 months (404s
+    # for not-yet-published months are cheap and expected). Month arithmetic via
+    # replace(day=1) - 1 day; `now - 31d` skips a month on the 1st.
+    months: list[tuple[int, int]] = []
+    cursor = now.replace(day=1)
+    for _ in range(4):
+        months.append((cursor.year, cursor.month))
+        cursor = (cursor - timedelta(days=1)).replace(day=1)
     for year, mon in months:
         url = tmpl.format(year=year, month=_CRISIL_MONTHS[mon - 1])
         try:
@@ -192,7 +201,7 @@ def fetch_crisil(session: PoliteSession, src: dict[str, Any]) -> list[dict[str, 
                 a = tr.find("a", href=True)
                 if not a:
                     continue
-                link = a["href"]
+                link = up.urljoin(url, a["href"])  # hrefs may be site-relative
                 m = re.search(r"_([A-Za-z]+)%20(\d{2})_%20(\d{4})_RR_(\d+)", link)
                 # Fall back to the newsletter's own month so a parse miss can't
                 # null the date and slip past the lookback filter downstream.
@@ -255,8 +264,13 @@ def _maybe_pdf_direction(rows: list[dict[str, Any]], session: PoliteSession, lim
 
 
 def ingest(session: PoliteSession | None = None,
-           since: datetime | None = None) -> list[dict[str, Any]]:
-    """Fetch ICRA + CARE + CRISIL rating actions, keep universe-matched ones."""
+           since: datetime | None = None,
+           stats: dict[str, int] | None = None) -> list[dict[str, Any]]:
+    """Fetch ICRA + CARE + CRISIL rating actions, keep universe-matched ones.
+
+    `stats` (optional) is populated with {"total_agencies", "failed_agencies"}
+    so the caller can hold back its catch-up cursor on a partial fetch.
+    """
     session = session or PoliteSession()
     settings = load_settings()
     lookback = int(settings.get("lookback_hours", 24))
@@ -265,6 +279,7 @@ def ingest(session: PoliteSession | None = None,
     matcher = CompanyMatcher(load_map())
 
     raw_by_agency: list[tuple[str, list[dict[str, Any]]]] = []
+    failed = 0
     for agency, fetch in (("ICRA", lambda: fetch_icra(session, src)),
                           ("CARE", lambda: fetch_care(session, src, since)),
                           ("CRISIL", lambda: fetch_crisil(session, src))):
@@ -273,7 +288,11 @@ def ingest(session: PoliteSession | None = None,
             raw_by_agency.append((agency, rows))
             log.info("Ratings %-6s -> %d raw rows", agency, len(rows))
         except Exception as exc:  # noqa: BLE001 - per-source isolation
+            failed += 1
             log.warning("Ratings fetch failed (%s): %s", agency, exc)
+    if stats is not None:
+        stats["total_agencies"] = 3
+        stats["failed_agencies"] = failed
 
     kept: list[dict[str, Any]] = []
     for agency, rows in raw_by_agency:
@@ -281,7 +300,12 @@ def ingest(session: PoliteSession | None = None,
             norm = _normalize(raw, agency, matcher)
             if not norm:
                 continue
-            if norm["date"]:
+            # CRISIL's monthly newsletter lags 4-8 weeks, so its actions are
+            # almost always older than a daily window — keep them ALL and let
+            # the dedupe hash guard re-inserts (get_recent_ratings surfaces
+            # newly-discovered rows via ingested_at). ICRA/CARE are near-
+            # real-time, so the window filter applies normally.
+            if agency != "CRISIL" and norm["date"]:
                 when = _parse_dt(norm["date"])
                 if when and when < since:
                     continue

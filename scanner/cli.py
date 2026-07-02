@@ -52,10 +52,12 @@ def _main() -> None:
             pass
     log_dir = resolve_path("runtime/logs")
     log_dir.mkdir(parents=True, exist_ok=True)
+    from logging.handlers import RotatingFileHandler
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)-7s %(name)s | %(message)s",
-        handlers=[logging.FileHandler(log_dir / "scanner.log", encoding="utf-8")],
+        handlers=[RotatingFileHandler(log_dir / "scanner.log", maxBytes=5_000_000,
+                                      backupCount=3, encoding="utf-8")],
         force=True,  # reconfigure cleanly even if basicConfig ran before
     )
 
@@ -138,10 +140,21 @@ def _refresh_all(bse_limit: int | None = None,
     results: dict[str, dict] = {}
 
     def _do(source: str, fetch_and_store) -> None:
+        # Cursor advances to the run's START, not its end: an item published
+        # mid-run (after its scrip/feed was already polled) is then re-fetched
+        # next run instead of falling into a permanent gap. Dedupe makes the
+        # overlap free. Each fetcher returns (fetched, new, note, ok); ok=False
+        # marks the run "partial", which keeps the prior cursor so the missed
+        # window is retried next run.
+        started = datetime.now(_IST)
         try:
-            fetched, new = fetch_and_store()
-            store.mark_run(source, fetched, "ok")
-            results[source] = {"fetched": fetched, "new": new, "status": "ok"}
+            fetched, new, note, ok = fetch_and_store()
+            status = "ok" if ok else "partial"
+            store.mark_run(source, fetched, status, note=note, success_at=started)
+            results[source] = {"fetched": fetched, "new": new,
+                               "status": "ok" if ok else f"partial: {note}"}
+            if not ok:
+                log.warning("refresh source %s partial (%s) — cursor not advanced", source, note)
         except Exception as exc:  # noqa: BLE001 - per-source isolation
             store.mark_run(source, 0, "error", note=str(exc)[:200])
             results[source] = {"fetched": 0, "new": 0, "status": f"error: {exc}"}
@@ -154,22 +167,39 @@ def _refresh_all(bse_limit: int | None = None,
         if bse_limit:
             codes = [str(c["bse_code"]) for c in universe if c.get("bse_code")][:bse_limit]
         workers = int(load_settings().get("bse_fetch_workers", 1))
-        items = ingest_bse.ingest(session=session, since=since, scrip_codes=codes, workers=workers)
-        return len(items), store.upsert_announcements(items)
+        stats: dict = {}
+        items = ingest_bse.ingest(session=session, since=since, scrip_codes=codes,
+                                  workers=workers, stats=stats)
+        failures, total = stats.get("failures", 0), stats.get("total", 0)
+        note = f"{failures}/{total} scrips failed" if failures else ""
+        # A handful of flaky scrips shouldn't stall the cursor forever (their
+        # loss is noted); a broad failure should hold it back for a retry.
+        ok = failures <= max(2, int(total * 0.02))
+        return len(items), store.upsert_announcements(items), note, ok
 
     def _news():
-        items = ingest_news.ingest(session=session)
-        return len(items), store.upsert_news(items)
+        stats: dict = {}
+        items = ingest_news.ingest(session=session, stats=stats)
+        failed = stats.get("failed_feeds", 0)
+        note = f"{failed}/{stats.get('total_feeds', 0)} feeds failed" if failed else ""
+        # News has no catch-up cursor (full feeds each run), so failures self-heal.
+        return len(items), store.upsert_news(items), note, True
 
     def _deals():
         since = since_override or store.get_last_success("deals")
-        items = ingest_deals.ingest(session=session, since=since)
-        return len(items), store.upsert_deals(items)
+        stats: dict = {}
+        items = ingest_deals.ingest(session=session, since=since, stats=stats)
+        failed = stats.get("failed_sources", 0)
+        note = f"{failed}/{stats.get('total_sources', 0)} deal feeds failed" if failed else ""
+        return len(items), store.upsert_deals(items), note, failed == 0
 
     def _ratings():
         since = since_override or store.get_last_success("ratings")
-        items = ingest_ratings.ingest(session=session, since=since)
-        return len(items), store.upsert_ratings(items)
+        stats: dict = {}
+        items = ingest_ratings.ingest(session=session, since=since, stats=stats)
+        failed = stats.get("failed_agencies", 0)
+        note = f"{failed}/{stats.get('total_agencies', 0)} agencies failed" if failed else ""
+        return len(items), store.upsert_ratings(items), note, failed == 0
 
     if "bse_announcements" in run:
         _do("bse_announcements", _bse)
@@ -190,7 +220,8 @@ def _render_refresh(results: dict[str, dict]) -> None:
     table.add_column("Status")
     for src, r in results.items():
         status = r["status"]
-        colour = "green" if status == "ok" else "red"
+        colour = ("green" if status == "ok"
+                  else "yellow" if status.startswith("partial") else "red")
         table.add_row(src, str(r["fetched"]), str(r["new"]), f"[{colour}]{status}[/{colour}]")
     console.print(table)
 
@@ -354,10 +385,13 @@ def ask(question: str = typer.Argument(..., help="A question about a company / t
         # Window controls how far back the fresh pull goes; default 7 days.
         fetch_since = since or (_now_ist() - timedelta(days=7))
         codes = [str(c["bse_code"]) for c in companies if c.get("bse_code")]
-        with console.status(f"[cyan]Fresh BSE pull for {', '.join(c['symbol'] for c in companies)}..."):
-            items = ingest_bse.ingest(session=PoliteSession(), since=fetch_since, scrip_codes=codes)
-            store.upsert_announcements(items)
-        console.print(f"[dim]Fetched {len(items)} recent filings for the resolved company(ies).[/dim]")
+        if not codes:
+            console.print("[yellow]Resolved company(ies) have no BSE code — skipping the fresh pull.[/yellow]")
+        else:
+            with console.status(f"[cyan]Fresh BSE pull for {', '.join(c['symbol'] for c in companies)}..."):
+                items = ingest_bse.ingest(session=PoliteSession(), since=fetch_since, scrip_codes=codes)
+                store.upsert_announcements(items)
+            console.print(f"[dim]Fetched {len(items)} recent filings for the resolved company(ies).[/dim]")
 
     console.print(Panel.fit(
         f"[bold]Question:[/bold] {question}\n"
@@ -413,6 +447,8 @@ def digest(hours: int = _HOURS_OPT, days: int = _DAYS_OPT) -> None:
     digest_dir = resolve_path(settings.get("output", {}).get("digest_dir", "digests"))
     digest_dir.mkdir(parents=True, exist_ok=True)
     path = digest_dir / f"{today}.md"
+    if path.exists():  # don't overwrite an earlier same-day digest
+        path = digest_dir / f"{today}-{datetime.now(_IST).strftime('%H%M')}.md"
     path.write_text(f"# Daily Digest — {today}\n\n{note}\n\n---\n\n{md}", encoding="utf-8")
     console.print(f"[green]Digest saved:[/green] {path}")
 
@@ -456,9 +492,11 @@ def schedule(install: bool = typer.Option(False, "--install", help="Actually cre
     name_eve = "stock-async-opp-evening-catchup"
 
     # schtasks arg lists (avoids shell-quoting pitfalls when we --install).
-    create_45 = ["schtasks", "/Create", "/TN", name_45, "/TR", str(bat),
+    # /TR needs embedded quotes or a path containing spaces breaks at run time.
+    tr = f'"{bat}"'
+    create_45 = ["schtasks", "/Create", "/TN", name_45, "/TR", tr,
                  "/SC", "MINUTE", "/MO", "45", "/F"]
-    create_eve = ["schtasks", "/Create", "/TN", name_eve, "/TR", str(bat),
+    create_eve = ["schtasks", "/Create", "/TN", name_eve, "/TR", tr,
                   "/SC", "DAILY", "/ST", "20:00", "/F"]
 
     if remove:

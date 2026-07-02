@@ -112,7 +112,8 @@ def ingest(session: PoliteSession | None = None,
            scrip_codes: Iterable[str] | None = None,
            until: datetime | None = None,
            workers: int = 1,
-           progress_cb: Callable[[int, int], None] | None = None
+           progress_cb: Callable[[int, int], None] | None = None,
+           stats: dict[str, int] | None = None
            ) -> list[dict[str, Any]]:
     """Fetch + normalise announcements for the universe within the lookback window.
 
@@ -129,6 +130,10 @@ def ingest(session: PoliteSession | None = None,
                req/sec aggregate (6 ≈ ~3 min). Higher is faster but more
                aggressive toward BSE — keep it modest.
         progress_cb: optional callback(done, total) for a CLI progress bar.
+        stats: optional dict populated with {"total": scrips polled, "failures":
+               scrips that errored} so the caller can decide whether to advance
+               its catch-up cursor (a failed scrip's window would otherwise be
+               silently lost forever).
 
     Per-scrip failures are logged and skipped so one bad scrip never aborts the run.
     """
@@ -138,7 +143,9 @@ def ingest(session: PoliteSession | None = None,
 
     universe = load_map()
     meta_by_code = {str(c["bse_code"]): c for c in universe if c.get("bse_code")}
-    codes = [str(c) for c in scrip_codes] if scrip_codes else list(meta_by_code.keys())
+    # `is not None`: an explicitly-empty subset must mean "poll nothing", not
+    # fall through to the full-universe (~8 min) poll.
+    codes = [str(c) for c in scrip_codes] if scrip_codes is not None else list(meta_by_code.keys())
 
     # API date window: pad one day on the early side so timezone/edge filings aren't missed.
     frm = (since - timedelta(days=1)).strftime("%Y%m%d")
@@ -195,6 +202,9 @@ def ingest(session: PoliteSession | None = None,
             if progress_cb:
                 progress_cb(i, total)
 
+    if stats is not None:
+        stats["total"] = total
+        stats["failures"] = failures
     log.info("BSE ingest done: %d announcements from %d scrips (%d failures, %d workers), since %s",
              len(results), total, failures, workers, since.isoformat())
     return results

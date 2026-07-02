@@ -3,6 +3,8 @@
 Why a dedicated loader (instead of reading YAML inline everywhere):
 - One place computes the project root, so Windows paths stay consistent.
 - Configs are cached after first read, so we don't re-parse YAML per call.
+  NOTE: the cache lives for the PROCESS — CLI runs always see fresh YAML, but
+  the long-running dashboard needs a restart to pick up config edits.
 - Every module says `from scanner.config import load_settings` and gets the
   same view of the user's editable config files.
 """

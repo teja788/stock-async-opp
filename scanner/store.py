@@ -155,7 +155,9 @@ def _now_iso() -> str:
 def get_conn() -> sqlite3.Connection:
     """Open the DB (creating the file/dir on first use) with Row access."""
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+    # Generous busy timeout: the scheduled 45-min refresh and an interactive
+    # scan/dashboard can write concurrently; WAL + 30s wait avoids "database is locked".
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL;")
     return conn
@@ -334,7 +336,7 @@ def counts(conn: sqlite3.Connection | None = None) -> dict[str, int]:
     conn = conn or get_conn()
     try:
         out = {}
-        for t in ("companies", "announcements", "news", "deals"):
+        for t in ("companies", "announcements", "news", "deals", "ratings"):
             out[t] = conn.execute(f"SELECT COUNT(*) AS n FROM {t}").fetchone()["n"]
         return out
     finally:
@@ -357,7 +359,8 @@ def coverage(conn: sqlite3.Connection | None = None) -> dict[str, dict[str, Any]
     conn = conn or get_conn()
     try:
         out: dict[str, dict[str, Any]] = {}
-        specs = [("announcements", "published_at"), ("news", "published_at"), ("deals", "date")]
+        specs = [("announcements", "published_at"), ("news", "published_at"),
+                 ("deals", "date"), ("ratings", "date")]
         for table, col in specs:
             row = conn.execute(
                 f"SELECT COUNT(*) n, MIN({col}) lo, MAX({col}) hi FROM {table}").fetchone()
@@ -402,8 +405,11 @@ def get_recent_announcements(since_iso: str, conn: sqlite3.Connection | None = N
     own = conn is None
     conn = conn or get_conn()
     try:
+        # COALESCE keeps recall-first rows whose publish date failed to parse
+        # (stored as NULL) visible in the window via their ingestion time.
         return _rows(conn,
-            "SELECT * FROM announcements WHERE published_at >= ? ORDER BY published_at DESC",
+            "SELECT * FROM announcements WHERE COALESCE(published_at, ingested_at) >= ? "
+            "ORDER BY COALESCE(published_at, ingested_at) DESC",
             (since_iso,))
     finally:
         if own:
@@ -427,7 +433,8 @@ def get_recent_deals(since_iso: str, conn: sqlite3.Connection | None = None) -> 
     conn = conn or get_conn()
     try:
         return _rows(conn,
-            "SELECT * FROM deals WHERE date >= ? ORDER BY date DESC",
+            "SELECT * FROM deals WHERE COALESCE(date, ingested_at) >= ? "
+            "ORDER BY COALESCE(date, ingested_at) DESC",
             (since_iso,))
     finally:
         if own:
@@ -589,8 +596,12 @@ def get_recent_ratings(since_iso: str, conn: sqlite3.Connection | None = None) -
     own = conn is None
     conn = conn or get_conn()
     try:
+        # `ingested_at >= ?` surfaces newly-DISCOVERED actions once even when the
+        # nominal action date is older than the window (CRISIL's monthly
+        # newsletter lags 4-8 weeks; an upgrade found today is new information).
         return _rows(conn,
-            "SELECT * FROM ratings WHERE date >= ? ORDER BY date DESC", (since_iso,))
+            "SELECT * FROM ratings WHERE date >= ? OR ingested_at >= ? "
+            "ORDER BY COALESCE(date, ingested_at) DESC", (since_iso, since_iso))
     finally:
         if own:
             conn.close()

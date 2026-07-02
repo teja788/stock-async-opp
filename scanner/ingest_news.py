@@ -180,13 +180,19 @@ def fetch_feed(session: PoliteSession, feed: dict[str, Any],
     return items
 
 
-def ingest(session: PoliteSession | None = None) -> list[dict[str, Any]]:
-    """Pull all configured feeds. Per-feed failures are logged and skipped."""
+def ingest(session: PoliteSession | None = None,
+           stats: dict[str, int] | None = None) -> list[dict[str, Any]]:
+    """Pull all configured feeds. Per-feed failures are logged and skipped.
+
+    `stats` (optional) is populated with {"total_feeds", "failed_feeds"} so the
+    caller can record partial coverage in the run note.
+    """
     session = session or PoliteSession()
     tagger = Tagger(load_map())
     feeds = load_sources().get("news_feeds", [])
 
     results: list[dict[str, Any]] = []
+    failed = 0
     for feed in feeds:
         try:
             items = fetch_feed(session, feed, tagger)
@@ -195,5 +201,9 @@ def ingest(session: PoliteSession | None = None) -> list[dict[str, Any]]:
                      feed.get("name"), len(items), tagged)
             results.extend(items)
         except Exception as exc:  # noqa: BLE001 - isolate per-feed failures
+            failed += 1
             log.warning("News feed failed (%s): %s", feed.get("name"), exc)
+    if stats is not None:
+        stats["total_feeds"] = len(feeds)
+        stats["failed_feeds"] = failed
     return results

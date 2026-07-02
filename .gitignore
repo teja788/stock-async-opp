@@ -23,3 +23,7 @@ dash-*.png
 
 # Back up the research log (signal results archive) to the repo
 !digests/research_log.md
+
+# SQLite WAL side files
+data/catalyst.db-shm
+data/catalyst.db-wal

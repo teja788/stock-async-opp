@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from datetime import datetime, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -52,6 +53,85 @@ def _isin_index() -> dict[str, dict[str, Any]]:
 def _short(text: str, n: int = MAX_NOTE) -> str:
     text = (text or "").strip().replace("\r", " ").replace("\n", " ")
     return text if len(text) <= n else text[: n - 1].rstrip() + "…"
+
+
+def _collapse_filings(anns: list[dict[str, Any]], per_company: int = 3) -> list[dict[str, Any]]:
+    """Collapse repeat filings so they don't eat display slots.
+
+    1) Exact repeats (same company + category + normalised headline — e.g. the
+       same disclosure filed twice) keep one copy carrying a `collapsed_n` count.
+    2) At most `per_company` TAGGED filings per company are kept for display,
+       preferring ones with a parsed ₹ value, then recency; one kept row gets
+       `more_in_window` so the agent knows to `ask` for the rest.
+    """
+    def norm(s: str) -> str:
+        return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()[:80]
+
+    deduped: list[dict[str, Any]] = []
+    seen: dict[tuple, dict[str, Any]] = {}
+    for a in anns:
+        key = (a.get("isin") or a.get("company"), a.get("category"),
+               norm(a.get("headline", "")))
+        if key in seen:
+            seen[key]["collapsed_n"] = seen[key].get("collapsed_n", 0) + 1
+            continue
+        seen[key] = a
+        deduped.append(a)
+
+    groups: dict[Any, list[dict[str, Any]]] = {}
+    for a in deduped:
+        if a.get("candidate_tags"):
+            groups.setdefault(a.get("isin") or a.get("company"), []).append(a)
+    drop: set[int] = set()
+    for items in groups.values():
+        if len(items) <= per_company:
+            continue
+        ranked = sorted(items, key=lambda a: ((a.get("value_cr") or 0),
+                                              a.get("published_at") or ""), reverse=True)
+        ranked[0]["more_in_window"] = len(items) - per_company
+        drop.update(id(a) for a in ranked[per_company:])
+    return [a for a in deduped if id(a) not in drop]
+
+
+def _select_filings(anns: list[dict[str, Any]], idx: dict[str, dict],
+                    cap: int = MAX_FILINGS) -> list[dict[str, Any]]:
+    """Choose which filings the pack displays when the window overflows `cap`.
+
+    Most slots go to recency (the list arrives catalyst-tagged-first, newest-
+    first); a third is RESERVED for the highest value≈%-of-mcap tagged filings
+    across the WHOLE window, flagged `materiality_pick` — so a wide --days
+    window cannot bury a big older catalyst behind hundreds of newer routine
+    filings (seen live: AMBER's 47%-of-mcap capex filing, 547 filings deep).
+    """
+    if len(anns) <= cap:
+        return list(anns)
+    reserve = cap // 3
+    head = anns[:cap - reserve]
+    chosen = {id(a) for a in head}
+
+    def pct(a: dict[str, Any]) -> float:
+        v = a.get("value_cr")
+        m = idx.get(a.get("isin") or "", {}).get("market_cap_cr")
+        return (v / m) if (v and m) else 0.0
+
+    rest = sorted((a for a in anns[cap - reserve:]
+                   if a.get("candidate_tags") and pct(a) > 0),
+                  key=pct, reverse=True)
+    picks = rest[:reserve]
+    for a in picks:
+        a["materiality_pick"] = True
+        chosen.add(id(a))
+    out = head + picks
+    if len(out) < cap:  # few valued older filings — top back up with recency
+        for a in anns[cap - reserve:]:
+            if len(out) >= cap:
+                break
+            if id(a) not in chosen:
+                out.append(a)
+                chosen.add(id(a))
+    out.sort(key=lambda a: a.get("published_at") or "", reverse=True)
+    out.sort(key=lambda a: 0 if a.get("candidate_tags") else 1)
+    return out
 
 
 def build_context_pack(summary: dict[str, Any] | None = None,
@@ -122,14 +202,24 @@ def build_context_pack(summary: dict[str, Any] | None = None,
 
         ratings = store.get_recent_ratings(summary["window_since"], conn=conn)
 
-        # Enrich tagged filings with the two materiality signals: the rupee
-        # value mentioned (vs mcap) and the price/volume move since publication.
-        for a in anns_sorted[:MAX_FILINGS]:
-            if not a.get("candidate_tags"):
-                continue
-            a["value_cr"] = materiality.headline_value_cr(
-                a.get("headline", ""), a.get("body_text", ""), a.get("pdf_text", ""))
-            if a.get("isin") and a.get("published_at"):
+        # Rupee value (regex, cheap) for ALL tagged filings — the display
+        # selection below ranks the whole window by value vs mcap, so this
+        # cannot be limited to the first MAX_FILINGS.
+        for a in anns_sorted:
+            if a.get("candidate_tags"):
+                a["value_cr"] = materiality.headline_value_cr(
+                    a.get("headline", ""), a.get("body_text", ""), a.get("pdf_text", ""))
+
+        # Collapse repeat filings, then choose what the pack displays:
+        # recency fills most slots, a reserved share goes to the window's
+        # highest value≈%-of-mcap tagged filings.
+        collapsed = _collapse_filings(anns_sorted)
+        shown_anns = _select_filings(collapsed, idx)
+
+        # Price/volume move since publication — only for displayed filings
+        # (two store queries per filing).
+        for a in shown_anns:
+            if a.get("candidate_tags") and a.get("isin") and a.get("published_at"):
                 a["px_ctx"] = store.price_context(a["isin"], a["published_at"], conn=conn)
 
         # Rating notch info (multi-notch moves / IG crossover are the re-raters).
@@ -205,10 +295,12 @@ def build_context_pack(summary: dict[str, Any] | None = None,
     gate = (floor_cr, min_pct_mcap, accum_sub_n)
     md = _render_md(summary, anns_sorted, buy_deals, tagged_news, market_news,
                     ratings, idx, confluence, accumulation, watch,
-                    marquee=marquee_accum, selling=selling, gate=gate)
+                    marquee=marquee_accum, selling=selling, gate=gate,
+                    shown=shown_anns)
     pack_json = _render_json(summary, anns_sorted, buy_deals, tagged_news,
                              ratings, idx, confluence, accumulation,
-                             marquee=marquee_accum, selling=selling)
+                             marquee=marquee_accum, selling=selling,
+                             shown=shown_anns)
 
     md_path = resolve_path(settings.get("output", {}).get("context_pack", "runtime/context_pack.md"))
     json_path = md_path.with_suffix(".json")
@@ -312,13 +404,14 @@ def _px_line(px: dict[str, Any] | None) -> str:
 
 def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
                confluence=None, accumulation=None, watch=None,
-               marquee=None, selling=None, gate=None) -> str:
+               marquee=None, selling=None, gate=None, shown=None) -> str:
     confluence = confluence or {}
     accumulation = accumulation or []
     watch = watch or set()
     marquee = marquee or []
     selling = selling or []
     floor_cr, min_pct_mcap, accum_sub_n = gate or (1.0, 0.25, 0)
+    shown = shown if shown is not None else anns[:MAX_FILINGS]
     out: list[str] = []
     now = datetime.now(IST).strftime("%Y-%m-%d %H:%M IST")
     out.append(f"# Context Pack — {now}")
@@ -411,8 +504,9 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
         out.append("")
 
     # --- HARD FILINGS ---
-    shown_anns = anns[:MAX_FILINGS]
-    trunc = (f" — showing {len(shown_anns)} of {len(anns)} (catalyst-tagged first)"
+    shown_anns = shown
+    trunc = (f" — showing {len(shown_anns)} of {len(anns)} (recent catalyst-tagged first "
+             f"+ high value-vs-mcap picks from the full window)"
              if len(anns) > len(shown_anns) else "")
     out.append(f"## HARD FILINGS (high trust — BSE){trunc}")
     if not anns:
@@ -420,8 +514,18 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
     for a in shown_anns:
         tags = a.get("candidate_tags") or []
         tagstr = f"  | Candidate tags: [{', '.join(tags)}]" if tags else ""
-        out.append(f"[HARD FILING] {_co_label(a, idx, watch)} — {_ist_short(a.get('published_at'))}")
+        pick = ("  [MATERIALITY PICK — older filing, high value vs mcap]"
+                if a.get("materiality_pick") else "")
+        out.append(f"[HARD FILING] {_co_label(a, idx, watch)} — {_ist_short(a.get('published_at'))}{pick}")
         out.append(f"  Category: {a.get('category','')}{tagstr}")
+        extra = []
+        if a.get("collapsed_n"):
+            extra.append(f"+{a['collapsed_n']} identical re-filing(s) collapsed")
+        if a.get("more_in_window"):
+            extra.append(f"+{a['more_in_window']} more tagged filings from this company "
+                         f"in-window — `ask` to list")
+        if extra:
+            out.append(f"  ({'; '.join(extra)})")
         out.append(f"  Headline: {_short(a.get('headline',''))}")
         note = _short(a.get("pdf_text") or a.get("body_text", ""))
         if note:
@@ -527,11 +631,12 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
 
 def _render_json(summary, anns, deals, tagged_news, ratings, idx,
                  confluence=None, accumulation=None,
-                 marquee=None, selling=None) -> dict[str, Any]:
+                 marquee=None, selling=None, shown=None) -> dict[str, Any]:
     confluence = confluence or {}
     accumulation = accumulation or []
     marquee = marquee or []
     selling = selling or []
+    shown = shown if shown is not None else anns[:MAX_FILINGS]
     return {
         "generated_at": datetime.now(IST).isoformat(),
         "window_since": summary["window_since"],
@@ -580,8 +685,11 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx,
             "px_since": ({"pct_change": a["px_ctx"]["pct_change"],
                           "vol_ratio": a["px_ctx"].get("vol_ratio")}
                          if a.get("px_ctx") else None),
+            "materiality_pick": bool(a.get("materiality_pick")),
+            "collapsed_n": a.get("collapsed_n"),
+            "more_in_window": a.get("more_in_window"),
             "source": a.get("pdf_url"),
-        } for a in anns[:MAX_FILINGS]],
+        } for a in shown],
         "investor_deals": [{
             "symbol": d.get("symbol"), "company": d.get("company"),
             "exchange": d.get("exchange"), "deal_type": d.get("deal_type"),

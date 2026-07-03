@@ -276,6 +276,15 @@ def _normalize_insider(row: dict[str, Any], code_to_meta: dict[str, dict],
     # SAST disclosures use Acquisition/Disposal; tag those as deal_type 'sast'.
     raw_txn = (row.get("Fld_TransactionType") or "").strip().lower()
     deal_type = "sast" if raw_txn in ("acquisition", "disposal") else "insider"
+    qty = _float(row.get("Fld_SecurityNo"))
+    pct_pre = _float(row.get("Fld_PercentofShareholdingPre"))
+    pct_post = _float(row.get("Fld_PercentofShareholdingPost"))
+    # Dedupe on transaction CONTENT, not BSE's file id (Fld_ID): the exchange
+    # sometimes reposts the same disclosure under a new XBRL file, which would
+    # double-count the buy (seen live: Shah Metacorp +28pp counted twice).
+    dedupe = _dedupe_hash("insider", deal_type, bse_code, client, side,
+                          qty, pct_pre, pct_post,
+                          dt.date().isoformat() if dt else "")
     return {
         "deal_type": deal_type,
         "exchange": "BSE",
@@ -287,16 +296,16 @@ def _normalize_insider(row: dict[str, Any], code_to_meta: dict[str, dict],
         "in_universe": bool(meta),
         "client_name": client,
         "side": side,
-        "qty": _float(row.get("Fld_SecurityNo")),
+        "qty": qty,
         "price": None,  # not disclosed in this feed
         "person_category": category,
-        "pct_pre": _float(row.get("Fld_PercentofShareholdingPre")),
-        "pct_post": _float(row.get("Fld_PercentofShareholdingPost")),
+        "pct_pre": pct_pre,
+        "pct_post": pct_post,
         "is_marquee": matched is not None,
         "matched_investor": matched,
         "is_promoter_buy": is_promoter_buy,
         "url": (row.get("xbrlurl") or "").strip() or src.get("insider_page", ""),
-        "dedupe_hash": _dedupe_hash("insider", row.get("Fld_ID"), bse_code, client, side),
+        "dedupe_hash": dedupe,
         "source": "BSE",
     }
 

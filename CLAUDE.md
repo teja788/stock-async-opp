@@ -62,6 +62,9 @@ The pack also carries **deterministic evidence lines — use them**:
   got there first (down-rank on gate 3).
 - **`F&O` in a label** = institutionally covered; its ABSENCE on a smallcap is
   the under-coverage signal gate 3 favours.
+- **`[MATERIALITY PICK]`** on a filing = older than the recency window but among
+  the whole window's highest value-vs-mcap catalysts — never skip these. A
+  `+N more tagged filings from this company` note means `ask` for the rest.
 - **Rating notch info** (`BB+→BBB- (+1 notch) [CROSSES INTO INVESTMENT GRADE]`):
   multi-notch moves and IG crossovers are the re-rating catalysts; one-notch
   reaffirm-adjacent moves usually are not.

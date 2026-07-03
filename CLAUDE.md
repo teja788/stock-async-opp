@@ -21,6 +21,7 @@ Run via `run.bat <command>` (Windows) or `.venv\Scripts\python.exe -m scanner.cl
 | `ask "<question>"` | Print stored data relevant to a company / tag / date for a follow-up. |
 | `digest` | Save a dated ranked digest to `digests/`. |
 | `watch add\|remove\|list "<co>"` | Manage the watchlist (★ + top section in every pack). |
+| `log "<text>" --title T --key K` | Append a delivered analysis to `digests/research_log.md` (deduped by key). |
 | `review` | Score past research-log leads against subsequent price moves (calibration loop). |
 | `publish` | Save pack snapshots + rebuild the static dashboard in `docs/` (GitHub Pages). Commit + push to update the hosted page. |
 | `schedule` | Print/install the Windows Task Scheduler job. |
@@ -133,6 +134,13 @@ Then:
 - A short **"Watch, not act"** section for weaker / ambiguous items (same bullet style, terser).
 - If the day is quiet, a single line: **"Nothing notable."**
 - End with one line: _Research only, not investment advice._
+
+**MANDATORY after delivering any scan analysis: save it to the research log** —
+`log "<condensed analysis>" --title "<window> scan" --key "<YYYY-MM-DD>|<window>|tough-signals"`.
+The `review` calibration loop and the published dashboard only see what lands in
+`digests/research_log.md`; an analysis left in chat is invisible to both. `publish`
+prints an "UNLOGGED ANALYSIS?" warning when a pack snapshot postdates the last log
+entry — treat that as a bug to fix, not a note to skip.
 
 Keep HARD FILINGS visually separate from NEWS, and always include the source link.
 

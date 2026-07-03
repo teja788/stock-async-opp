@@ -142,3 +142,25 @@ _Research only, not investment advice._
 **Checked and rejected:** INA (₹347 cr = corporate GUARANTEE, not an order — fails the catalyst gate); BASF India (NCLT scheme-meeting presentation — procedural); VIKRAMSOLR flagged as a RISK, not a lead — CIRP application ADMITTED by the tribunal (Jun 19, px −8.2%): insolvency overhang, monitor if held.
 
 _Research only, not investment advice._
+
+
+---
+
+## 2026-07-03 14:40 IST — 30-day tough scan (new insider pipeline)
+<!-- hash:90fa9fe42405911d key:2026-07-03|30d|tough-signals -->
+
+**30-day scan (3 Jun - 3 Jul 2026), tough bar, new insider/marquee pipeline.**
+
+LEADS:
+1. KERNEX - Kernex Microsystems (Rs 4,015 cr, non-F&O) - Kavach system commissioned on North Central Railway (Jul 2); execution credential for the multi-year nationwide Kavach rollout where Kernex is one of few approved vendors. Px +4.1%, vol 0.9x - not priced. Hard filing | Medium. https://www.bseindia.com/xml-data/corpfiling/AttachLive/aee20e40-f3c2-4884-aad1-912d938d837c.pdf
+2. TEAMLEASE - TeamLease Services (Rs 2,462 cr) - buyback public announcement ~Rs 238 cr = ~10% of mcap (Jul 1); hard capital-allocation signal + EPS accretion at staffing-cycle trough. Px +1.7%, vol 1.8x. Hard filing | Medium. https://www.bseindia.com/xml-data/corpfiling/AttachLive/89285647-7d08-4775-8764-eb97564adbf7.pdf
+3. SPANDANA - Spandana Sphoorty (Rs 2,023 cr) - CARE UPGRADE (Jul 2) on a post-stress MFI at a fraction of former valuation; funding-cost + confidence inflection, part of an MFI/NBFC upgrade wave (Five-Star, Aptus, MAS). Verify notch in PR. Rating action | Medium-Low. https://www.careratings.com/upload/CompanyFiles/PR/202607150710_Spandana_Sphoorty_Financial_Limited.pdf
+
+WATCH (dig to size): FAZE3Q + BORANA (textile PLI approvals, incentive unquantified, India-UK FTA tailwind); GENUSPOWER (Kela Rs 40 cr block Jun 30 - corroboration, no catalyst); JMFINANCIL (8-insider cluster Jun 25, ~Rs 7.4 cr - why that date?); CONFIPET (promoter +0.63pp ~Rs 16 cr, only filing is a resignation); NITINSPIN (CARE upgrade, levered); SHAH (promoter 12->40% via rights allotment, +15% already, mechanism unstated).
+
+CAUTION (new SELLING overlay): GOODLUCK - 7 promoter-family entities sold 2.45pp in 30d. Kela trimmed ~12 microcaps while adding Genus/Uravi.
+
+CARRIED FORWARD (still stand, from prior log): AMBER (Jun 18 capex ~47% of mcap, still -5.8% = unpriced, now surfaces as MATERIALITY PICK); CAPACITE (Jun 3 LOI, +15% partially priced - aged out of the rolling window).
+
+Pipeline notes: insider gate correctly demoted CONFIPET/SHAH/GANESHCP (catalysts were resignation/rights/circular PIT); fixed this run: XBRL repost double-count (SHAH +56pp -> real +28pp), materiality-pick display slots, repeat-filing collapse.
+Research only, not investment advice.

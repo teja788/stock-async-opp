@@ -343,4 +343,35 @@ def build_site() -> dict[str, Any]:
     pages = len(list(DOCS.glob("*.html")))
     return {"docs_dir": str(DOCS), "pages": pages,
             "packs_saved": len(list(PACKS_DIR.glob("pack-*.md"))),
-            "log_entries": len(log_entries), "digests": len(digest_files)}
+            "log_entries": len(log_entries), "digests": len(digest_files),
+            "unlogged_warning": _unlogged_scan_warning(log_entries)}
+
+
+def _unlogged_scan_warning(log_entries: list[dict[str, Any]]) -> str | None:
+    """Warn when the newest pack snapshot postdates the last research-log entry.
+
+    The failure mode this catches: a scan analysis was delivered in chat but
+    never saved (`cli log`), so `review` calibration and the published log page
+    silently miss it. Advisory only — 1h slack since a snapshot is taken on
+    every scan, logged or not.
+    """
+    stems = sorted(p.stem for p in PACKS_DIR.glob("pack-*.md"))
+    if not stems:
+        return None
+    try:
+        snap_dt = datetime.strptime(stems[-1], "pack-%Y%m%d-%H%M").replace(tzinfo=IST)
+    except ValueError:
+        return None
+    last_log_dt = None
+    if log_entries:  # newest first; stamp like "2026-07-03 14:31 IST"
+        try:
+            last_log_dt = datetime.strptime(
+                log_entries[0]["stamp"][:16], "%Y-%m-%d %H:%M").replace(tzinfo=IST)
+        except ValueError:
+            pass
+    if last_log_dt is None or (snap_dt - last_log_dt).total_seconds() > 3600:
+        ref = last_log_dt.strftime("%Y-%m-%d %H:%M") if last_log_dt else "never"
+        return (f"newest pack snapshot ({stems[-1]}) postdates the last research-log "
+                f"entry ({ref}) — if an analysis was delivered for it, save it: "
+                f"cli log \"<analysis>\" --key \"<date>|<window>|<type>\"")
+    return None

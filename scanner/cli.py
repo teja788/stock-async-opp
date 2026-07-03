@@ -474,6 +474,32 @@ def digest(hours: int = _HOURS_OPT, days: int = _DAYS_OPT) -> None:
 
 
 @app.command()
+def log(content: str = typer.Argument(..., help="Analysis text to append, or a path to a .md/.txt file containing it."),
+        title: str = typer.Option("Signals", "--title", help="Entry heading."),
+        key: str = typer.Option(None, "--key", help="Stable dedupe key, e.g. '2026-07-03|30d|tough-signals'.")) -> None:
+    """Append a delivered analysis to digests/research_log.md (deduped).
+
+    MANDATORY final step after every scan analysis: the `review` calibration
+    loop and the published dashboard only see what lands in this log — an
+    analysis delivered in chat but not logged is invisible to both.
+    """
+    from pathlib import Path
+    from scanner.research_log import save
+
+    text = content
+    p = Path(content)
+    try:
+        if p.exists() and p.is_file():
+            text = p.read_text(encoding="utf-8")
+    except OSError:
+        pass  # long analysis text can exceed path limits — treat as content
+    result = save(text, title=title, key=key)
+    style = "green" if result == "saved" else "yellow"
+    console.print(f"[{style}]Research log: {result}[/{style}] "
+                  f"[dim](digests/research_log.md — run 'publish' to update the site)[/dim]")
+
+
+@app.command()
 def watch(action: str = typer.Argument("list", help="add | remove | list"),
           query: str = typer.Argument("", help="Company name or ticker (for add/remove)"),
           note: str = typer.Option("", "--note", help="Optional note stored with the entry.")) -> None:
@@ -573,6 +599,9 @@ def publish() -> None:
     table.add_row("Digests", str(stats["digests"]))
     console.print(table)
     console.print(f"[bold]Site:[/bold] {stats['docs_dir']}/index.html")
+    if stats.get("unlogged_warning"):
+        console.print(f"[bold yellow]⚠ UNLOGGED ANALYSIS?[/bold yellow] "
+                      f"[yellow]{stats['unlogged_warning']}[/yellow]")
     console.print("[dim]Publish: git add docs && git commit && git push — then GitHub → Settings → "
                   "Pages → deploy branch master, folder /docs.[/dim]")
 

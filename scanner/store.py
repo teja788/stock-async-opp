@@ -704,7 +704,10 @@ def insider_accumulation(since_iso: str,
 
     A promoter buying five times in 60 days is a far stronger signal than any
     single row. Also flags a SAST 5% threshold crossing (a NEW substantial
-    shareholder appearing). Sorted by cumulative stake added, desc.
+    shareholder appearing) and counts DISTINCT buyers (cluster buying — several
+    different insiders buying beats one promoter's total). Sorted by cumulative
+    stake added, desc. Significance gating (₹ floor + % of mcap) happens in the
+    context pack, where market caps live.
     """
     own = conn is None
     conn = conn or get_conn()
@@ -712,7 +715,9 @@ def insider_accumulation(since_iso: str,
         return _rows(conn, """
             SELECT isin, symbol, company,
                    COUNT(*)                                  AS n_buys,
+                   COUNT(DISTINCT LOWER(TRIM(client_name)))  AS n_buyers,
                    SUM(COALESCE(pct_post,0) - COALESCE(pct_pre,0)) AS cum_pct,
+                   SUM(COALESCE(qty,0))                      AS cum_qty,
                    MIN(date)                                 AS first_buy,
                    MAX(date)                                 AS last_buy,
                    MAX(CASE WHEN pct_pre IS NOT NULL AND pct_post IS NOT NULL
@@ -724,6 +729,72 @@ def insider_accumulation(since_iso: str,
             GROUP BY isin
             HAVING n_buys >= 2 OR cum_pct >= 0.5 OR crossed_5pct = 1
             ORDER BY cum_pct DESC, n_buys DESC""", (since_iso,))
+    finally:
+        if own:
+            conn.close()
+
+
+def marquee_accumulation(since_iso: str,
+                         conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    """Per-(investor, company) aggregate of marquee BUYs since `since_iso`.
+
+    A star investor printing bulk deals on four separate days is a much
+    stronger signal than one print — the in-window deals section shows them as
+    disconnected rows; this rolls them up. `value_cr` sums qty*price where both
+    are disclosed (bulk/block deals); insider/SAST rows carry no price and
+    contribute qty only. Grouped on COALESCE(isin, company) because marquee
+    deals are kept even for out-of-universe companies (isin unresolved).
+    """
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn, """
+            SELECT matched_investor, isin, symbol, company,
+                   COUNT(*)                                  AS n_buys,
+                   SUM(COALESCE(qty,0))                      AS cum_qty,
+                   SUM(CASE WHEN qty IS NOT NULL AND price IS NOT NULL
+                            THEN qty*price ELSE 0 END) / 1e7 AS value_cr,
+                   MIN(date)                                 AS first_buy,
+                   MAX(date)                                 AS last_buy
+            FROM deals
+            WHERE is_marquee=1 AND side='BUY'
+              AND matched_investor IS NOT NULL AND date >= ?
+            GROUP BY matched_investor, COALESCE(isin, company)
+            ORDER BY n_buys DESC, value_cr DESC""", (since_iso,))
+    finally:
+        if own:
+            conn.close()
+
+
+def insider_selling(since_iso: str,
+                    conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    """Per-company aggregate of marquee/promoter SELLs since `since_iso`.
+
+    The caution overlay: sells never generate leads, but a lead on a name the
+    insiders are exiting needs that selling explained. `cum_pct_sold` sums
+    disclosed stake reductions (insider/SAST rows); `value_cr` sums qty*price
+    where both are disclosed (bulk/block rows).
+    """
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn, """
+            SELECT isin, symbol, company,
+                   COUNT(*)                                  AS n_sells,
+                   COUNT(DISTINCT LOWER(TRIM(client_name)))  AS n_sellers,
+                   SUM(COALESCE(qty,0))                      AS cum_qty,
+                   SUM(CASE WHEN qty IS NOT NULL AND price IS NOT NULL
+                            THEN qty*price ELSE 0 END) / 1e7 AS value_cr,
+                   SUM(CASE WHEN pct_pre IS NOT NULL AND pct_post IS NOT NULL
+                            THEN pct_pre - pct_post ELSE 0 END) AS cum_pct_sold,
+                   MAX(is_marquee)                           AS any_marquee,
+                   GROUP_CONCAT(DISTINCT COALESCE(matched_investor, client_name))
+                                                             AS sellers
+            FROM deals
+            WHERE side='SELL' AND date >= ?
+              AND (is_marquee=1 OR LOWER(COALESCE(person_category,'')) LIKE '%promoter%')
+            GROUP BY COALESCE(isin, company)
+            ORDER BY any_marquee DESC, cum_pct_sold DESC, value_cr DESC""", (since_iso,))
     finally:
         if own:
             conn.close()

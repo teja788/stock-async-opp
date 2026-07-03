@@ -20,7 +20,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from scanner import materiality, pdf_extract, store
-from scanner.config import load_settings, resolve_path
+from scanner.config import load_investors, load_settings, resolve_path
 from scanner.ingest_ratings import parse_notch
 from scanner.prefilter import run_prefilter, tag_catalysts
 from scanner.universe import load_map
@@ -98,6 +98,24 @@ def build_context_pack(summary: dict[str, Any] | None = None,
                 _retag_enriched(tagged_anns, conn=conn)
 
         flagged_deals = [d for d in deals if d.get("is_marquee") or d.get("is_promoter_buy")]
+
+        # Size every flagged deal: qty*price where disclosed (bulk/block);
+        # insider/SAST rows carry no price, so estimate from the stored close
+        # (marked `price_est` — the pack labels it an estimate).
+        today = datetime.now(IST).date().isoformat()
+        for d in flagged_deals:
+            qty, price = d.get("qty"), d.get("price")
+            if qty and not price and d.get("isin"):
+                px = store.price_on(d["isin"], (d.get("date") or today)[:10], conn=conn)
+                if px and px.get("close"):
+                    price = px["close"]
+                    d["price_est"] = True
+            d["value_cr"] = (qty * price / 1e7) if (qty and price) else None
+
+        # SELLs never render as positive signals: they leave the deals section
+        # and feed the trailing-30d caution overlay instead.
+        buy_deals = [d for d in flagged_deals if d.get("side") != "SELL"]
+
         news = _dedupe_news_by_url(news)
         tagged_news = [n for n in news if _news_isins(n)]
         market_news = [n for n in news if not _news_isins(n)]
@@ -126,7 +144,7 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         for a in anns_sorted:
             if a.get("candidate_tags"):
                 _mark(a.get("isin"), "tagged filing")
-        for d in flagged_deals:
+        for d in buy_deals:  # sells are a caution overlay, never confluence
             _mark(d.get("isin"), "investor deal")
         for r in ratings:
             _mark(r.get("isin"), f"rating {r.get('action','')}".strip())
@@ -135,18 +153,62 @@ def build_context_pack(summary: dict[str, Any] | None = None,
                 _mark(i, "news")
         confluence = {i: k for i, k in confluence.items() if len(k) >= 2}
 
-        # Insider accumulation over a trailing 90d (independent of the window).
+        # Insider accumulation over a trailing 90d (independent of the window),
+        # gated by the hybrid significance rule (config/investors.yaml): the
+        # aggregate must clear BOTH the ₹ floor AND the % of mcap ratio; a SAST
+        # 5% crossing always qualifies. Value is estimated from disclosed stake
+        # change x mcap, else qty x last close.
+        sig = load_investors().get("significance", {}) or {}
+        floor_cr = float(sig.get("floor_cr", 1.0))
+        min_pct_mcap = float(sig.get("min_pct_mcap", 0.25))
         accum_since = (datetime.now(IST) - timedelta(days=90)).isoformat()
         accumulation = store.insider_accumulation(accum_since, conn=conn)
+        for row in accumulation:
+            isin = row.get("isin") or ""
+            mcap = idx.get(isin, {}).get("market_cap_cr")
+            cum_pct = row.get("cum_pct") or 0
+            est = pctm = None
+            if cum_pct > 0 and mcap:
+                est, pctm = cum_pct / 100 * mcap, cum_pct
+            elif row.get("cum_qty") and isin:
+                px = store.price_on(isin, today, conn=conn)
+                if px and px.get("close"):
+                    est = row["cum_qty"] * px["close"] / 1e7
+                    pctm = (est / mcap * 100) if mcap else None
+            row["est_value_cr"] = est
+            row["pct_mcap"] = pctm
+            # Qualifies via: a SAST 5% crossing; the full hybrid gate; or a
+            # CLUSTER (>=3 distinct insiders buying) that clears the ₹ floor —
+            # many different buyers is a signal in itself, ratio waived.
+            clears_floor = est is not None and est >= floor_cr
+            row["significant"] = (
+                bool(row.get("crossed_5pct"))
+                or (clears_floor and pctm is not None and pctm >= min_pct_mcap)
+                or (clears_floor and (row.get("n_buyers") or 1) >= 3))
+        accum_sub_n = sum(1 for r in accumulation if not r["significant"])
+        accumulation = [r for r in accumulation if r["significant"]]
+
+        # Marquee repeat-buying over the same trailing 90d: one star investor
+        # printing several deals is far stronger than the disconnected in-window
+        # rows. Keep repeats, or single buys that clear the ₹ floor.
+        marquee_accum = [m for m in store.marquee_accumulation(accum_since, conn=conn)
+                         if (m.get("n_buys") or 0) >= 2 or (m.get("value_cr") or 0) >= floor_cr]
+
+        # Marquee/promoter SELLs over a trailing 30d — the caution overlay.
+        sell_since = (datetime.now(IST) - timedelta(days=30)).isoformat()
+        selling = store.insider_selling(sell_since, conn=conn)
 
         watch = {w["isin"] for w in store.get_watchlist(conn=conn)}
     finally:
         conn.close()
 
-    md = _render_md(summary, anns_sorted, flagged_deals, tagged_news, market_news,
-                    ratings, idx, confluence, accumulation, watch)
-    pack_json = _render_json(summary, anns_sorted, flagged_deals, tagged_news,
-                             ratings, idx, confluence, accumulation)
+    gate = (floor_cr, min_pct_mcap, accum_sub_n)
+    md = _render_md(summary, anns_sorted, buy_deals, tagged_news, market_news,
+                    ratings, idx, confluence, accumulation, watch,
+                    marquee=marquee_accum, selling=selling, gate=gate)
+    pack_json = _render_json(summary, anns_sorted, buy_deals, tagged_news,
+                             ratings, idx, confluence, accumulation,
+                             marquee=marquee_accum, selling=selling)
 
     md_path = resolve_path(settings.get("output", {}).get("context_pack", "runtime/context_pack.md"))
     json_path = md_path.with_suffix(".json")
@@ -160,6 +222,8 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         "filings": len(anns_sorted),
         "filings_tagged": sum(1 for a in anns_sorted if a.get("candidate_tags")),
         "investor_deals": len(flagged_deals),
+        "marquee_90d": len(marquee_accum),
+        "insider_selling_30d": len(selling),
         "rating_actions": len(ratings),
         "company_news": len(tagged_news),
         "market_news": len(market_news),
@@ -247,10 +311,14 @@ def _px_line(px: dict[str, Any] | None) -> str:
 
 
 def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
-               confluence=None, accumulation=None, watch=None) -> str:
+               confluence=None, accumulation=None, watch=None,
+               marquee=None, selling=None, gate=None) -> str:
     confluence = confluence or {}
     accumulation = accumulation or []
     watch = watch or set()
+    marquee = marquee or []
+    selling = selling or []
+    floor_cr, min_pct_mcap, accum_sub_n = gate or (1.0, 0.25, 0)
     out: list[str] = []
     now = datetime.now(IST).strftime("%Y-%m-%d %H:%M IST")
     out.append(f"# Context Pack — {now}")
@@ -263,7 +331,10 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
     out.append("> Trust order: HARD FILING > INVESTOR DEAL (disclosed) > RATING ACTION > NEWS. "
                "Research leads only — not advice. 'Value ≈ % of mcap' is a regex estimate — "
                "verify in the filing. 'Px since' answers 'already priced in?'. "
-               "F&O in a label = institutionally covered; its absence on a smallcap = likely under-followed.")
+               "F&O in a label = institutionally covered; its absence on a smallcap = likely under-followed. "
+               "A marquee/insider BUY is corroboration, NOT a catalyst by itself — alone it is a "
+               "Watch at most; paired with a hard catalyst it is the classic setup. The SELLING "
+               "section is a caution overlay: down-rank other signals on those names.")
     out.append("")
 
     # --- WATCHLIST (user-pinned names with any in-window items) ---
@@ -275,6 +346,10 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
         for d in deals:
             if d.get("isin") in watch:
                 hits.setdefault(d["isin"], []).append(f"deal: {d.get('matched_investor') or d.get('client_name','')} {d.get('side','')}")
+        for s in selling:
+            if s.get("isin") in watch:
+                hits.setdefault(s["isin"], []).append(
+                    f"⚠ selling (30d): {_short(s.get('sellers') or '?', 60)} — {s.get('n_sells')} sell(s)")
         for r in ratings:
             if r.get("isin") in watch:
                 hits.setdefault(r["isin"], []).append(f"rating: {r.get('agency','')} {r.get('action','')}")
@@ -301,16 +376,38 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
         out.append("")
 
     # --- INSIDER ACCUMULATION (trailing 90d aggregate; single rows are weak) ---
-    if accumulation:
-        out.append("## INSIDER ACCUMULATION (trailing 90d — promoter/insider BUYs aggregated)")
+    if accumulation or accum_sub_n:
+        out.append(f"## INSIDER ACCUMULATION (trailing 90d — promoter/insider BUYs aggregated; "
+                   f"gate: ≥₹{floor_cr:g} cr AND ≥{min_pct_mcap:g}% of mcap — or a 5% crossing, "
+                   f"or a ≥3-insider cluster over the ₹ floor)")
         for row in accumulation[:15]:
             c = idx.get(row.get("isin") or "", {})
             sym = row.get("symbol") or c.get("symbol") or "?"
             cum = row.get("cum_pct") or 0
+            n_buyers = row.get("n_buyers") or 1
+            val = ""
+            if row.get("est_value_cr"):
+                val = f", ~₹{row['est_value_cr']:,.1f} cr"
+                if row.get("pct_mcap"):
+                    val += f" ≈ {row['pct_mcap']:.2f}% of mcap"
             cross = "  [CROSSED 5% — new substantial shareholder]" if row.get("crossed_5pct") else ""
+            cluster = f"  [CLUSTER — {n_buyers} distinct insiders]" if n_buyers >= 3 else ""
             out.append(f"[ACCUM] {sym} ({row.get('company','')}{_mcap_str(row.get('isin'), idx)}) — "
-                       f"{row['n_buys']} buys, stake +{cum:.2f}pp "
-                       f"({(row.get('first_buy') or '')[:10]} → {(row.get('last_buy') or '')[:10]}){cross}")
+                       f"{row['n_buys']} buys by {n_buyers} insider(s), stake +{cum:.2f}pp{val} "
+                       f"({(row.get('first_buy') or '')[:10]} → {(row.get('last_buy') or '')[:10]}){cross}{cluster}")
+        if accum_sub_n:
+            out.append(f"(+{accum_sub_n} more compan{'ies' if accum_sub_n != 1 else 'y'} with "
+                       f"sub-threshold insider buying — below the significance gate, not listed)")
+        out.append("")
+
+    # --- MARQUEE ACTIVITY (trailing 90d — star-investor repeat buying) ---
+    if marquee:
+        out.append("## MARQUEE ACTIVITY (trailing 90d — star-investor BUYs aggregated across days)")
+        for m in marquee[:15]:
+            val = f", ~₹{m['value_cr']:,.1f} cr" if m.get("value_cr") else ""
+            out.append(f"[MARQUEE-90D] {m.get('matched_investor','?')} → {_co_label(m, idx, watch)} — "
+                       f"{m['n_buys']} buy(s){val} "
+                       f"({(m.get('first_buy') or '')[:10]} → {(m.get('last_buy') or '')[:10]})")
         out.append("")
 
     # --- HARD FILINGS ---
@@ -338,8 +435,8 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
             out.append(f"  Source: {a['pdf_url']}")
         out.append("")
 
-    # --- INVESTOR DEALS ---
-    out.append("## INVESTOR / DEALS (disclosed bulk/block/insider — marquee & promoter)")
+    # --- INVESTOR DEALS (buys; sells live in the caution overlay below) ---
+    out.append("## INVESTOR / DEALS (disclosed bulk/block/insider BUYs — marquee & promoter)")
     if not deals:
         out.append("_None flagged in window._")
     for d in deals:
@@ -355,8 +452,30 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
         exch = d.get("exchange", "")
         out.append(f"[INVESTOR] {_co_label(d, idx, watch)} — {exch} {d.get('deal_type','')} [{flag}]")
         out.append(f"  {who} {d.get('side','')} {qtystr}{pricestr}{pct}  ({_ist_short(d.get('date'))})")
+        val = d.get("value_cr")
+        if val:
+            mcap = idx.get(d.get("isin") or "", {}).get("market_cap_cr")
+            mat = (materiality.materiality_line(val, mcap) if val >= 1
+                   else f"~₹{val:.2f} cr")  # materiality_line rounds sub-crore to ₹0
+            est = " (est @ last close — price not disclosed)" if d.get("price_est") else ""
+            out.append(f"  Value: {mat}{est}")
         if d.get("url"):
             out.append(f"  Source: {d['url']}")
+        out.append("")
+
+    # --- SELLING (trailing 30d — caution overlay, never leads) ---
+    if selling:
+        out.append("## ⚠ MARQUEE / PROMOTER SELLING (trailing 30d — caution overlay, NOT leads)")
+        out.append("> Down-rank other signals on these names; a lead here needs the selling explained.")
+        for s in selling[:15]:
+            tag = "MARQUEE" if s.get("any_marquee") else "PROMOTER"
+            who = _short(s.get("sellers") or "?", 90)
+            bits = [f"{s['n_sells']} sell(s) by {s.get('n_sellers') or 1} seller(s)"]
+            if s.get("value_cr"):
+                bits.append(f"~₹{s['value_cr']:,.1f} cr")
+            if (s.get("cum_pct_sold") or 0) > 0:
+                bits.append(f"stake -{s['cum_pct_sold']:.2f}pp")
+            out.append(f"[SELLING] {_co_label(s, idx, watch)} — [{tag}] {who} — {', '.join(bits)}")
         out.append("")
 
     # --- RATING ACTIONS (CRA upgrades/downgrades/outlook for universe names) ---
@@ -407,9 +526,12 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
 
 
 def _render_json(summary, anns, deals, tagged_news, ratings, idx,
-                 confluence=None, accumulation=None) -> dict[str, Any]:
+                 confluence=None, accumulation=None,
+                 marquee=None, selling=None) -> dict[str, Any]:
     confluence = confluence or {}
     accumulation = accumulation or []
+    marquee = marquee or []
+    selling = selling or []
     return {
         "generated_at": datetime.now(IST).isoformat(),
         "window_since": summary["window_since"],
@@ -427,10 +549,26 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx,
         } for i, kinds in sorted(confluence.items(), key=lambda kv: -len(kv[1]))],
         "insider_accumulation": [{
             "symbol": r.get("symbol"), "company": r.get("company"), "isin": r.get("isin"),
-            "n_buys": r.get("n_buys"), "cum_pct": r.get("cum_pct"),
+            "n_buys": r.get("n_buys"), "n_buyers": r.get("n_buyers"),
+            "cum_pct": r.get("cum_pct"),
+            "est_value_cr": r.get("est_value_cr"), "pct_mcap": r.get("pct_mcap"),
             "first_buy": r.get("first_buy"), "last_buy": r.get("last_buy"),
             "crossed_5pct": bool(r.get("crossed_5pct")),
         } for r in accumulation[:15]],
+        "marquee_activity_90d": [{
+            "investor": m.get("matched_investor"),
+            "symbol": m.get("symbol"), "company": m.get("company"), "isin": m.get("isin"),
+            "n_buys": m.get("n_buys"), "cum_qty": m.get("cum_qty"),
+            "value_cr": m.get("value_cr"),
+            "first_buy": m.get("first_buy"), "last_buy": m.get("last_buy"),
+        } for m in marquee[:15]],
+        "insider_selling_30d": [{
+            "symbol": s.get("symbol"), "company": s.get("company"), "isin": s.get("isin"),
+            "sellers": s.get("sellers"), "n_sells": s.get("n_sells"),
+            "n_sellers": s.get("n_sellers"), "value_cr": s.get("value_cr"),
+            "cum_pct_sold": s.get("cum_pct_sold"),
+            "any_marquee": bool(s.get("any_marquee")),
+        } for s in selling[:15]],
         "hard_filings": [{
             "symbol": a.get("symbol"), "company": a.get("company"), "bse_code": a.get("bse_code"),
             "isin": a.get("isin"), "market_cap_cr": idx.get(a.get("isin") or "", {}).get("market_cap_cr"),
@@ -450,6 +588,7 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx,
             "investor": d.get("matched_investor") or d.get("client_name"),
             "is_marquee": bool(d.get("is_marquee")), "is_promoter_buy": bool(d.get("is_promoter_buy")),
             "side": d.get("side"), "qty": d.get("qty"), "price": d.get("price"),
+            "value_cr": d.get("value_cr"), "price_est": bool(d.get("price_est")),
             "pct_pre": d.get("pct_pre"), "pct_post": d.get("pct_post"),
             "date": d.get("date"), "source": d.get("url"),
         } for d in deals],

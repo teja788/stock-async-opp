@@ -46,7 +46,13 @@ class InvestorMatcher:
 
     def __init__(self, investors_cfg: dict[str, Any]):
         names = investors_cfg.get("marquee_investors", [])
-        self._marquee = [(n, self._tokens(n)) for n in names]
+        # (canonical name to report, token pattern to match). Aliases map an
+        # investment vehicle / family account onto the canonical investor so
+        # entity-routed buys aggregate under one person.
+        pairs = [(n, n) for n in names]
+        for alias, canonical in (investors_cfg.get("aliases") or {}).items():
+            pairs.append((canonical, alias))
+        self._marquee = [(canon, self._tokens(pattern)) for canon, pattern in pairs]
 
     @staticmethod
     def _tokens(s: str) -> set[str]:

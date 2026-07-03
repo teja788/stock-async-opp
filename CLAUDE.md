@@ -43,7 +43,18 @@ The pack also carries **deterministic evidence lines — use them**:
   Inspect these first; confluence is the classic asymmetric setup.
 - **★ WATCHLIST ACTIVITY**: user-pinned names — always address them explicitly.
 - **INSIDER ACCUMULATION** (trailing 90d): aggregated promoter/insider buying;
-  `CROSSED 5%` = a new substantial shareholder appeared.
+  `CROSSED 5%` = a new substantial shareholder appeared. Rows shown already
+  cleared the hybrid significance gate (≥₹1 cr AND ≥0.25% of mcap, or a 5%
+  crossing, or a cluster over the ₹ floor — see `config/investors.yaml`);
+  `[CLUSTER — N distinct insiders]` = several different buyers, a stronger tell
+  than one promoter's total.
+- **MARQUEE ACTIVITY** (trailing 90d): a star investor's buys aggregated across
+  days — repeat buying is higher conviction than any single print.
+- **⚠ MARQUEE / PROMOTER SELLING** (trailing 30d): caution overlay, never leads.
+  Down-rank other signals on these names; a lead there needs the selling explained.
+- **A marquee/insider BUY is corroboration, NOT a catalyst by itself** — alone it
+  is at most a "Watch" line; paired with a hard-filing catalyst (confluence) it
+  is the top-priority setup.
 - **`Value: ~₹X cr ≈ Y% of mcap`** on filings: regex-extracted headline figure —
   the materiality gate quantified. Treat as an estimate; verify in the filing.
 - **`Px since: +X% · vol Yx prior 20d`**: the priced-in check. A big catalyst
@@ -98,8 +109,10 @@ direction; procedural M&A milestones already known/priced (observation letters,
 open-offer process updates, scheme record-dates); routine government/promoter
 disclosures (e.g. a PSU's government-promoter SAST); ESOP/ESPS allotments, NCD
 interest certificates, AGM/EGM logistics, trading-window notices, analyst-meet
-intimations, newspaper publications; and anything whose materiality can't be
-established from the data (at most a "Watch" + "dig the filing to size it").
+intimations, newspaper publications; a marquee/insider purchase with no
+independent catalyst (corroboration only — "Watch" at most); and anything whose
+materiality can't be established from the data (at most a "Watch" + "dig the
+filing to size it").
 
 ### Output format (only the leads that clear the bar, highest conviction first)
 

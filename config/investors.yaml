@@ -2,7 +2,19 @@
 # in the client-name field of publicly-disclosed bulk/block deals or insider/SAST filings.
 # Matching is case-insensitive substring against the disclosed client name. Edit freely.
 
-rule: flag_any_disclosed_purchase   # any disclosed % counts as significant for now
+rule: flag_any_disclosed_purchase   # every disclosed purchase is still FLAGGED (stored +
+                                    # shown in INVESTOR/DEALS); `significance` below only
+                                    # gates the aggregated 90d ACCUMULATION section.
+
+# Hybrid significance gate for the INSIDER ACCUMULATION section (decided 2026-07-03):
+# a company's 90d aggregate must clear BOTH the absolute floor AND the %-of-mcap
+# ratio to be listed as significant. A SAST 5% crossing always qualifies.
+# Sub-threshold names collapse into a single count line (nothing vanishes silently).
+significance:
+  floor_cr: 1.0          # 90d aggregate buy value must be >= ₹1 cr (kills token buys)
+  min_pct_mcap: 0.25     # ...AND >= 0.25% of market cap (materiality-to-size)
+  # A CLUSTER (>=3 distinct insiders buying) that clears the ₹ floor also
+  # qualifies with the % ratio waived — many different buyers is its own signal.
 
 # Also flag (handled in code, not listed here): promoter buying, and any single
 # disclosed bulk/block PURCHASE regardless of name.
@@ -42,3 +54,18 @@ marquee_investors:
   - GQG Partners                 # notable FII; large Adani positions
   # NOTE: avoid adding generic mutual funds (SBI MF, ICICI Pru, etc.) here —
   # they appear in almost every deal and would flag everything as "marquee".
+
+# Known investment vehicles / family accounts -> canonical investor name.
+# The matcher treats each alias as an extra name pattern but reports the
+# canonical investor, so entity-routed buys aggregate under one person.
+# Matching is the same token-subset rule; aliases apply to NEWLY ingested
+# deals only (historical rows keep the flag computed at ingest time).
+# NOTE: skip ambiguous personal names (e.g. "Rajiv Khanna" for Dolly Khanna) —
+# too common, would false-positive.
+aliases:
+  Kedia Securities: Vijay Kedia                # his investment vehicle
+  Param Capital: Mukul Agrawal                 # his firm
+  Bengal Finance & Investment: Ashish Kacholia # his investment vehicle
+  MK Ventures: Madhusudan Kela                 # his firm
+  Madhuri Kela: Madhusudan Kela                # spouse account, frequent co-buyer
+  Abakkus Asset Manager: Sunil Singhania       # explicit long-form of Abakkus

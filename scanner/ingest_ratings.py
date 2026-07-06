@@ -350,10 +350,14 @@ def ingest(session: PoliteSession | None = None,
             # almost always older than a daily window — keep them ALL and let
             # the dedupe hash guard re-inserts (get_recent_ratings surfaces
             # newly-discovered rows via ingested_at). ICRA/CARE are near-
-            # real-time, so the window filter applies normally.
+            # real-time, so the window filter applies — but their dates are
+            # DATE-granular (midnight IST) while the catch-up cursor is a
+            # time-of-day instant, so compare at DAY level: `when < since`
+            # would drop every action dated today once the cursor passes
+            # midnight. Boundary-day re-keeps are free (dedupe hash).
             if agency != "CRISIL" and norm["date"]:
                 when = _parse_dt(norm["date"])
-                if when and when < since:
+                if when and when.date() < since.date():
                     continue
             kept.append(norm)
 

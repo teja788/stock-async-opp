@@ -191,7 +191,10 @@ def _expand_universe(bse: list[dict[str, Any]], have_isins: set[str]) -> list[di
     added: list[dict[str, Any]] = []
     for row in bse:
         isin = (row.get("ISIN_NUMBER") or "").strip()
-        if (not isin or isin in have_isins
+        # Equity ISINs start with INE; INF = mutual-fund/ETF schemes, which BSE
+        # lists under Segment=Equity too (seen live: SENSEXIETF, JUNIORBEES) —
+        # not companies, so they don't belong in a catalyst universe.
+        if (not isin or not isin.startswith("INE") or isin in have_isins
                 or row.get("Status") != "Active" or row.get("Segment") != "Equity"):
             continue
         cap = _parse_market_cap(row)

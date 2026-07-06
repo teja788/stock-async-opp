@@ -22,7 +22,7 @@ Run via `run.bat <command>` (Windows) or `.venv\Scripts\python.exe -m scanner.cl
 | `digest` | Save a dated ranked digest to `digests/`. |
 | `watch add\|remove\|list "<co>"` | Manage the watchlist (★ + top section in every pack). |
 | `log "<text>" --title T --key K` | Append a delivered analysis to `digests/research_log.md` (deduped by key). |
-| `review` | Score past research-log leads against subsequent price moves (calibration loop). |
+| `review` | Score past research-log leads against subsequent price moves, including alpha vs the universe-median move and a per-catalyst-tag breakdown (the calibration loop — tags with persistently negative median alpha deserve a harder gate). |
 | `publish` | Save pack snapshots + rebuild the static dashboard in `docs/` (GitHub Pages). Commit + push to update the hosted page. |
 | `schedule` | Print/install the Windows Task Scheduler job. |
 
@@ -40,7 +40,9 @@ opportunities**. The pack separates HARD FILINGS (high trust) from INVESTOR DEAL
 preserve that separation and never blur it.
 
 The pack also carries **deterministic evidence lines — use them**:
-- **CONFLUENCE** section: companies with ≥2 independent signal kinds in-window.
+- **CONFLUENCE** section: companies with ≥2 independent HARD signal kinds
+  in-window (tagged filing / investor deal / rating upgrade-downgrade — news is
+  excluded as an echo of the filing, and outlook/reaffirm ratings don't count).
   Inspect these first; confluence is the classic asymmetric setup.
 - **★ WATCHLIST ACTIVITY**: user-pinned names — always address them explicitly.
 - **INSIDER ACCUMULATION** (trailing 90d): aggregated promoter/insider buying;
@@ -56,8 +58,27 @@ The pack also carries **deterministic evidence lines — use them**:
 - **A marquee/insider BUY is corroboration, NOT a catalyst by itself** — alone it
   is at most a "Watch" line; paired with a hard-filing catalyst (confluence) it
   is the top-priority setup.
-- **`Value: ~₹X cr ≈ Y% of mcap`** on filings: regex-extracted headline figure —
-  the materiality gate quantified. Treat as an estimate; verify in the filing.
+- **`Value: ~₹X cr ≈ Y% of mcap ≈ Z% of FY rev`** on filings: regex-extracted
+  headline figure — the materiality gate quantified. The FY-revenue ratio (when
+  known from extracted results) is the truer needle-mover metric for order wins.
+  Treat as estimates; verify in the filing.
+- **`Results: Rev ₹X cr (+Y% YoY) · PAT ₹Z cr (+W% YoY)`**: numbers extracted
+  from the results PDF itself (with its own year-ago comparative column).
+  `[EARNINGS SURPRISE candidate]` = PAT ≥+40% on revenue ≥+15% — quantified
+  gate-1 evidence, but always verify in the filing before flagging.
+- **`Pickup: no news coverage since filing`** on a value-bearing tagged filing
+  older than a day = not yet in the news cycle — direct gate-3 (under-appreciated)
+  evidence. `Pickup: N stories` = already circulating; weigh gate 3 accordingly.
+- **`Issue px: ₹X vs close ₹Y (premium/discount)`** on capital raises: a
+  premium placement to outside investors is smart-money validation; discounted
+  promoter warrants are dilution — same tag, opposite signals. A marquee name
+  in the allottee text strengthens it.
+- **PLEDGE ACTIVITY** (trailing 180d): `[PLEDGE-RELEASE]` leans positive
+  (overhang clearing — classic re-rating tell); new pledges and especially
+  INVOCATIONS are cautions like the selling overlay.
+- **`Guidance delta vs previous deck`** on presentations: guidance-like lines
+  whose numbers changed between consecutive investor decks — check the slide
+  before citing.
 - **`Px since: +X% · vol Yx prior 20d`**: the priced-in check. A big catalyst
   with a small move = possibly under-appreciated; already +15-20% = the market
   got there first (down-rank on gate 3).
@@ -166,7 +187,9 @@ needed); the optional PDF dep degrades gracefully if absent.
 
 ## Hard constraints
 
-- Free sources only; local-only; Windows; polite rate-limiting (~1 req/s).
+- Free sources only; local-only; Windows; polite rate-limiting (~1 req/s per
+  HTTP session; the BSE filings poll may run up to `bse_fetch_workers` throttled
+  sessions in parallel — keep that setting modest).
 - Distinguish hard filings from news/unconfirmed, always.
 - Cite the source link for every item, all the way to the output.
 - Never fabricate data or present samples as real. If a source is down, say so.

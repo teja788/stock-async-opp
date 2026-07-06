@@ -219,7 +219,9 @@ with tab_fil:
 # Deals (all stored in window, BSE+NSE)
 # --------------------------------------------------------------------------- #
 with tab_deal:
-    deals = store.get_recent_deals(since.isoformat())
+    # Deal dates are date-granular (midnight IST) — query with a date-only
+    # prefix so boundary-day rows aren't dropped by the string compare.
+    deals = store.get_recent_deals(since.date().isoformat())
     st.caption(f"{len(deals)} deals in window (BSE + NSE)")
     st.dataframe([{
         "Date": (d.get("date") or "")[:10], "Symbol": d.get("symbol") or d.get("company"),

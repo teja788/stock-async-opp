@@ -164,7 +164,10 @@ def run_prefilter(since: datetime | None = None) -> dict[str, Any]:
     try:
         anns = store.get_recent_announcements(since_iso, conn=conn)
         news = store.get_recent_news(since_iso, conn=conn)
-        deals = store.get_recent_deals(since_iso, conn=conn)
+        # Deal dates are date-granular (midnight IST); query with a date-only
+        # prefix so boundary-day rows aren't excluded by the string compare
+        # against a time-of-day window start.
+        deals = store.get_recent_deals(since_iso[:10], conn=conn)
 
         # --- Announcements: tag + triage ---
         ann_candidates: list[dict[str, Any]] = []

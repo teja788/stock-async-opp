@@ -31,6 +31,8 @@ IST = ZoneInfo("Asia/Kolkata")
 
 DOCS = resolve_path("docs")
 PACKS_DIR = DOCS / "data" / "packs"
+MAX_SNAPSHOTS = 60   # keep the newest N pack snapshots (each scan saves one;
+                     # unbounded growth bloats the repo and the archive pages)
 
 _CSS = """
 :root { --bg:#0f1217; --card:#161b23; --text:#dbe2ea; --dim:#8b96a5; --acc:#5cc8a5;
@@ -164,7 +166,16 @@ def snapshot_pack() -> str | None:
         shutil.copyfile(md_path, PACKS_DIR / f"{stem}.md")
         shutil.copyfile(json_path, PACKS_DIR / f"{stem}.json")
         log.info("Pack snapshot saved: docs/data/packs/%s.*", stem)
+    _prune_snapshots()
     return stem
+
+
+def _prune_snapshots() -> None:
+    """Drop snapshots beyond MAX_SNAPSHOTS (stems sort chronologically)."""
+    for old in sorted(PACKS_DIR.glob("pack-*.md"))[:-MAX_SNAPSHOTS]:
+        old.unlink(missing_ok=True)
+        old.with_suffix(".json").unlink(missing_ok=True)
+        log.info("Pack snapshot pruned: %s", old.stem)
 
 
 def _latest_pack() -> tuple[dict[str, Any] | None, str | None]:
@@ -224,10 +235,13 @@ def _index_page(pack: dict[str, Any] | None, review_summary: dict | None,
 
     if review_summary:
         r = review_summary
-        body.append("<h2>Lead review</h2><div class='cards'>"
-                    f"<div class='card'><div class='num'>{r['positive']}/{r['scored']}</div><div class='lbl'>leads positive</div></div>"
-                    f"<div class='card'><div class='num'>{r['median']:+.1f}%</div><div class='lbl'>median move</div></div>"
-                    f"<div class='card'><div class='num'>{r['average']:+.1f}%</div><div class='lbl'>average move</div></div>"
+        cards = (f"<div class='card'><div class='num'>{r['positive']}/{r['scored']}</div><div class='lbl'>leads positive</div></div>"
+                 f"<div class='card'><div class='num'>{r['median']:+.1f}%</div><div class='lbl'>median move</div></div>"
+                 f"<div class='card'><div class='num'>{r['average']:+.1f}%</div><div class='lbl'>average move</div></div>")
+        if r.get("median_alpha") is not None:
+            cards += (f"<div class='card'><div class='num'>{r['median_alpha']:+.1f}%</div>"
+                      f"<div class='lbl'>median alpha vs universe</div></div>")
+        body.append(f"<h2>Lead review</h2><div class='cards'>{cards}"
                     "</div><p><a href='review.html'>Full table →</a></p>")
 
     if log_entries:
@@ -284,7 +298,11 @@ def build_site() -> dict[str, Any]:
     (DOCS / "index.html").write_text(
         _index_page(pack, summary, log_entries, digest_files, now), encoding="utf-8")
 
-    # latest pack page + archive pages
+    # latest pack page + archive pages (drop HTML for pruned snapshots first)
+    valid_stems = {p.stem for p in PACKS_DIR.glob("pack-*.md")}
+    for page in DOCS.glob("pack-*.html"):
+        if page.stem not in valid_stems:
+            page.unlink(missing_ok=True)
     archive_links = []
     for snap in sorted(PACKS_DIR.glob("pack-*.md"), reverse=True):
         page_name = f"{snap.stem}.html"
@@ -313,17 +331,41 @@ def build_site() -> dict[str, Any]:
     rev_body = ["<h1>Lead review — calibration, not a performance record</h1>"]
     if scored:
         rev_body.append("<div class='scroll'><table><tr><th>Logged</th><th>Ticker</th>"
-                        "<th>Then</th><th>Now</th><th>Move</th><th>Age (d)</th></tr>")
+                        "<th>Then</th><th>Now</th><th>Move</th><th>Alpha</th>"
+                        "<th>Tags</th><th>Age (d)</th></tr>")
         for s in scored:
             if s["pct_move"] is not None:
                 cls = "pos" if s["pct_move"] > 0 else "neg"
                 move = f"<span class='{cls}'>{s['pct_move']:+.1f}%</span>"
                 then_s, now_s = f"{s['then_close']:,.1f}", f"{s['now_close']:,.1f}"
+                if s.get("alpha") is not None:
+                    a_cls = "pos" if s["alpha"] > 0 else "neg"
+                    alpha = f"<span class='{a_cls}'>{s['alpha']:+.1f}%</span>"
+                else:
+                    alpha = "<span class='dim'>—</span>"
             else:
                 move, then_s, now_s = "<span class='dim'>no price data</span>", "—", "—"
+                alpha = "<span class='dim'>—</span>"
+            tags = "".join(f"<span class='pill'>{html.escape(t)}</span>"
+                           for t in (s.get("tags") or [])[:4])
             rev_body.append(f"<tr><td>{s['date']}</td><td>{html.escape(s['ticker'])}</td>"
-                            f"<td>{then_s}</td><td>{now_s}</td><td>{move}</td><td>{s['age_days']}</td></tr>")
+                            f"<td>{then_s}</td><td>{now_s}</td><td>{move}</td>"
+                            f"<td>{alpha}</td><td>{tags}</td><td>{s['age_days']}</td></tr>")
         rev_body.append("</table></div>")
+        tag_rows = leads.breakdown_by_tag(scored)
+        if tag_rows:
+            rev_body.append("<h2>Per-tag calibration</h2>"
+                            "<p class='dim'>Alpha = move minus the universe-median move over the "
+                            "same span. Tags are attributed from the company's tagged filings in "
+                            "the 35 days before the log entry (approximate).</p>"
+                            "<div class='scroll'><table><tr><th>Catalyst tag</th><th>Leads</th>"
+                            "<th>Beat tape</th><th>Median alpha</th></tr>")
+            for r in tag_rows:
+                cls = "pos" if r["median_alpha"] > 0 else "neg"
+                rev_body.append(f"<tr><td>{html.escape(r['tag'])}</td><td>{r['n']}</td>"
+                                f"<td>{r['positive']}/{r['n']}</td>"
+                                f"<td><span class='{cls}'>{r['median_alpha']:+.1f}%</span></td></tr>")
+            rev_body.append("</table></div>")
     else:
         rev_body.append("<p>No scoreable leads yet — leads appear here once the research "
                         "log has flagged items and price history covers their dates.</p>")

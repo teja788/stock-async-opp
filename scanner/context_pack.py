@@ -20,9 +20,21 @@ from datetime import datetime, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from scanner import materiality, pdf_extract, store
+from scanner import issue_price, materiality, pdf_extract, store
 from scanner.config import load_investors, load_settings, resolve_path
+from scanner.ingest_deals import InvestorMatcher
 from scanner.ingest_ratings import parse_notch
+
+# Optional enrichment modules (same graceful-degrade policy as the pdf dep):
+# the pack builds fine without them, just without those lines.
+try:
+    from scanner import results_extract
+except ImportError:  # pragma: no cover
+    results_extract = None
+try:
+    from scanner import presentation_diff
+except ImportError:  # pragma: no cover
+    presentation_diff = None
 from scanner.prefilter import run_prefilter, tag_catalysts
 from scanner.universe import load_map
 
@@ -35,6 +47,7 @@ MAX_FILINGS = 120       # cap filings in the pack (catalyst-tagged sort first, s
                         # truncation drops the least interesting tail); wide
                         # --days windows would otherwise blow up the pack
 MAX_COMPANY_NEWS = 60   # cap company-tagged news items
+MAX_CONFLUENCE = 25     # cap the confluence shortlist (it must stay a shortlist)
 
 
 def _ist_short(iso: str | None) -> str:
@@ -147,11 +160,6 @@ def build_context_pack(summary: dict[str, Any] | None = None,
     idx = _isin_index()
     settings = load_settings()
 
-    # TODO(future hook, Section 17): prioritise/segregate watchlisted tickers.
-    # The watchlist table + store.get_watchlist() exist; when wiring the UX, pull
-    # store.get_watchlist() here and float those companies into a dedicated
-    # "WATCHLIST" section (or boost their sort order) in the pack below.
-
     anns = cand["announcements"]
     news = cand["news"]
     deals = cand["deals"]
@@ -192,15 +200,19 @@ def build_context_pack(summary: dict[str, Any] | None = None,
                     d["price_est"] = True
             d["value_cr"] = (qty * price / 1e7) if (qty and price) else None
 
-        # SELLs never render as positive signals: they leave the deals section
-        # and feed the trailing-30d caution overlay instead.
-        buy_deals = [d for d in flagged_deals if d.get("side") != "SELL"]
+        # Only actual BUYs render as positive signals: SELLs feed the
+        # trailing-30d caution overlay, and PLEDGE/REVOKE/OTHER sides must not
+        # masquerade as accumulation in a section titled "BUYs".
+        buy_deals = [d for d in flagged_deals if d.get("side") == "BUY"]
 
         news = _dedupe_news_by_url(news)
         tagged_news = [n for n in news if _news_isins(n)]
         market_news = [n for n in news if not _news_isins(n)]
 
-        ratings = store.get_recent_ratings(summary["window_since"], conn=conn)
+        # Rating dates are date-granular (midnight IST); query with a date-only
+        # prefix so boundary-day actions survive the string compare against a
+        # time-of-day window start.
+        ratings = store.get_recent_ratings(summary["window_since"][:10], conn=conn)
 
         # Rupee value (regex, cheap) for ALL tagged filings — the display
         # selection below ranks the whole window by value vs mcap, so this
@@ -216,17 +228,92 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         collapsed = _collapse_filings(anns_sorted)
         shown_anns = _select_filings(collapsed, idx)
 
-        # Price/volume move since publication — only for displayed filings
-        # (two store queries per filing).
+        # Price/volume move + attention + issue-price context — only for
+        # displayed filings (a few store queries per filing).
+        now_dt = datetime.now(IST)
+        inv_matcher = InvestorMatcher(load_investors())
         for a in shown_anns:
-            if a.get("candidate_tags") and a.get("isin") and a.get("published_at"):
-                a["px_ctx"] = store.price_context(a["isin"], a["published_at"], conn=conn)
+            if not (a.get("candidate_tags") and a.get("isin") and a.get("published_at")):
+                continue
+            a["px_ctx"] = store.price_context(a["isin"], a["published_at"], conn=conn)
+            # Attention check (rubric gate 3): zero news pickup on a day-old
+            # catalyst filing = likely not yet widely noticed.
+            a["news_pickup"] = store.news_pickup_count(a["isin"], a["published_at"], conn=conn)
+            try:
+                a["age_hours"] = (now_dt - datetime.fromisoformat(a["published_at"])
+                                  ).total_seconds() / 3600
+            except ValueError:
+                a["age_hours"] = None
+            # Issue-price vs market on capital raises: a premium to close is
+            # smart-money validation; promoter warrants at a discount are
+            # dilution — the same tag, opposite signals.
+            if "capital_action" in (a.get("candidate_tags") or []):
+                info = issue_price.parse_issue(
+                    a.get("pdf_text") or a.get("body_text") or "", inv_matcher)
+                if info:
+                    px = store.price_on(a["isin"], a["published_at"][:10], conn=conn)
+                    if px and px.get("close"):
+                        prem = (info["price"] / px["close"] - 1) * 100
+                        # Implausible premium = parse artefact (face value,
+                        # ratio), not a real issue price — drop it. Fallback
+                        # parses get a tighter band: SEBI ICDR floor pricing
+                        # makes a >60% discount to market essentially
+                        # impossible for a genuine issue.
+                        lo = -95 if info["explicit"] else -60
+                        if lo <= prem <= 300:
+                            info["close"] = px["close"]
+                            info["premium_pct"] = prem
+                            a["issue_info"] = info
+                    elif info["explicit"]:
+                        a["issue_info"] = info  # price parsed, close unknown
+            # Quantified earnings on results filings: numbers, not vibes.
+            if (results_extract is not None and a.get("pdf_text")
+                    and results_extract.is_results_filing(
+                        a.get("headline", ""), a.get("subcategory", ""))):
+                res = store.get_results_extract(a["dedupe_hash"], conn=conn)
+                if res is None:
+                    res = results_extract.extract_results(a["pdf_text"])
+                    if res:
+                        store.save_results_extract(a["dedupe_hash"], a.get("isin"),
+                                                   res, conn=conn)
+                if res and res.get("revenue_cr") is not None:
+                    a["results"] = res
+            # Guidance delta on investor presentations (best-effort).
+            if (presentation_diff is not None and a.get("pdf_text")
+                    and presentation_diff.is_presentation(
+                        a.get("headline", ""), a.get("subcategory", ""))):
+                curr = presentation_diff.guidance_lines(a["pdf_text"])
+                if curr:
+                    prev_text = None
+                    for cand in store.filings_with_text_before(
+                            a["isin"], a["published_at"], conn=conn):
+                        if presentation_diff.is_presentation(
+                                cand.get("headline", ""), cand.get("subcategory", "")):
+                            prev_text = cand.get("text")
+                            break
+                    if prev_text:
+                        delta = presentation_diff.diff_guidance(
+                            presentation_diff.guidance_lines(prev_text), curr)
+                        if delta.get("changed") or delta.get("added"):
+                            a["guidance_diff"] = delta
+
+        # Revenue-based materiality denominator (from extracted results):
+        # attach the latest known FY revenue per company to displayed filings.
+        fy_rev = store.latest_fy_revenues(conn=conn)
+        for a in shown_anns:
+            if a.get("isin") in fy_rev:
+                a["fy_revenue_cr"] = fy_rev[a["isin"]]
 
         # Rating notch info (multi-notch moves / IG crossover are the re-raters).
         for r in ratings:
             r["notch"] = parse_notch(f"{r.get('rating','')} {r.get('summary','')}")
 
-        # Confluence: companies with >=2 INDEPENDENT signal kinds in-window.
+        # Confluence: companies with >=2 INDEPENDENT hard-signal kinds in-window.
+        # News is deliberately excluded — an outlet story is usually the same
+        # event as the filing (an echo, not independent confirmation), and the
+        # lowest-trust source must not gate the pack's top section. Rating rows
+        # count once per company, and only real moves (upgrade/downgrade);
+        # outlook/reaffirm/other are rubric noise.
         confluence: dict[str, set[str]] = {}
         def _mark(isin: str | None, kind: str) -> None:
             if isin:
@@ -237,11 +324,14 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         for d in buy_deals:  # sells are a caution overlay, never confluence
             _mark(d.get("isin"), "investor deal")
         for r in ratings:
-            _mark(r.get("isin"), f"rating {r.get('action','')}".strip())
-        for n in tagged_news:
-            for i in _news_isins(n):
-                _mark(i, "news")
-        confluence = {i: k for i, k in confluence.items() if len(k) >= 2}
+            if r.get("action") in ("upgrade", "downgrade"):
+                _mark(r.get("isin"), f"rating {r['action']}")
+
+        def _n_independent(kinds: set[str]) -> int:
+            # An upgrade + a downgrade on one name is still ONE source (CRAs).
+            return len({"rating" if k.startswith("rating ") else k for k in kinds})
+
+        confluence = {i: k for i, k in confluence.items() if _n_independent(k) >= 2}
 
         # Insider accumulation over a trailing 90d (independent of the window),
         # gated by the hybrid significance rule (config/investors.yaml): the
@@ -288,6 +378,11 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         sell_since = (datetime.now(IST) - timedelta(days=30)).isoformat()
         selling = store.insider_selling(sell_since, conn=conn)
 
+        # Pledge/release/invocation activity over a trailing 180d (rows are
+        # date-granular, so pass a date-only floor).
+        pledge_since = (datetime.now(IST) - timedelta(days=180)).date().isoformat()
+        pledges = store.pledge_activity(pledge_since, conn=conn)
+
         watch = {w["isin"] for w in store.get_watchlist(conn=conn)}
     finally:
         conn.close()
@@ -296,11 +391,11 @@ def build_context_pack(summary: dict[str, Any] | None = None,
     md = _render_md(summary, anns_sorted, buy_deals, tagged_news, market_news,
                     ratings, idx, confluence, accumulation, watch,
                     marquee=marquee_accum, selling=selling, gate=gate,
-                    shown=shown_anns)
+                    shown=shown_anns, pledges=pledges)
     pack_json = _render_json(summary, anns_sorted, buy_deals, tagged_news,
                              ratings, idx, confluence, accumulation,
                              marquee=marquee_accum, selling=selling,
-                             shown=shown_anns)
+                             shown=shown_anns, pledges=pledges)
 
     md_path = resolve_path(settings.get("output", {}).get("context_pack", "runtime/context_pack.md"))
     json_path = md_path.with_suffix(".json")
@@ -319,6 +414,7 @@ def build_context_pack(summary: dict[str, Any] | None = None,
         "rating_actions": len(ratings),
         "company_news": len(tagged_news),
         "market_news": len(market_news),
+        "pledge_activity_180d": len(pledges),
     }
     log.info("Context pack written: %s", stats)
     return stats
@@ -404,12 +500,14 @@ def _px_line(px: dict[str, Any] | None) -> str:
 
 def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
                confluence=None, accumulation=None, watch=None,
-               marquee=None, selling=None, gate=None, shown=None) -> str:
+               marquee=None, selling=None, gate=None, shown=None,
+               pledges=None) -> str:
     confluence = confluence or {}
     accumulation = accumulation or []
     watch = watch or set()
     marquee = marquee or []
     selling = selling or []
+    pledges = pledges or []
     floor_cr, min_pct_mcap, accum_sub_n = gate or (1.0, 0.25, 0)
     shown = shown if shown is not None else anns[:MAX_FILINGS]
     out: list[str] = []
@@ -427,7 +525,11 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
                "F&O in a label = institutionally covered; its absence on a smallcap = likely under-followed. "
                "A marquee/insider BUY is corroboration, NOT a catalyst by itself — alone it is a "
                "Watch at most; paired with a hard catalyst it is the classic setup. The SELLING "
-               "section is a caution overlay: down-rank other signals on those names.")
+               "section is a caution overlay: down-rank other signals on those names. "
+               "'Pickup: no news coverage' on a tagged filing = not yet in the news cycle "
+               "(gate-3 evidence). 'Issue px vs close': a premium placement to outside investors "
+               "validates; discounted promoter warrants dilute. PLEDGE releases lean positive; "
+               "new pledges/invocations are cautions.")
     out.append("")
 
     # --- WATCHLIST (user-pinned names with any in-window items) ---
@@ -443,6 +545,11 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
             if s.get("isin") in watch:
                 hits.setdefault(s["isin"], []).append(
                     f"⚠ selling (30d): {_short(s.get('sellers') or '?', 60)} — {s.get('n_sells')} sell(s)")
+        for p in pledges:
+            if p.get("isin") in watch:
+                hits.setdefault(p["isin"], []).append(
+                    f"pledge activity (180d): {p.get('n_releases') or 0} release(s), "
+                    f"{p.get('n_pledges') or 0} pledge(s), {p.get('n_invocations') or 0} invocation(s)")
         for r in ratings:
             if r.get("isin") in watch:
                 hits.setdefault(r["isin"], []).append(f"rating: {r.get('agency','')} {r.get('action','')}")
@@ -459,13 +566,17 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
                     out.append(f"  - {it}")
                 out.append("")
 
-    # --- CONFLUENCE (>=2 independent signal kinds — the classic asymmetric setup) ---
+    # --- CONFLUENCE (>=2 independent HARD signals — the classic asymmetric setup) ---
     if confluence:
-        out.append("## CONFLUENCE (multiple independent signals in-window — inspect first)")
-        for isin, kinds in sorted(confluence.items(), key=lambda kv: -len(kv[1])):
+        shown_conf = sorted(confluence.items(), key=lambda kv: -len(kv[1]))[:MAX_CONFLUENCE]
+        out.append("## CONFLUENCE (≥2 independent HARD signals in-window — "
+                   "tagged filing / investor deal / rating move; inspect first)")
+        for isin, kinds in shown_conf:
             c = idx.get(isin, {})
             label = f"{c.get('symbol','?')} ({c.get('name','')}{_mcap_str(isin, idx)})"
             out.append(f"[CONFLUENCE] {label} — {' + '.join(sorted(kinds))}")
+        if len(confluence) > len(shown_conf):
+            out.append(f"(+{len(confluence) - len(shown_conf)} more confluence names — `ask` to list)")
         out.append("")
 
     # --- INSIDER ACCUMULATION (trailing 90d aggregate; single rows are weak) ---
@@ -531,10 +642,67 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
         if note:
             out.append(f"  Note: {note}")
         mat = materiality.materiality_line(
-            a.get("value_cr"), idx.get(a.get("isin") or "", {}).get("market_cap_cr"))
+            a.get("value_cr"), idx.get(a.get("isin") or "", {}).get("market_cap_cr"),
+            a.get("fy_revenue_cr"))
         px = _px_line(a.get("px_ctx"))
         if mat or px:
             out.append(f"  {'  ·  '.join(x for x in (f'Value: {mat}' if mat else '', px) if x)}")
+        pickup = a.get("news_pickup")
+        if pickup is not None:
+            # Zero coverage is the NORM for smallcap filings, so the marker is
+            # only informative on filings that carry a real headline value —
+            # there, "still uncovered" is gate-3 evidence, not background noise.
+            if pickup == 0 and (a.get("age_hours") or 0) >= 24 and a.get("value_cr"):
+                out.append("  Pickup: no news coverage since filing — likely under-the-radar")
+            elif pickup:
+                out.append(f"  Pickup: {pickup} news stor{'y' if pickup == 1 else 'ies'} since filing")
+        ii = a.get("issue_info")
+        if ii:
+            line = f"  Issue px: ₹{ii['price']:,.2f}"
+            if ii.get("kind") == "warrant":
+                line += " (warrants)"
+            if ii.get("premium_pct") is not None:
+                word = "premium" if ii["premium_pct"] >= 0 else "discount"
+                line += (f" vs close ₹{ii['close']:,.2f} → "
+                         f"{abs(ii['premium_pct']):.1f}% {word}")
+            if ii.get("promoter_allottee"):
+                line += " · promoter mentioned in allotment context — check dilution"
+            if ii.get("marquee"):
+                line += f" · text mentions marquee: {', '.join(ii['marquee'][:3])}"
+            if not ii.get("explicit"):
+                line += " (regex estimate — verify in filing)"
+            out.append(line)
+        res = a.get("results")
+        if res:
+            bits = []
+            if res.get("revenue_cr") is not None:
+                b = f"Rev ₹{res['revenue_cr']:,.0f} cr"
+                if res.get("revenue_yoy_pct") is not None:
+                    b += f" ({res['revenue_yoy_pct']:+.0f}% YoY)"
+                bits.append(b)
+            if res.get("pat_cr") is not None:
+                b = f"PAT ₹{res['pat_cr']:,.1f} cr"
+                if res.get("pat_yoy_pct") is not None:
+                    b += f" ({res['pat_yoy_pct']:+.0f}% YoY)"
+                bits.append(b)
+            if bits:
+                scope = {True: " (consol)", False: " (standalone)"}.get(
+                    res.get("consolidated"), "")
+                surprise = ""
+                if (res.get("pat_yoy_pct") is not None
+                        and res.get("revenue_yoy_pct") is not None
+                        and res["pat_yoy_pct"] >= 40 and res["revenue_yoy_pct"] >= 15):
+                    surprise = "  [EARNINGS SURPRISE candidate]"
+                out.append(f"  Results{scope}: {' · '.join(bits)} "
+                           f"[extracted — verify]{surprise}")
+        gd = a.get("guidance_diff")
+        if gd:
+            out.append("  Guidance delta vs previous deck (extracted — verify):")
+            for prev, curr in (gd.get("changed") or [])[:3]:
+                out.append(f"    ~ was: {_short(prev, 100)}")
+                out.append(f"      now: {_short(curr, 100)}")
+            for added in (gd.get("added") or [])[:2]:
+                out.append(f"    + new: {_short(added, 100)}")
         if a.get("pdf_url"):
             out.append(f"  Source: {a['pdf_url']}")
         out.append("")
@@ -580,6 +748,27 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
             if (s.get("cum_pct_sold") or 0) > 0:
                 bits.append(f"stake -{s['cum_pct_sold']:.2f}pp")
             out.append(f"[SELLING] {_co_label(s, idx, watch)} — [{tag}] {who} — {', '.join(bits)}")
+        out.append("")
+
+    # --- PLEDGE ACTIVITY (trailing 180d) ---
+    if pledges:
+        out.append("## PLEDGE ACTIVITY (trailing 180d — a big RELEASE leans positive; "
+                   "new pledges / invocations are cautions)")
+        for p in pledges[:12]:
+            bits = []
+            if p.get("n_releases"):
+                q = f" ({p['released_qty']:,.0f} sh)" if p.get("released_qty") else ""
+                bits.append(f"{p['n_releases']} release(s){q}")
+            if p.get("n_pledges"):
+                q = f" ({p['pledged_qty']:,.0f} sh)" if p.get("pledged_qty") else ""
+                bits.append(f"{p['n_pledges']} new pledge(s){q}")
+            if p.get("n_invocations"):
+                bits.append(f"{p['n_invocations']} INVOCATION(s) — lender-selling risk")
+            tag = ("[PLEDGE-RELEASE]"
+                   if p.get("n_releases") and not p.get("n_invocations")
+                   and p["n_releases"] >= (p.get("n_pledges") or 0) else "[PLEDGE]")
+            out.append(f"{tag} {_co_label(p, idx, watch)} — {', '.join(bits)} "
+                       f"(last {(p.get('last_event') or '')[:10]})")
         out.append("")
 
     # --- RATING ACTIONS (CRA upgrades/downgrades/outlook for universe names) ---
@@ -631,11 +820,13 @@ def _render_md(summary, anns, deals, tagged_news, market_news, ratings, idx,
 
 def _render_json(summary, anns, deals, tagged_news, ratings, idx,
                  confluence=None, accumulation=None,
-                 marquee=None, selling=None, shown=None) -> dict[str, Any]:
+                 marquee=None, selling=None, shown=None,
+                 pledges=None) -> dict[str, Any]:
     confluence = confluence or {}
     accumulation = accumulation or []
     marquee = marquee or []
     selling = selling or []
+    pledges = pledges or []
     shown = shown if shown is not None else anns[:MAX_FILINGS]
     return {
         "generated_at": datetime.now(IST).isoformat(),
@@ -651,7 +842,8 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx,
             "company": idx.get(i, {}).get("name"),
             "market_cap_cr": idx.get(i, {}).get("market_cap_cr"),
             "signals": sorted(kinds),
-        } for i, kinds in sorted(confluence.items(), key=lambda kv: -len(kv[1]))],
+        } for i, kinds in sorted(confluence.items(),
+                                 key=lambda kv: -len(kv[1]))[:MAX_CONFLUENCE]],
         "insider_accumulation": [{
             "symbol": r.get("symbol"), "company": r.get("company"), "isin": r.get("isin"),
             "n_buys": r.get("n_buys"), "n_buyers": r.get("n_buyers"),
@@ -674,6 +866,13 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx,
             "cum_pct_sold": s.get("cum_pct_sold"),
             "any_marquee": bool(s.get("any_marquee")),
         } for s in selling[:15]],
+        "pledge_activity_180d": [{
+            "symbol": p.get("symbol"), "company": p.get("company"), "isin": p.get("isin"),
+            "n_pledges": p.get("n_pledges"), "n_releases": p.get("n_releases"),
+            "n_invocations": p.get("n_invocations"),
+            "released_qty": p.get("released_qty"), "pledged_qty": p.get("pledged_qty"),
+            "last_event": p.get("last_event"),
+        } for p in pledges[:12]],
         "hard_filings": [{
             "symbol": a.get("symbol"), "company": a.get("company"), "bse_code": a.get("bse_code"),
             "isin": a.get("isin"), "market_cap_cr": idx.get(a.get("isin") or "", {}).get("market_cap_cr"),
@@ -688,6 +887,26 @@ def _render_json(summary, anns, deals, tagged_news, ratings, idx,
             "materiality_pick": bool(a.get("materiality_pick")),
             "collapsed_n": a.get("collapsed_n"),
             "more_in_window": a.get("more_in_window"),
+            "news_pickup": a.get("news_pickup"),
+            "fy_revenue_cr": a.get("fy_revenue_cr"),
+            "results": ({"period_label": a["results"].get("period_label"),
+                         "revenue_cr": a["results"].get("revenue_cr"),
+                         "revenue_yoy_pct": a["results"].get("revenue_yoy_pct"),
+                         "pat_cr": a["results"].get("pat_cr"),
+                         "pat_yoy_pct": a["results"].get("pat_yoy_pct"),
+                         "fy_revenue_cr": a["results"].get("fy_revenue_cr"),
+                         "consolidated": a["results"].get("consolidated"),
+                         "confidence": a["results"].get("confidence")}
+                        if a.get("results") else None),
+            "guidance_diff": a.get("guidance_diff"),
+            "issue": ({"price": a["issue_info"]["price"],
+                       "kind": a["issue_info"].get("kind"),
+                       "close": a["issue_info"].get("close"),
+                       "premium_pct": a["issue_info"].get("premium_pct"),
+                       "promoter_allottee": a["issue_info"].get("promoter_allottee"),
+                       "marquee": a["issue_info"].get("marquee"),
+                       "explicit": a["issue_info"].get("explicit")}
+                      if a.get("issue_info") else None),
             "source": a.get("pdf_url"),
         } for a in shown],
         "investor_deals": [{

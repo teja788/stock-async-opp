@@ -119,6 +119,22 @@ CREATE TABLE IF NOT EXISTS filing_text (
     created_at  TEXT
 );
 
+-- Numbers extracted from quarterly-results filings (results_extract.py):
+-- the quantified basis for "earnings surprise" and revenue-based materiality.
+CREATE TABLE IF NOT EXISTS results_extract (
+    ref_hash        TEXT PRIMARY KEY,   -- announcements.dedupe_hash
+    isin            TEXT,
+    period_label    TEXT,
+    revenue_cr      REAL,
+    revenue_yoy_pct REAL,
+    pat_cr          REAL,
+    pat_yoy_pct     REAL,
+    fy_revenue_cr   REAL,
+    consolidated    INTEGER,            -- 1/0/NULL
+    confidence      TEXT,
+    created_at      TEXT
+);
+
 -- Credit-rating actions scraped from CRA media pages (ICRA/CRISIL/CARE).
 CREATE TABLE IF NOT EXISTS ratings (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -346,7 +362,8 @@ def counts(conn: sqlite3.Connection | None = None) -> dict[str, int]:
     conn = conn or get_conn()
     try:
         out = {}
-        for t in ("companies", "announcements", "news", "deals", "ratings"):
+        for t in ("companies", "announcements", "news", "deals", "ratings",
+                  "prices", "filing_text"):
             out[t] = conn.execute(f"SELECT COUNT(*) AS n FROM {t}").fetchone()["n"]
         return out
     finally:
@@ -370,7 +387,7 @@ def coverage(conn: sqlite3.Connection | None = None) -> dict[str, dict[str, Any]
     try:
         out: dict[str, dict[str, Any]] = {}
         specs = [("announcements", "published_at"), ("news", "published_at"),
-                 ("deals", "date"), ("ratings", "date")]
+                 ("deals", "date"), ("ratings", "date"), ("prices", "date")]
         for table, col in specs:
             row = conn.execute(
                 f"SELECT COUNT(*) n, MIN({col}) lo, MAX({col}) hi FROM {table}").fetchone()
@@ -419,6 +436,23 @@ def get_watchlist(conn: sqlite3.Connection | None = None) -> list[dict[str, Any]
     conn = conn or get_conn()
     try:
         return _rows(conn, "SELECT * FROM watchlist ORDER BY added_at DESC", ())
+    finally:
+        if own:
+            conn.close()
+
+
+def filings_with_text_before(isin: str, before_iso: str, limit: int = 12,
+                             conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    """Recent filings for `isin` published before `before_iso` that have cached
+    PDF text — e.g. the previous investor deck for guidance diffing."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn, """
+            SELECT a.dedupe_hash, a.headline, a.subcategory, a.published_at, f.text
+            FROM announcements a JOIN filing_text f ON f.ref_hash = a.dedupe_hash
+            WHERE a.isin=? AND a.published_at < ? AND f.n_chars > 200
+            ORDER BY a.published_at DESC LIMIT ?""", (isin, before_iso, limit))
     finally:
         if own:
             conn.close()
@@ -595,6 +629,66 @@ def save_filing_text(ref_hash: str, url: str, text: str, method: str,
 
 
 # --------------------------------------------------------------------------- #
+# Extracted results numbers (cache for results_extract.py).
+# --------------------------------------------------------------------------- #
+def get_results_extract(ref_hash: str,
+                        conn: sqlite3.Connection | None = None) -> dict[str, Any] | None:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        row = conn.execute("SELECT * FROM results_extract WHERE ref_hash=?",
+                           (ref_hash,)).fetchone()
+        if not row:
+            return None
+        d = dict(row)
+        d["consolidated"] = None if d["consolidated"] is None else bool(d["consolidated"])
+        return d
+    finally:
+        if own:
+            conn.close()
+
+
+def save_results_extract(ref_hash: str, isin: str | None, res: dict[str, Any],
+                         conn: sqlite3.Connection | None = None) -> None:
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        cons = res.get("consolidated")
+        conn.execute(
+            """INSERT OR REPLACE INTO results_extract
+               (ref_hash, isin, period_label, revenue_cr, revenue_yoy_pct,
+                pat_cr, pat_yoy_pct, fy_revenue_cr, consolidated, confidence, created_at)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+            (ref_hash, isin, res.get("period_label"), res.get("revenue_cr"),
+             res.get("revenue_yoy_pct"), res.get("pat_cr"), res.get("pat_yoy_pct"),
+             res.get("fy_revenue_cr"),
+             None if cons is None else int(bool(cons)),
+             res.get("confidence"), _now_iso()))
+        conn.commit()
+    finally:
+        if own:
+            conn.close()
+
+
+def latest_fy_revenues(conn: sqlite3.Connection | None = None) -> dict[str, float]:
+    """{isin: latest known previous-full-year revenue (₹ cr)} — the denominator
+    for revenue-based materiality ('a ₹500 cr order ≈ 2x FY revenue')."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        out: dict[str, float] = {}
+        for r in conn.execute(
+                "SELECT isin, fy_revenue_cr FROM results_extract "
+                "WHERE isin IS NOT NULL AND fy_revenue_cr IS NOT NULL "
+                "ORDER BY created_at ASC"):
+            out[r["isin"]] = r["fy_revenue_cr"]  # later rows win
+        return out
+    finally:
+        if own:
+            conn.close()
+
+
+# --------------------------------------------------------------------------- #
 # Prices (daily bhavcopy closes) + derived context.
 # --------------------------------------------------------------------------- #
 def upsert_prices(rows: list[tuple[str, str, float, float]],
@@ -675,6 +769,68 @@ def price_context(isin: str, since_date: str,
             "ref_date": ref["date"], "last_date": last["date"],
             "last_close": last["close"],
         }
+    finally:
+        if own:
+            conn.close()
+
+
+def benchmark_move(start_day: str, end_day: str,
+                   conn: sqlite3.Connection | None = None) -> dict[str, Any] | None:
+    """Equal-weight universe move between two dates — the alpha baseline.
+
+    Median % change across every stored ISIN with a close on/before BOTH dates
+    (same as-of rule as price_on). A smallcap-heavy universe median is a fairer
+    "did this lead beat the tape?" baseline than a large-cap index, and it
+    needs no extra data source. Returns {median_pct, n} or None.
+    """
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        rows = conn.execute(
+            """SELECT (p2.close - p1.close) * 100.0 / p1.close AS pct
+               FROM (SELECT p.isin, p.close FROM prices p
+                     JOIN (SELECT isin, MAX(date) d FROM prices
+                           WHERE date <= ? GROUP BY isin) m
+                       ON p.isin = m.isin AND p.date = m.d) p1
+               JOIN (SELECT p.isin, p.close FROM prices p
+                     JOIN (SELECT isin, MAX(date) d FROM prices
+                           WHERE date <= ? GROUP BY isin) m
+                       ON p.isin = m.isin AND p.date = m.d) p2
+                 ON p1.isin = p2.isin
+               WHERE p1.close > 0""",
+            (start_day[:10], end_day[:10])).fetchall()
+        moves = sorted(r["pct"] for r in rows)
+        if not moves:
+            return None
+        n = len(moves)
+        median = moves[n // 2] if n % 2 else (moves[n // 2 - 1] + moves[n // 2]) / 2
+        return {"median_pct": median, "n": n}
+    finally:
+        if own:
+            conn.close()
+
+
+def catalyst_tags_between(isin: str, since_iso: str, until_iso: str,
+                          conn: sqlite3.Connection | None = None) -> list[str]:
+    """Union of candidate_tags on a company's filings in [since, until].
+
+    Used by the review loop to attribute a logged lead to the catalyst tags
+    that were live shortly before it was flagged (approximate by design)."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        tags: list[str] = []
+        for r in conn.execute(
+                "SELECT candidate_tags FROM announcements WHERE isin=? "
+                "AND published_at >= ? AND published_at <= ? "
+                "AND candidate_tags NOT IN ('', '[]')", (isin, since_iso, until_iso)):
+            try:
+                for t in json.loads(r["candidate_tags"] or "[]"):
+                    if t not in tags:
+                        tags.append(t)
+            except json.JSONDecodeError:
+                continue
+        return tags
     finally:
         if own:
             conn.close()
@@ -766,6 +922,57 @@ def marquee_accumulation(since_iso: str,
             conn.close()
 
 
+def news_pickup_count(isin: str, since_iso: str,
+                      conn: sqlite3.Connection | None = None) -> int:
+    """Stories tagging `isin` published at/after `since_iso`.
+
+    The attention check behind rubric gate 3: a catalyst filing that is a day
+    old with ZERO news pickup is the literal definition of "not yet widely
+    noticed"."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        row = conn.execute(
+            "SELECT COUNT(*) AS n FROM news WHERE company_isins LIKE ? "
+            "AND published_at >= ?", (f'%"{isin}"%', since_iso)).fetchone()
+        return row["n"]
+    finally:
+        if own:
+            conn.close()
+
+
+def pledge_activity(since_iso: str,
+                    conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
+    """Per-company pledge/release/invocation aggregate since `since_iso`.
+
+    A large pledge RELEASE after deleveraging is a classic re-rating tell (the
+    overhang is gone); fresh pledging is a caution and an INVOCATION (lender
+    seizing shares) is a red flag. Sides come from the insider/SAST feed and
+    vary in wording (PLEDGE / REVOKE / RELEASE / INVOKE...), hence LIKE."""
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        return _rows(conn, """
+            SELECT isin, symbol, company,
+                   SUM(CASE WHEN side LIKE 'PLEDGE%' THEN 1 ELSE 0 END)  AS n_pledges,
+                   SUM(CASE WHEN side LIKE 'REVO%' OR side LIKE 'RELEAS%'
+                            THEN 1 ELSE 0 END)                           AS n_releases,
+                   SUM(CASE WHEN side LIKE 'INVO%' THEN 1 ELSE 0 END)    AS n_invocations,
+                   SUM(CASE WHEN side LIKE 'REVO%' OR side LIKE 'RELEAS%'
+                            THEN COALESCE(qty,0) ELSE 0 END)             AS released_qty,
+                   SUM(CASE WHEN side LIKE 'PLEDGE%'
+                            THEN COALESCE(qty,0) ELSE 0 END)             AS pledged_qty,
+                   MAX(date)                                             AS last_event
+            FROM deals
+            WHERE date >= ? AND (side LIKE 'PLEDGE%' OR side LIKE 'REVO%'
+                                 OR side LIKE 'RELEAS%' OR side LIKE 'INVO%')
+            GROUP BY COALESCE(isin, company)
+            ORDER BY n_releases DESC, n_pledges DESC""", (since_iso,))
+    finally:
+        if own:
+            conn.close()
+
+
 def insider_selling(since_iso: str,
                     conn: sqlite3.Connection | None = None) -> list[dict[str, Any]]:
     """Per-company aggregate of marquee/promoter SELLs since `since_iso`.
@@ -816,6 +1023,34 @@ def upsert_ratings(items: list[dict[str, Any]], conn: sqlite3.Connection | None 
             r["in_universe"] = int(bool(r.get("in_universe")))
             prepared.append(r)
         return _insert_ignore(conn, "ratings", cols, prepared)
+    finally:
+        if own:
+            conn.close()
+
+
+def update_rating_directions(items: list[dict[str, Any]],
+                             conn: sqlite3.Connection | None = None) -> int:
+    """Persist PDF-derived direction onto rows previously stored as 'other'.
+
+    The dedupe hash is computed BEFORE the CARE rationale-PDF enrichment, so a
+    row stored as action='other' on an earlier run matches this run's enriched
+    copy by hash — INSERT OR IGNORE alone would discard the improvement and the
+    stored direction would stay 'other' forever. Returns rows updated.
+    """
+    rows = [(r.get("action"), r.get("direction"), r.get("summary"), r.get("dedupe_hash"))
+            for r in items
+            if r.get("dedupe_hash") and r.get("action") not in (None, "", "other")]
+    if not rows:
+        return 0
+    own = conn is None
+    conn = conn or get_conn()
+    try:
+        before = conn.total_changes
+        conn.executemany(
+            "UPDATE ratings SET action=?, direction=?, summary=? "
+            "WHERE dedupe_hash=? AND action='other'", rows)
+        conn.commit()
+        return conn.total_changes - before
     finally:
         if own:
             conn.close()

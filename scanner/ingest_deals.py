@@ -378,11 +378,16 @@ def ingest(session: PoliteSession | None = None,
         stats["failed_sources"] = failed
 
     # Keep only relevant deals (and only within the lookback window).
+    # Deal dates are DATE-granular (stored as midnight IST) while the catch-up
+    # cursor is a time-of-day instant, so compare at DAY level: `when < since`
+    # would drop every row trade-dated today once the cursor passes midnight —
+    # under the 45-min scheduled refresh that silently loses ALL deals. Keeping
+    # the whole boundary day is free (dedupe hashes absorb the re-ingest).
     kept: list[dict[str, Any]] = []
     for d in out:
         if d["date"]:
             when = _parse_dt(d["date"])
-            if when and when < since:
+            if when and when.date() < since.date():
                 continue
         if d["is_marquee"] or d["is_promoter_buy"] or d["in_universe"]:
             kept.append(d)

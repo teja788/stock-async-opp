@@ -125,8 +125,8 @@ def _refresh_all(bse_limit: int | None = None,
     `bse_limit` caps the number of BSE scrips polled (for a quick partial
     refresh / tests); None polls the full universe (~498 scrips, ~8 min).
     `sources` selects which ingesters to run (subset of {"bse_announcements",
-    "news", "deals"}); None runs all. Lets the dashboard do a fast news+deals
-    update without the slow BSE poll.
+    "news", "deals", "ratings", "prices"}); None runs all. Lets the dashboard
+    do a fast news+deals+ratings+prices update without the slow BSE poll.
     """
     run = sources or {"bse_announcements", "news", "deals", "ratings", "prices"}
     from scanner import (ingest_bse, ingest_deals, ingest_news, ingest_prices,
@@ -200,7 +200,12 @@ def _refresh_all(bse_limit: int | None = None,
         items = ingest_ratings.ingest(session=session, since=since, stats=stats)
         failed = stats.get("failed_agencies", 0)
         note = f"{failed}/{stats.get('total_agencies', 0)} agencies failed" if failed else ""
-        return len(items), store.upsert_ratings(items), note, failed == 0
+        new = store.upsert_ratings(items)
+        # Rows stored as action='other' on an earlier run share this run's
+        # dedupe hash (computed pre-enrichment), so INSERT OR IGNORE would
+        # silently drop a PDF-derived direction — persist it explicitly.
+        store.update_rating_directions(items)
+        return len(items), new, note, failed == 0
 
     def _prices():
         if not ingest_prices.is_enabled():
@@ -556,26 +561,52 @@ def review(min_age_days: int = typer.Option(7, "--min-age", help="Only score lea
         raise typer.Exit()
 
     table = Table(title=f"Lead review — {len(scored)} leads", border_style="cyan")
-    for col in ("Logged", "Ticker", "Then", "Now", "Move", "Age(d)"):
-        table.add_column(col, justify="right" if col in ("Then", "Now", "Move", "Age(d)") else "left")
+    for col in ("Logged", "Ticker", "Then", "Now", "Move", "Alpha", "Age(d)"):
+        table.add_column(col, justify="left" if col in ("Logged", "Ticker") else "right")
     for s in scored[:limit]:
         if s["pct_move"] is not None:
             colour = "green" if s["pct_move"] > 0 else "red"
+            if s.get("alpha") is not None:
+                a_col = "green" if s["alpha"] > 0 else "red"
+                alpha_str = f"[{a_col}]{s['alpha']:+.1f}%[/{a_col}]"
+            else:
+                alpha_str = "[dim]—[/dim]"
             table.add_row(s["date"], s["ticker"], f"{s['then_close']:,.1f}",
                           f"{s['now_close']:,.1f}",
-                          f"[{colour}]{s['pct_move']:+.1f}%[/{colour}]", str(s["age_days"]))
+                          f"[{colour}]{s['pct_move']:+.1f}%[/{colour}]",
+                          alpha_str, str(s["age_days"]))
         else:
             table.add_row(s["date"], s["ticker"], "—", "—",
-                          "[dim]no price data[/dim]", str(s["age_days"]))
+                          "[dim]no price data[/dim]", "—", str(s["age_days"]))
     console.print(table)
     summary = leads_mod.summarize(scored)
     if summary:
-        console.print(f"Scored {summary['scored']}/{summary['total']}: "
-                      f"hit-rate {summary['positive']}/{summary['scored']} positive · "
-                      f"median {summary['median']:+.1f}% · avg {summary['average']:+.1f}%")
+        line = (f"Scored {summary['scored']}/{summary['total']}: "
+                f"hit-rate {summary['positive']}/{summary['scored']} positive · "
+                f"median {summary['median']:+.1f}% · avg {summary['average']:+.1f}%")
+        if summary.get("median_alpha") is not None:
+            line += (f"  |  vs universe median: {summary['alpha_positive']}/"
+                     f"{summary['alpha_scored']} beat the tape · "
+                     f"median alpha {summary['median_alpha']:+.1f}%")
+        console.print(line)
     else:
         console.print("[dim]No leads scoreable yet — price history accumulates from the "
                       "bhavcopy backfill (~90 days); older leads stay unscored.[/dim]")
+
+    tag_rows = leads_mod.breakdown_by_tag(scored)
+    if tag_rows:
+        t2 = Table(title="Per-tag calibration (alpha vs universe median; tags ≈ the "
+                         "company's tagged filings in the 35d before the log entry)",
+                   border_style="cyan")
+        for col in ("Catalyst tag", "Leads", "Beat tape", "Median alpha"):
+            t2.add_column(col, justify="left" if col == "Catalyst tag" else "right")
+        for r in tag_rows[:12]:
+            colour = "green" if r["median_alpha"] > 0 else "red"
+            t2.add_row(r["tag"], str(r["n"]), f"{r['positive']}/{r['n']}",
+                       f"[{colour}]{r['median_alpha']:+.1f}%[/{colour}]")
+        console.print(t2)
+        console.print("[dim]Use this to tune the bar: tags with persistently negative "
+                      "median alpha deserve a harder gate.[/dim]")
     console.print("[dim]Research calibration only — not a performance record, not advice.[/dim]")
 
 

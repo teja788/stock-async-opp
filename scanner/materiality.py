@@ -29,10 +29,14 @@ _CURRENCY_RE = re.compile(
     re.IGNORECASE)
 
 # Bare "X crore(s)/lakh(s)" without a currency prefix — money in practice,
-# unless it counts shares/units/warrants ("12 lakh equity shares").
+# unless it counts shares/units/warrants or physical quantities. Up to three
+# adjectives may sit between the unit and the noun ("1.06 crore fully paid-up
+# equity shares"), so the share-count lookahead skips over them; erring toward
+# excluding a bare match is safe (currency-prefixed amounts are unaffected).
 _BARE_RE = re.compile(
     r"\b([\d,]+(?:\.\d+)?)\s*(crores?|lakhs?|lacs?)"
-    r"(?!\s*(?:equity|shares?|units?|warrants?|sq\.?\s*ft))\b",
+    r"(?!\s*(?:[a-z][a-z.-]*\s+){0,3}(?:equity|shares?|units?|warrants?)\b)"
+    r"(?!\s*(?:sq\.?\s*ft|tonn?es?|tons?|mtpa|mw|mva|litres?|liters?|kgs?)\b)",
     re.IGNORECASE)
 
 # Ignore USD/EUR amounts outright (see module docstring).
@@ -74,12 +78,20 @@ def headline_value_cr(*texts: str) -> float | None:
     return values[0] if values else None
 
 
-def materiality_line(value_cr: float | None, mcap_cr: float | None) -> str:
-    """Render '~₹X cr ≈ Y% of mcap' (or partial forms) for a pack line."""
+def materiality_line(value_cr: float | None, mcap_cr: float | None,
+                     fy_revenue_cr: float | None = None) -> str:
+    """Render '~₹X cr ≈ Y% of mcap ≈ Z% of FY rev' (or partial forms).
+
+    The FY-revenue ratio is the truer needle-mover metric for order wins —
+    a ₹500 cr order can be 25% of mcap yet 3 months of revenue for one firm
+    and two YEARS of revenue for another."""
     if not value_cr:
         return ""
     s = f"~₹{value_cr:,.0f} cr"
     if mcap_cr:
         pct = value_cr / mcap_cr * 100
         s += f" ≈ {pct:.0f}% of mcap" if pct >= 1 else f" ≈ {pct:.1f}% of mcap"
+    if fy_revenue_cr:
+        pct = value_cr / fy_revenue_cr * 100
+        s += f" ≈ {pct:.0f}% of FY rev" if pct >= 1 else f" ≈ {pct:.1f}% of FY rev"
     return s

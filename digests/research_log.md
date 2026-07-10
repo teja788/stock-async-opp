@@ -164,3 +164,11 @@ CARRIED FORWARD (still stand, from prior log): AMBER (Jun 18 capex ~47% of mcap,
 
 Pipeline notes: insider gate correctly demoted CONFIPET/SHAH/GANESHCP (catalysts were resignation/rights/circular PIT); fixed this run: XBRL repost double-count (SHAH +56pp -> real +28pp), materiality-pick display slots, repeat-filing collapse.
 Research only, not investment advice.
+
+
+---
+
+## 2026-07-10 07:25 IST — 10d scan
+<!-- hash:1f264a52821bf8f3 key:2026-07-10|10d|tough-signals -->
+
+10d window (Jun 30–Jul 10). LEADS (2): 1) APOLLO Apollo Micro Systems — board outcome Jul 9: acquisition of shares in Premier Explosives (~Rs 1,550 cr ≈ 10% of mcap); both boards filed + press releases. Mechanism: defence electronics + energetics vertical integration -> integrated ammunition/missile subsystem play. Px since +1.3% vol 0.8x = not priced. Hard filing, Medium conviction. https://www.bseindia.com/xml-data/corpfiling/AttachLive/257e1541-7871-47ec-a224-363debccd874.pdf 2) CEIGALL Ceigall India — Rs 705 cr order win Jul 8 (≈10% of mcap, ~20%+ of FY rev) with NO news pickup and px -2.9%; plus 2 more order wins Jun 30 and 3 appointed-date declarations Jul 7 (execution/revenue start). Hard filing, Medium conviction. https://www.bseindia.com/xml-data/corpfiling/AttachLive/375a8ae7-cf21-4fd0-bbeb-e379a70fd90.pdf WATCH: INA Insolation order Rs 558 cr ≈22% mcap but +9.6%/11.9x vol = priced; CHOICEIN NH Korea Rs 900 cr CCPS into broking arm, +7.9%/7.2x already; RML Rane Madras MOU/acq ~Rs 700 cr ≈21% mcap +13.2% — dig filing; LUXIND capacity add regex Rs 900 cr ≈24% mcap unverified — dig filing; SEPC Avenir UAE 90% via 153 cr sh @Rs 10 (54% prem) but ~2x dilution + CRISIL downgrade in window — caution; SPANDANA + INTLCONV CARE upgrades (confluence = self-echo of rating disclosure); SHAH promoter 12->40% via rights @18% prem — corroboration only; GENUSPOWER Kela Rs 40 cr block — corroboration only; PAISALO 12M-sh pledge release. DROPPED (obvious/covered): KOTAKBANK-Deutsche, BHEL upgrade, YESBANK/MAHABANK/RADICO/HFCL upgrades. Caution overlay: RBA Kela/QSR -9.22pp selling; Kela churn ATALREAL/URAVIDEF/EMPOWER.
